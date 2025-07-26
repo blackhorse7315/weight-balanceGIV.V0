@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G-IV SP Weight & Balance Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        .icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-right: 0.75rem;
+            stroke-width: 1.5;
+        }
+        .time-input {
+            width: 4rem;
+        }
+        .seat {
+            border: 1px solid #4a5568;
+            background-color: #2d3748;
+            border-radius: 0.375rem;
+            padding: 0.5rem;
+            text-align: center;
+            font-size: 0.75rem;
+            min-width: 50px;
+        }
+        .seat-input {
+            width: 50px;
+            background-color: #4a5568;
+            border: 1px solid #718096;
+            text-align: center;
+            border-radius: 0.25rem;
+        }
+        .table-box {
+            border: 2px solid #fdba74; /* Amber color to match theme */
+            background-color: #4a5568;
+            border-radius: 0.25rem;
+            width: 20px;
+            height: 20px;
+            align-self: center;
+        }
+        .component {
+            border: 1px solid #4a5568;
+            background-color: #2d3748;
+            border-radius: 0.375rem;
+            padding: 0.5rem;
+            text-align: center;
+            font-size: 0.875rem;
+        }
+        .cg-table th, .cg-table td {
+            padding: 0.5rem 0.25rem;
+            text-align: right;
+            font-size: 0.875rem;
+        }
+        .cg-table th:first-child, .cg-table td:first-child {
+            text-align: left;
+            font-weight: 500;
+        }
+        .total-row {
+            background-color: #1f2937;
+            font-weight: bold;
+            color: #fcd34d;
+        }
+        /* Styles for PDF generation */
+        #pdf-container {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+            width: 210mm; /* A4 width */
+            background: white;
+            color: black;
+            padding: 20mm;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200">
+
+    <div class="container mx-auto max-w-lg p-4 sm:p-6 bg-gray-900 min-h-screen">
+
+        <!-- Header -->
+        <header class="text-center sticky top-0 bg-gray-900 z-10 py-4 mb-6">
+            <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">G-IV SP Weight & Balance</h1>
+            <p class="text-amber-400 font-semibold">PK-TWY</p>
+            <p class="text-xs text-gray-500 mt-1">Made by Capt. Ramdan / Siera 7315</p>
+            <p class="text-xs text-red-400 mt-2">This Application valid until 26 October 2025</p>
+        </header>
+
+        <div id="main-content" class="space-y-6">
+
+            <!-- Aircraft Limits Section -->
+            <div>
+                <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Aircraft Limits (lbs)</h2>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                        <label for="rampWeight" class="flex items-center text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><path d="M18 18-6-6M6 18l12-12"/><path d="M12 22V12"/><path d="M12 12V2"/><path d="M12 12H2"/><path d="M12 12h10"/></svg>
+                            Ramp Weight
+                        </label>
+                        <input type="number" id="rampWeight" value="75000" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                    </div>
+                    <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                        <label for="maxTakeoffWeight" class="flex items-center text-sm font-medium">
+                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><path d="M22 17.5 12 7.5 2 17.5"/><path d="M2 17.5h20"/></svg>
+                            Max Takeoff Wt
+                        </label>
+                        <input type="number" id="maxTakeoffWeight" value="74600" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                    </div>
+                    <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                        <label for="maxZeroFuelWeight" class="flex items-center text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><path d="M12 2v3.8c0 .3.2.6.4.8l2.8 2.8c.2.2.5.4.8.4H20"/><path d="M12 22v-3.8c0-.3-.2-.6-.4-.8l-2.8-2.8c-.2-.2-.5-.4-.8-.4H4"/><path d="M22 12h-3.8c-.3 0-.6-.2-.8-.4l-2.8-2.8c-.2-.2-.4-.5-.4-.8V4"/><path d="M2 12h3.8c.3 0 .6.2.8.4l2.8 2.8c.2.2.4.5.4.8V20"/></svg>
+                            Max Zero Fuel Wt
+                        </label>
+                        <input type="number" id="maxZeroFuelWeight" value="49000" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payload Section -->
+            <div>
+                <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Aircraft & Payload Data</h2>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                        <label for="emptyWeight" class="flex items-center text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><path d="M15.2 3.2a1 1 0 0 0-1.4 1.4L15.2 6l-2.3 2.3a1 1 0 1 0 1.4 1.4l2.3-2.3 1.4 1.4a1 1 0 0 0 1.4-1.4L18 6l1.4-1.4a1 1 0 0 0-1.4-1.4L16.6 4.8 15.2 3.2z"/><path d="m10.2 6.8 4 4"/><path d="m6.8 10.2 4 4"/><path d="m14 19.5 4.9-11.4L2.5 2.5 14 19.5z"/></svg>
+                            Empty Weight (lbs)
+                        </label>
+                        <input type="number" id="emptyWeight" value="43743" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                    </div>
+                    <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                        <label for="pilot" class="flex items-center text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><circle cx="12" cy="8" r="3" /><path d="M12 11v2"/><path d="M12 18c-3.31 0-6-2.69-6-6v-1a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1c0 3.31-2.69 6-6 6z"/></svg>
+                            Pilot (kg)
+                        </label>
+                        <input type="number" id="pilot" value="90" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                    </div>
+                    <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                        <label for="copilot" class="flex items-center text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><circle cx="12" cy="8" r="3" /><path d="M12 11v2"/><path d="M12 18c-3.31 0-6-2.69-6-6v-1a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1c0 3.31-2.69 6-6 6z"/></svg>
+                            Copilot (kg)
+                        </label>
+                        <input type="number" id="copilot" value="90" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                    </div>
+                    <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                        <label for="engineer" class="flex items-center text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><path d="M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/><path d="M12 16v1a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-1a2 2 0 0 0-2-2h-1a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v1"/></svg>
+                            Engineer (kg)
+                        </label>
+                        <input type="number" id="engineer" value="90" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                    </div>
+                    <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                        <label for="cabinService" class="flex items-center text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M17 20a5 5 0 0 0-10 0"/><path d="M3 20a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1.1a2 2 0 0 1 1.4.6l1.4 1.4"/><path d="M21 20a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.1a2 2 0 0 0-1.4.6l-1.4 1.4"/></svg>
+                            Cabin Service (kg)
+                        </label>
+                        <input type="number" id="cabinService" value="90" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                    </div>
+                    <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                        <label for="baggage" class="flex items-center text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><path d="M6 20h12"/><path d="M8 20V8a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v12"/><path d="M10 6V4a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v2"/></svg>
+                            Baggage (kg)
+                        </label>
+                        <input type="number" id="baggage" value="90" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                    </div>
+                    <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                        <label for="cockpitStorage" class="flex items-center text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                            Cockpit Storage (kg)
+                        </label>
+                        <input type="number" id="cockpitStorage" placeholder="0" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                    </div>
+                    <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                        <label for="cabinStorage" class="flex items-center text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><path d="M20 12v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4"/><path d="M4 12V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"/><path d="M12 18v-6"/><path d="M12 6V4"/></svg>
+                            Cabin Storage (kg)
+                        </label>
+                        <input type="number" id="cabinStorage" placeholder="0" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flight Calculation Section -->
+            <div>
+                <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Flight Calculation</h2>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                        <label for="tripTimeHours" class="flex items-center text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            Trip Time
+                        </label>
+                        <div class="flex items-center space-x-2">
+                            <input type="number" id="tripTimeHours" placeholder="hr" class="time-input bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                            <input type="number" id="tripTimeMinutes" placeholder="min" class="time-input bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                        <label for="tripToAlternateHours" class="flex items-center text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/><path d="m19 19-2-2"/></svg>
+                            Trip to Alternate
+                        </label>
+                         <div class="flex items-center space-x-2">
+                            <input type="number" id="tripToAlternateHours" placeholder="hr" class="time-input bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                            <input type="number" id="tripToAlternateMinutes" placeholder="min" class="time-input bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                        <label for="fuelConsumption" class="flex items-center text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><path d="M14 8a2 2 0 1 0-4 0v4a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V8z"/><path d="M8.5 14.5 7 20"/><path d="M15.5 14.5 17 20"/><path d="M4 14h16"/><path d="M4 14a4 4 0 0 1-1.3-7.8A4 4 0 0 1 6.3 4.2 4 4 0 0 1 10 6"/><path d="M20 14a4 4 0 0 0 1.3-7.8 4 4 0 0 0-3.6-2 4 4 0 0 0-3.7 1.8"/></svg>
+                            Fuel Consumption (lbs/hr)
+                        </label>
+                        <input type="number" id="fuelConsumption" value="3933.7" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                    </div>
+                    <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                        <label for="airspeed" class="flex items-center text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M16 8 2 22"/></svg>
+                            Airspeed (kts)
+                        </label>
+                        <input type="number" id="airspeed" value="450" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                    </div>
+                    <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                        <label for="fuelOnBoard" class="flex items-center text-sm font-medium">
+                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><path d="M12 22a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2Z"/><path d="M9 16h6"/><path d="M9 12h6"/><path d="M9 8h6"/></svg>
+                            Fuel on Board (lbs)
+                        </label>
+                        <input type="number" id="fuelOnBoard" placeholder="0" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                    </div>
+                    <div class="flex justify-between items-baseline bg-gray-800 p-3 rounded-lg">
+                        <span class="text-sm font-medium text-gray-300">Maximum Range</span>
+                        <div>
+                            <span id="maxRange" class="font-bold text-lg text-white">0</span>
+                            <span class="text-sm text-gray-400">nm</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fuel Required Section -->
+            <div>
+                <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Fuel Required (lbs)</h2>
+                <div class="space-y-4 bg-gray-800 p-4 rounded-lg">
+                    <div class="flex justify-between items-baseline">
+                        <span class="text-sm font-medium text-gray-300">Trip Fuel</span>
+                        <div>
+                            <span id="fuelTripRequired" class="font-bold text-lg text-white">0</span>
+                            <span class="text-sm text-gray-400">lbs</span>
+                        </div>
+                    </div>
+                     <div class="flex justify-between items-baseline">
+                        <span class="text-sm font-medium text-gray-300">Alternate Fuel</span>
+                        <div>
+                            <span id="alternateFuel" class="font-bold text-lg text-white">0</span>
+                            <span class="text-sm text-gray-400">lbs</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-baseline">
+                        <span class="text-sm font-medium text-gray-300">Reserve Fuel (20 min)</span>
+                        <div>
+                            <span id="reserveFuel" class="font-bold text-lg text-white">0</span>
+                            <span class="text-sm text-gray-400">lbs</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-baseline">
+                        <span class="text-sm font-medium text-gray-300">Contingency (10%)</span>
+                        <div>
+                            <span id="contingencyFuel" class="font-bold text-lg text-white">0</span>
+                            <span class="text-sm text-gray-400">lbs</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-baseline">
+                        <span class="text-sm font-medium text-gray-300">Start & Taxi (20 min)</span>
+                        <div>
+                            <span id="startTaxiFuel" class="font-bold text-lg text-white">0</span>
+                            <span class="text-sm text-gray-400">lbs</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-baseline border-t border-gray-600 pt-3 mt-2">
+                        <span class="text-sm font-semibold text-amber-400">TOTAL FUEL REQUIRED</span>
+                        <div>
+                            <span id="totalFuelRequired" class="font-bold text-xl text-amber-400">0</span>
+                            <span class="text-sm text-gray-400">lbs</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seat Layout Configuration -->
+            <div>
+                <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Seat Layout Configuration (kg)</h2>
+                <div class="bg-gray-800 p-4 rounded-lg space-y-4">
+                    <!-- Cockpit -->
+                    <div class="text-center text-xs text-gray-400 mb-2">-- COCKPIT --</div>
+                    <div class="flex justify-around items-center">
+                        <div class="seat">Pilot<br><span id="pilotSeatWt" class="font-bold text-amber-400">0</span> kg</div>
+                        <div class="seat">Copilot<br><span id="copilotSeatWt" class="font-bold text-amber-400">0</span> kg</div>
+                    </div>
+                    <div class="flex justify-center mt-2">
+                        <div class="seat">Jumpseat<br><span id="jumpseatWt" class="font-bold text-amber-400">0</span> kg</div>
+                    </div>
+
+                    <!-- Cabin -->
+                    <div class="text-center text-xs text-gray-400 mt-4 mb-2">-- CABIN --</div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- Left Column -->
+                        <div class="space-y-3 flex flex-col items-center justify-start">
+                             <div class="component invisible">Fwd Lav<br><input type="number" class="seat-input mt-1"></div>
+                             <div class="component invisible">Galley<br><input type="number" class="seat-input mt-1"></div>
+                             <div class="seat">S3<br><input type="number" id="seat3" placeholder="0" class="seat-input"></div>
+                             <div class="seat">S4<br><input type="number" id="seat4" placeholder="0" class="seat-input"></div>
+                             <div class="table-box my-2 invisible"></div>
+                             <div class="seat">S5<br><input type="number" id="seat5" placeholder="0" class="seat-input"></div>
+                             <div class="table-box my-2"></div>
+                             <div class="seat">S6<br><input type="number" id="seat6" placeholder="0" class="seat-input"></div>
+                             <div class="seat mt-3">S12<br><input type="number" id="seat12" placeholder="0" class="seat-input"></div>
+                             <div class="table-box my-2"></div>
+                             <div class="seat">S13<br><input type="number" id="seat13" placeholder="0" class="seat-input"></div>
+                        </div>
+                        <!-- Right Column -->
+                        <div class="space-y-3 flex flex-col items-center">
+                            <div class="component w-full">Fwd Lav<br><input type="number" id="fwdLavatory" value="23" class="seat-input mt-1"></div>
+                            <div class="component w-full">Galley<br><input type="number" id="galley" value="34" class="seat-input mt-1"></div>
+                            <div class="seat">S1<br><input type="number" id="seat1" placeholder="0" class="seat-input"></div>
+                            <div class="table-box my-2"></div>
+                            <div class="seat">S2<br><input type="number" id="seat2" placeholder="0" class="seat-input"></div>
+                            <div class="seat">S7<br><input type="number" id="seat7" placeholder="0" class="seat-input"></div>
+                            <div class="table-box my-2"></div>
+                            <div class="seat">S8<br><input type="number" id="seat8" placeholder="0" class="seat-input"></div>
+                            <div class="seat mt-3">S9<br><input type="number" id="seat9" placeholder="0" class="seat-input"></div>
+                            <div class="seat">S10<br><input type="number" id="seat10" placeholder="0" class="seat-input"></div>
+                            <div class="seat">S11<br><input type="number" id="seat11" placeholder="0" class="seat-input"></div>
+                            <div class="component w-full mt-3">Aft Lav<br><input type="number" id="aftLavatory" value="23" class="seat-input mt-1"></div>
+                        </div>
+                    </div>
+                     <!-- Baggage Area -->
+                    <div class="text-center text-xs text-gray-400 mt-4 mb-2">-- BAGGAGE --</div>
+                    <div class="component w-full bg-green-800 border-green-600">
+                        Baggage: <span id="baggageLayoutWt" class="font-bold text-white">0</span> kg
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weight & CG Calculation -->
+            <div>
+                <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Weight & CG Calculation</h2>
+                <div class="bg-gray-800 p-2 sm:p-4 rounded-lg overflow-x-auto">
+                    <table class="w-full cg-table">
+                        <thead class="border-b border-gray-600">
+                            <tr>
+                                <th class="w-2/5">Item</th>
+                                <th>Weight (lbs)</th>
+                                <th>Arm (in)</th>
+                                <th>Moment</th>
+                                <th>%MAC</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cg-table-body">
+                            <!-- Rows will be dynamically inserted here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Weight & CG Envelope -->
+            <div>
+                <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Weight & CG Envelope</h2>
+                <div class="bg-gray-800 p-4 rounded-lg">
+                    <canvas id="cgEnvelopeChart"></canvas>
+                </div>
+            </div>
+
+
+            <!-- Weight Summary Section -->
+            <div>
+                <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Weight Summary</h2>
+                <div class="space-y-4 bg-gray-800 p-4 rounded-lg">
+                    <div class="flex justify-between items-baseline">
+                        <span class="text-sm font-medium text-gray-300">Total Payload</span>
+                        <div>
+                            <span id="totalPayloadLbs" class="font-bold text-lg text-white">0</span>
+                            <span class="text-sm text-gray-400">lbs / </span>
+                            <span id="totalPayloadKg" class="font-bold text-lg text-white">0</span>
+                            <span class="text-sm text-gray-400">kg</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-baseline">
+                        <span class="text-sm font-medium text-gray-300">Zero Fuel Weight</span>
+                        <div>
+                            <span id="zfwResult" class="font-bold text-xl text-amber-400">0</span>
+                            <span class="text-sm text-gray-400">lbs</span>
+                            <span id="zfwStatus" class="ml-2 text-sm font-semibold"></span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-baseline">
+                        <span class="text-sm font-medium text-gray-300">Takeoff Weight</span>
+                        <div>
+                            <span id="towResult" class="font-bold text-xl text-amber-400">0</span>
+                            <span class="text-sm text-gray-400">lbs</span>
+                            <span id="towStatus" class="ml-2 text-sm font-semibold"></span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-baseline border-t border-gray-700 pt-3 mt-3">
+                        <span class="text-sm font-medium text-gray-300">Available Payload</span>
+                        <div>
+                            <span id="availablePayloadLbs" class="font-bold text-lg text-green-400">0</span>
+                            <span class="text-sm text-gray-400">lbs / </span>
+                            <span id="availablePayloadKg" class="font-bold text-lg text-green-400">0</span>
+                            <span class="text-sm text-gray-400">kg</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-baseline">
+                        <span class="text-sm font-medium text-gray-300">Available Passengers (@80kg)</span>
+                        <div>
+                            <span id="availablePassengers" class="font-bold text-lg text-green-400">0</span>
+                            <span class="text-sm text-gray-400">pax</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer with PDF Button -->
+        <footer class="text-center mt-8 pb-4">
+            <button id="downloadPdfBtn" class="bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold py-2 px-4 rounded-lg mb-4">
+                Download as PDF
+            </button>
+            <p id="pdf-message" class="text-sm text-amber-400 mb-4 hidden">Generating PDF...</p>
+        </footer>
+
+    </div>
+    
+    <!-- Hidden container for PDF generation -->
+    <div id="pdf-container"></div>
+
+
+    <script>
+        // --- CONSTANTS ---
+        const KG_TO_LBS = 2.20462;
+        const G4_LEMAC = 417.874; // Adjusted to match user's expected MAC for Empty Weight
+        const G4_MAC = 109.3;
+
+        // --- ARM VALUES ---
+        const ARMS = {
+            emptyWeight: 463.9,
+            crew: 123.0,
+            cockpitStorage: 127.0,
+            galley: 537.0,
+            fwdLavatory: 595.0,
+            aftLavatory: 595.0,
+            crewBaggage: 181.0, // Mapped to Cabin Service
+            jumpSeat: 140.0,
+            cabinStorage: 415.0,
+            seat1: 237.0,
+            seat2: 237.0,
+            seat3: 285.0,
+            seat4: 285.0,
+            seat5: 331.0,
+            seat6: 331.0,
+            seat7: 381.0,
+            seat8: 381.0,
+            seat9: 439.0,
+            seat10: 425.0,
+            seat11: 425.0,
+            seat12: 465.0,
+            seat13: 477.0,
+            baggage: 637.0,
+            fuel: 480.0 // Placeholder arm for fuel
+        };
+
+        // --- ELEMENT SELECTORS ---
+        const inputs = {
+            // Weight Inputs
+            rampWeight: document.getElementById('rampWeight'),
+            maxTakeoffWeight: document.getElementById('maxTakeoffWeight'),
+            maxZeroFuelWeight: document.getElementById('maxZeroFuelWeight'),
+            emptyWeight: document.getElementById('emptyWeight'),
+            pilot: document.getElementById('pilot'),
+            copilot: document.getElementById('copilot'),
+            engineer: document.getElementById('engineer'),
+            cabinService: document.getElementById('cabinService'),
+            baggage: document.getElementById('baggage'),
+            cockpitStorage: document.getElementById('cockpitStorage'),
+            cabinStorage: document.getElementById('cabinStorage'),
+            // Seat Layout Inputs
+            fwdLavatory: document.getElementById('fwdLavatory'),
+            galley: document.getElementById('galley'),
+            seat1: document.getElementById('seat1'),
+            seat2: document.getElementById('seat2'),
+            seat3: document.getElementById('seat3'),
+            seat4: document.getElementById('seat4'),
+            seat5: document.getElementById('seat5'),
+            seat6: document.getElementById('seat6'),
+            seat7: document.getElementById('seat7'),
+            seat8: document.getElementById('seat8'),
+            seat9: document.getElementById('seat9'),
+            seat10: document.getElementById('seat10'),
+            seat11: document.getElementById('seat11'),
+            seat12: document.getElementById('seat12'),
+            seat13: document.getElementById('seat13'),
+            aftLavatory: document.getElementById('aftLavatory'),
+            // Flight Calc Inputs
+            tripTimeHours: document.getElementById('tripTimeHours'),
+            tripTimeMinutes: document.getElementById('tripTimeMinutes'),
+            tripToAlternateHours: document.getElementById('tripToAlternateHours'),
+            tripToAlternateMinutes: document.getElementById('tripToAlternateMinutes'),
+            fuelConsumption: document.getElementById('fuelConsumption'),
+            airspeed: document.getElementById('airspeed'),
+            fuelOnBoard: document.getElementById('fuelOnBoard'),
+        };
+
+        const outputs = {
+            // Seat Layout Display
+            pilotSeatWt: document.getElementById('pilotSeatWt'),
+            copilotSeatWt: document.getElementById('copilotSeatWt'),
+            jumpseatWt: document.getElementById('jumpseatWt'),
+            baggageLayoutWt: document.getElementById('baggageLayoutWt'),
+            cgTableBody: document.getElementById('cg-table-body'),
+            // Weight Summary
+            totalPayloadLbs: document.getElementById('totalPayloadLbs'),
+            totalPayloadKg: document.getElementById('totalPayloadKg'),
+            zfwResult: document.getElementById('zfwResult'),
+            towResult: document.getElementById('towResult'),
+            zfwStatus: document.getElementById('zfwStatus'),
+            towStatus: document.getElementById('towStatus'),
+            availablePayloadLbs: document.getElementById('availablePayloadLbs'),
+            availablePayloadKg: document.getElementById('availablePayloadKg'),
+            availablePassengers: document.getElementById('availablePassengers'),
+            // Flight Calc
+            maxRange: document.getElementById('maxRange'),
+            // Fuel Required
+            fuelTripRequired: document.getElementById('fuelTripRequired'),
+            alternateFuel: document.getElementById('alternateFuel'),
+            reserveFuel: document.getElementById('reserveFuel'),
+            contingencyFuel: document.getElementById('contingencyFuel'),
+            startTaxiFuel: document.getElementById('startTaxiFuel'),
+            totalFuelRequired: document.getElementById('totalFuelRequired'),
+        };
+
+        let cgChart; // Chart instance
+
+        // --- HELPER FUNCTIONS ---
+        const kgToLbs = (kg) => (kg || 0) * KG_TO_LBS;
+        const calculateMoment = (weight, arm) => (weight || 0) * (arm || 0);
+        const calculateMac = (arm) => arm > 0 ? ((arm - G4_LEMAC) / G4_MAC) * 100 : 0;
+
+        // --- CORE CALCULATION FUNCTION ---
+        function calculateAll() {
+            // --- Get Base Payload Values ---
+            const pilotKg = parseFloat(inputs.pilot.value) || 0;
+            const copilotKg = parseFloat(inputs.copilot.value) || 0;
+            const engineerKg = parseFloat(inputs.engineer.value) || 0;
+            const cabinServiceKg = parseFloat(inputs.cabinService.value) || 0;
+            const baggageKg = parseFloat(inputs.baggage.value) || 0;
+            const cockpitStorageKg = parseFloat(inputs.cockpitStorage.value) || 0;
+            const cabinStorageKg = parseFloat(inputs.cabinStorage.value) || 0;
+
+            // --- Get Seat Layout Payload Values ---
+            const seatPayloadsKg = {
+                fwdLavatory: parseFloat(inputs.fwdLavatory.value) || 0,
+                galley: parseFloat(inputs.galley.value) || 0,
+                seat1: parseFloat(inputs.seat1.value) || 0,
+                seat2: parseFloat(inputs.seat2.value) || 0,
+                seat3: parseFloat(inputs.seat3.value) || 0,
+                seat4: parseFloat(inputs.seat4.value) || 0,
+                seat5: parseFloat(inputs.seat5.value) || 0,
+                seat6: parseFloat(inputs.seat6.value) || 0,
+                seat7: parseFloat(inputs.seat7.value) || 0,
+                seat8: parseFloat(inputs.seat8.value) || 0,
+                seat9: parseFloat(inputs.seat9.value) || 0,
+                seat10: parseFloat(inputs.seat10.value) || 0,
+                seat11: parseFloat(inputs.seat11.value) || 0,
+                seat12: parseFloat(inputs.seat12.value) || 0,
+                seat13: parseFloat(inputs.seat13.value) || 0,
+                aftLavatory: parseFloat(inputs.aftLavatory.value) || 0,
+            };
+            const totalSeatPayloadKg = Object.values(seatPayloadsKg).reduce((sum, val) => sum + val, 0);
+
+            // --- Get Weight Limit & Empty Weight ---
+            const maxTowLimit = parseFloat(inputs.maxTakeoffWeight.value) || 0;
+            const maxZfwLimit = parseFloat(inputs.maxZeroFuelWeight.value) || 0;
+            const emptyWeight = parseFloat(inputs.emptyWeight.value) || 0;
+            
+            // --- Get Flight Calc Values ---
+            const tripTimeHours = parseFloat(inputs.tripTimeHours.value) || 0;
+            const tripTimeMinutes = parseFloat(inputs.tripTimeMinutes.value) || 0;
+            const fuelConsumption = parseFloat(inputs.fuelConsumption.value) || 0;
+            const airspeed = parseFloat(inputs.airspeed.value) || 0;
+            const fuelOnBoard = parseFloat(inputs.fuelOnBoard.value) || 0;
+
+            // --- Calculations ---
+
+            // 1. Total Payload
+            const totalPayloadKg = pilotKg + copilotKg + engineerKg + cabinServiceKg + baggageKg + cockpitStorageKg + cabinStorageKg + totalSeatPayloadKg;
+            const totalPayloadLbs = totalPayloadKg * KG_TO_LBS;
+            
+            // 2. Trip Fuel
+            const fuelPerMinute = fuelConsumption > 0 ? fuelConsumption / 60 : 0;
+            const totalTripTimeMinutes = (tripTimeHours * 60) + tripTimeMinutes;
+            const calculatedTripFuel = totalTripTimeMinutes * fuelPerMinute;
+
+            // 3. CG Table Data
+            const cgData = {
+                emptyWeight: { weight: emptyWeight, arm: ARMS.emptyWeight },
+                crew: { weight: kgToLbs(pilotKg + copilotKg), arm: ARMS.crew },
+                cockpitStorage: { weight: kgToLbs(cockpitStorageKg), arm: ARMS.cockpitStorage },
+                galley: { weight: kgToLbs(seatPayloadsKg.galley), arm: ARMS.galley },
+                fwdLavatory: { weight: kgToLbs(seatPayloadsKg.fwdLavatory), arm: ARMS.fwdLavatory },
+                aftLavatory: { weight: kgToLbs(seatPayloadsKg.aftLavatory), arm: ARMS.aftLavatory },
+                crewBaggage: { weight: kgToLbs(cabinServiceKg), arm: ARMS.crewBaggage },
+                jumpSeat: { weight: kgToLbs(engineerKg), arm: ARMS.jumpSeat },
+                cabinStorage: { weight: kgToLbs(cabinStorageKg), arm: ARMS.cabinStorage },
+                seat1: { weight: kgToLbs(seatPayloadsKg.seat1), arm: ARMS.seat1 },
+                seat2: { weight: kgToLbs(seatPayloadsKg.seat2), arm: ARMS.seat2 },
+                seat3: { weight: kgToLbs(seatPayloadsKg.seat3), arm: ARMS.seat3 },
+                seat4: { weight: kgToLbs(seatPayloadsKg.seat4), arm: ARMS.seat4 },
+                seat5: { weight: kgToLbs(seatPayloadsKg.seat5), arm: ARMS.seat5 },
+                seat6: { weight: kgToLbs(seatPayloadsKg.seat6), arm: ARMS.seat6 },
+                seat7: { weight: kgToLbs(seatPayloadsKg.seat7), arm: ARMS.seat7 },
+                seat8: { weight: kgToLbs(seatPayloadsKg.seat8), arm: ARMS.seat8 },
+                seat9: { weight: kgToLbs(seatPayloadsKg.seat9), arm: ARMS.seat9 },
+                seat10: { weight: kgToLbs(seatPayloadsKg.seat10), arm: ARMS.seat10 },
+                seat11: { weight: kgToLbs(seatPayloadsKg.seat11), arm: ARMS.seat11 },
+                seat12: { weight: kgToLbs(seatPayloadsKg.seat12), arm: ARMS.seat12 },
+                seat13: { weight: kgToLbs(seatPayloadsKg.seat13), arm: ARMS.seat13 },
+                baggage: { weight: kgToLbs(baggageKg), arm: ARMS.baggage },
+                fuel: { weight: fuelOnBoard, arm: ARMS.fuel },
+                tripFuel: { weight: -calculatedTripFuel, arm: ARMS.fuel },
+            };
+
+            // Calculate moments for each item
+            for (const key in cgData) {
+                cgData[key].moment = calculateMoment(cgData[key].weight, cgData[key].arm);
+            }
+
+            // Calculate Totals
+            const bowItems = ['emptyWeight', 'crew', 'cockpitStorage', 'galley', 'fwdLavatory', 'aftLavatory', 'crewBaggage', 'jumpSeat', 'cabinStorage'];
+            const paxItems = ['seat1', 'seat2', 'seat3', 'seat4', 'seat5', 'seat6', 'seat7', 'seat8', 'seat9', 'seat10', 'seat11', 'seat12', 'seat13'];
+            
+            const calculateTotal = (items) => {
+                const total = { weight: 0, moment: 0, arm: 0, mac: 0 };
+                items.forEach(key => {
+                    total.weight += cgData[key].weight;
+                    total.moment += cgData[key].moment;
+                });
+                total.arm = total.weight > 0 ? total.moment / total.weight : 0;
+                total.mac = calculateMac(total.arm);
+                return total;
+            };
+
+            const bowTotal = calculateTotal(bowItems);
+            const paxTotal = calculateTotal(paxItems);
+            const zfwTotal = {
+                weight: bowTotal.weight + paxTotal.weight + cgData.baggage.weight,
+                moment: bowTotal.moment + paxTotal.moment + cgData.baggage.moment,
+            };
+            zfwTotal.arm = zfwTotal.weight > 0 ? zfwTotal.moment / zfwTotal.weight : 0;
+            zfwTotal.mac = calculateMac(zfwTotal.arm);
+
+            const towTotal = {
+                weight: zfwTotal.weight + cgData.fuel.weight,
+                moment: zfwTotal.moment + cgData.fuel.moment,
+            };
+            towTotal.arm = towTotal.weight > 0 ? towTotal.moment / towTotal.weight : 0;
+            towTotal.mac = calculateMac(towTotal.arm);
+            
+            const lwTotal = {
+                weight: towTotal.weight + cgData.tripFuel.weight, // trip fuel is negative
+                moment: towTotal.moment + cgData.tripFuel.moment,
+            };
+            lwTotal.arm = lwTotal.weight > 0 ? lwTotal.moment / lwTotal.weight : 0;
+            lwTotal.mac = calculateMac(lwTotal.arm);
+
+
+            // --- UPDATE UI ---
+            updateCgTable(cgData, bowTotal, paxItems, zfwTotal, towTotal, lwTotal);
+            updateSummariesAndFlightCalc(totalPayloadKg, totalPayloadLbs, zfwTotal.weight, towTotal.weight, maxZfwLimit, maxTowLimit, fuelConsumption, airspeed, fuelOnBoard);
+            updateCgEnvelope(zfwTotal, towTotal, lwTotal);
+            
+            // Update Seat Layout Display
+            outputs.pilotSeatWt.textContent = pilotKg.toFixed(0);
+            outputs.copilotSeatWt.textContent = copilotKg.toFixed(0);
+            outputs.jumpseatWt.textContent = engineerKg.toFixed(0);
+            outputs.baggageLayoutWt.textContent = baggageKg.toFixed(0);
+        }
+        
+        function updateCgTable(cgData, bowTotal, paxItems, zfwTotal, towTotal, lwTotal) {
+            const format = (val, dec = 0) => val.toFixed(dec);
+            const formatMoment = (val) => (val / 1000).toFixed(2);
+            let html = '';
+
+            const createRow = (label, data, isTotal = false, showMac = false) => {
+                const weight = data.weight;
+                const arm = data.arm;
+                const moment = data.moment;
+                let mac = 0;
+                if (showMac) {
+                    mac = isTotal ? data.mac : calculateMac(arm);
+                }
+
+                const rowClass = isTotal ? 'total-row' : 'border-b border-gray-700';
+                
+                return `<tr class="${rowClass}">
+                    <td>${label}</td>
+                    <td>${format(weight, 1)}</td>
+                    <td>${arm > 0 ? format(arm, 1) : '-'}</td>
+                    <td>${formatMoment(moment)}</td>
+                    <td>${mac > 0 ? format(mac, 2) : '-'}</td>
+                </tr>`;
+            };
+
+            // BOW Items
+            html += createRow('Empty Weight', cgData.emptyWeight, false, true);
+            html += createRow('Crew', cgData.crew);
+            html += createRow('Cockpit Storage', cgData.cockpitStorage);
+            html += createRow('Galley', cgData.galley);
+            html += createRow('Forward Lavatory', cgData.fwdLavatory);
+            html += createRow('Aft Lavatory', cgData.aftLavatory);
+            html += createRow('Crew Baggage', cgData.crewBaggage);
+            html += createRow('Jump Seat', cgData.jumpSeat);
+            html += createRow('Cabin Storage', cgData.cabinStorage);
+            html += createRow('Basic Operating Weight (BOW)', bowTotal, true, true);
+
+            // Pax Items
+            html += `<tr><td class="pt-4 font-semibold">Passengers:</td></tr>`;
+            paxItems.forEach(key => {
+                if(cgData[key].weight > 0) {
+                     html += createRow(key.charAt(0).toUpperCase() + key.slice(1), cgData[key]);
+                }
+            });
+
+            // Baggage
+            html += createRow('Baggage', cgData.baggage);
+
+            // Totals
+            html += createRow('Zero Fuel Weight (ZFW)', zfwTotal, true, true);
+            html += createRow('Fuel', cgData.fuel);
+            html += createRow('Take Off Weight (TOW)', towTotal, true, true);
+            html += createRow('Landing Weight (LW)', lwTotal, true, true);
+
+            outputs.cgTableBody.innerHTML = html;
+        }
+
+        function updateSummariesAndFlightCalc(totalPayloadKg, totalPayloadLbs, zfw, tow, maxZfwLimit, maxTowLimit, fuelConsumption, airspeed, fuelOnBoard) {
+            // Update Weight Summary
+            outputs.totalPayloadKg.textContent = totalPayloadKg.toFixed(0);
+            outputs.totalPayloadLbs.textContent = totalPayloadLbs.toFixed(0);
+            outputs.zfwResult.textContent = zfw.toFixed(0);
+            updateStatus(outputs.zfwStatus, zfw, maxZfwLimit);
+            outputs.towResult.textContent = tow.toFixed(0);
+            updateStatus(outputs.towStatus, tow, maxTowLimit);
+
+            const availablePayloadLbs = maxTowLimit - tow;
+            const availablePayloadKg = availablePayloadLbs / KG_TO_LBS;
+            const availablePassengers = availablePayloadKg > 0 ? Math.floor(availablePayloadKg / 80) : 0;
+
+            outputs.availablePayloadLbs.textContent = availablePayloadLbs.toFixed(0);
+            outputs.availablePayloadKg.textContent = availablePayloadKg.toFixed(0);
+            outputs.availablePassengers.textContent = availablePassengers;
+
+
+            // Update Flight Calc
+            const maxRange = (fuelConsumption > 0 && airspeed > 0 && fuelOnBoard > 0) ? (fuelOnBoard / fuelConsumption) * airspeed : 0;
+            outputs.maxRange.textContent = maxRange.toFixed(0);
+            
+            // Update Fuel Required
+            const fuelPerMinute = fuelConsumption > 0 ? fuelConsumption / 60 : 0;
+            const totalTripTimeMinutes = (parseFloat(inputs.tripTimeHours.value) || 0) * 60 + (parseFloat(inputs.tripTimeMinutes.value) || 0);
+            const totalAlternateTimeMinutes = (parseFloat(inputs.tripToAlternateHours.value) || 0) * 60 + (parseFloat(inputs.tripToAlternateMinutes.value) || 0);
+            
+            const calculatedTripFuel = totalTripTimeMinutes * fuelPerMinute;
+            const calculatedAlternateFuel = totalAlternateTimeMinutes * fuelPerMinute;
+            const calculatedReserveFuel = 20 * fuelPerMinute;
+            const calculatedContingencyFuel = calculatedTripFuel * 0.10;
+            const calculatedStartTaxiFuel = 20 * fuelPerMinute;
+            const totalFuelRequired = calculatedTripFuel + calculatedAlternateFuel + calculatedReserveFuel + calculatedContingencyFuel + calculatedStartTaxiFuel;
+
+            outputs.fuelTripRequired.textContent = calculatedTripFuel.toFixed(1);
+            outputs.alternateFuel.textContent = calculatedAlternateFuel.toFixed(1);
+            outputs.reserveFuel.textContent = calculatedReserveFuel.toFixed(1);
+            outputs.contingencyFuel.textContent = calculatedContingencyFuel.toFixed(1);
+            outputs.startTaxiFuel.textContent = calculatedStartTaxiFuel.toFixed(1);
+            outputs.totalFuelRequired.textContent = totalFuelRequired.toFixed(1);
+        }
+
+
+        function updateStatus(element, value, limit) {
+            element.classList.remove('text-green-500', 'text-red-500', 'text-yellow-400');
+            if (value <= 0) {
+                element.textContent = 'Awaiting Input';
+                element.classList.add('text-yellow-400');
+            } else if (value > limit) {
+                element.textContent = 'OVERWEIGHT';
+                element.classList.add('text-red-500');
+            } else {
+                element.textContent = 'OK';
+                element.classList.add('text-green-500');
+            }
+        }
+
+        function initializeCgEnvelope() {
+            const ctx = document.getElementById('cgEnvelopeChart').getContext('2d');
+            const envelopeData = [
+                {x: 38, y: 39400},
+                {x: 36.4, y: 45000},
+                {x: 36.4, y: 46500},
+                {x: 41.3, y: 46500},
+                {x: 45, y: 44000},
+                {x: 45, y: 38000},
+                {x: 42, y: 38000},
+                {x: 38, y: 39400} // Close the loop
+            ];
+
+            cgChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [
+                        // Envelope
+                        {
+                            label: 'CG Envelope',
+                            data: envelopeData,
+                            borderColor: '#fcd34d',
+                            backgroundColor: 'rgba(252, 211, 77, 0.2)',
+                            fill: true,
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            order: 10
+                        },
+                        // Dynamic Points
+                        {
+                            label: 'ZFW',
+                            data: [],
+                            backgroundColor: '#34d399',
+                            pointRadius: 6,
+                            pointHoverRadius: 8,
+                            type: 'scatter',
+                            order: 0
+                        },
+                        {
+                            label: 'TOW',
+                            data: [],
+                            backgroundColor: '#60a5fa',
+                            pointRadius: 6,
+                            pointHoverRadius: 8,
+                            type: 'scatter',
+                            order: 0
+                        },
+                        {
+                            label: 'LW',
+                            data: [],
+                            backgroundColor: '#f87171',
+                            pointRadius: 6,
+                            pointHoverRadius: 8,
+                            type: 'scatter',
+                            order: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    aspectRatio: 1, // Make the chart square
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom',
+                            min: 36,
+                            max: 46,
+                            title: {
+                                display: true,
+                                text: '% MAC',
+                                color: '#9ca3af'
+                            },
+                            ticks: { 
+                                color: '#9ca3af',
+                                stepSize: 1 
+                            },
+                            grid: { color: 'rgba(156, 163, 175, 0.2)' }
+                        },
+                        y: {
+                            min: 36000,
+                            max: 77000,
+                            title: {
+                                display: true,
+                                text: 'GROSS WEIGHT – LBS',
+                                color: '#9ca3af'
+                            },
+                            ticks: { 
+                                color: '#9ca3af',
+                                stepSize: 1000,
+                                callback: function(value, index, values) {
+                                    if (value % 1000 === 0) {
+                                        return value;
+                                    }
+                                }
+                            },
+                            grid: { color: 'rgba(156, 163, 175, 0.2)' }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#d1d5db'
+                            }
+                        },
+                        annotation: {
+                            annotations: {
+                                maxRamp: { type: 'line', yMin: 75000, yMax: 75000, borderColor: 'rgb(239, 68, 68, 0.7)', borderWidth: 2, label: { content: 'Max Ramp', enabled: true, position: 'start', backgroundColor: 'rgba(239, 68, 68, 0.7)' } },
+                                maxTakeoff: { type: 'line', yMin: 74600, yMax: 74600, borderColor: 'rgb(249, 115, 22, 0.7)', borderWidth: 2, label: { content: 'Max Takeoff', enabled: true, position: 'start', backgroundColor: 'rgba(249, 115, 22, 0.7)' } },
+                                maxLanding: { type: 'line', yMin: 66000, yMax: 66000, borderColor: 'rgb(59, 130, 246, 0.7)', borderWidth: 2, label: { content: 'Max Landing Weight', enabled: true, position: 'start', yAdjust: -15, backgroundColor: 'rgba(59, 130, 246, 0.7)' } },
+                                aftForwardLoading: { type: 'line', xMin: 36.4, xMax: 43.5, yMin: 45000, yMax: 45000, borderColor: 'rgb(16, 185, 129, 0.7)', borderWidth: 2, borderDash: [5, 5], label: { content: 'aft to forward loading', enabled: true, position: 'center', yAdjust: -10, backgroundColor: 'rgba(0,0,0,0)', color: 'rgb(16, 185, 129, 0.9)' } }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateCgEnvelope(zfw, tow, lw) {
+            if (!cgChart) return;
+            // Update ZFW point
+            cgChart.data.datasets[1].data = [{ x: zfw.mac, y: zfw.weight }];
+            // Update TOW point
+            cgChart.data.datasets[2].data = [{ x: tow.mac, y: tow.weight }];
+            // Update LW point
+            cgChart.data.datasets[3].data = [{ x: lw.mac, y: lw.weight }];
+            
+            cgChart.update();
+        }
+
+        // --- PDF Generation ---
+        async function generatePDF() {
+            const pdfMessage = document.getElementById('pdf-message');
+            pdfMessage.classList.remove('hidden');
+            
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            const content = document.getElementById('main-content');
+            const canvas = await html2canvas(content, { 
+                backgroundColor: '#111827',
+                scale: 2 // Higher scale for better quality
+            });
+            const imgData = canvas.toDataURL('image/png');
+
+            // Add Logo
+            const logoUrl = 'http://googleusercontent.com/file_content/1';
+            const logoImg = new Image();
+            logoImg.src = logoUrl;
+            await new Promise(resolve => logoImg.onload = resolve);
+            pdf.addImage(logoImg, 'PNG', 15, 15, 40, 10); // x, y, width, height
+
+            // Add image of the app content
+            const imgProps = pdf.getImageProperties(imgData);
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+            pdf.addImage(imgData, 'PNG', 0, 30, pdfWidth, pdfHeight);
+
+            pdf.save('G-IV_SP_PK-TWY_Weight_Balance.pdf');
+            pdfMessage.classList.add('hidden');
+        }
+
+
+        // --- EVENT LISTENERS ---
+        Object.values(inputs).forEach(input => {
+            if (input) {
+                input.addEventListener('input', calculateAll);
+                
+                input.addEventListener('focus', (e) => {
+                    if (e.target.value !== '0' && e.target.value !== '') {
+                       e.target.dataset.originalValue = e.target.value;
+                       e.target.value = '';
+                    } else if (e.target.value === '0') {
+                        e.target.dataset.originalValue = '0';
+                        e.target.value = '';
+                    }
+                });
+
+                input.addEventListener('blur', (e) => {
+                    if (e.target.value === '' && e.target.dataset.originalValue) {
+                        e.target.value = e.target.dataset.originalValue;
+                    } else if (e.target.value === '' && !e.target.dataset.originalValue) {
+                        if (e.target.placeholder === '0') {
+                           e.target.value = '0';
+                        }
+                    }
+                });
+            }
+        });
+        
+        document.getElementById('downloadPdfBtn').addEventListener('click', generatePDF);
+
+        // --- INITIALIZATION ---
+        window.addEventListener('load', () => {
+            initializeCgEnvelope();
+            calculateAll();
+        });
+
+    </script>
+</body>
+</html>
