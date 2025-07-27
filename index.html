@@ -69,6 +69,7 @@
             padding: 0.5rem 0.25rem;
             text-align: right;
             font-size: 0.875rem;
+            vertical-align: middle;
         }
         .cg-table th:first-child, .cg-table td:first-child {
             text-align: left;
@@ -78,6 +79,14 @@
             background-color: #1f2937;
             font-weight: bold;
             color: #fcd34d;
+        }
+        .editable-cell-input {
+            width: 100%;
+            background-color: #4a5568;
+            border: 1px solid #718096;
+            text-align: right;
+            border-radius: 0.25rem;
+            padding-right: 0.25rem;
         }
         /* Styles for PDF generation */
         #pdf-container {
@@ -119,16 +128,9 @@
                     <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
                         <label for="maxTakeoffWeight" class="flex items-center text-sm font-medium">
                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><path d="M22 17.5 12 7.5 2 17.5"/><path d="M2 17.5h20"/></svg>
-                            Max Takeoff Wt
+                            Max Takeoff Weight
                         </label>
                         <input type="number" id="maxTakeoffWeight" value="74600" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
-                    </div>
-                    <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
-                        <label for="maxZeroFuelWeight" class="flex items-center text-sm font-medium">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><path d="M12 2v3.8c0 .3.2.6.4.8l2.8 2.8c.2.2.5.4.8.4H20"/><path d="M12 22v-3.8c0-.3-.2-.6-.4-.8l-2.8-2.8c-.2-.2-.5-.4-.8-.4H4"/><path d="M22 12h-3.8c-.3 0-.6-.2-.8-.4l-2.8-2.8c-.2-.2-.4-.5-.4-.8V4"/><path d="M2 12h3.8c.3 0 .6.2.8.4l2.8 2.8c.2.2.4.5.4.8V20"/></svg>
-                            Max Zero Fuel Wt
-                        </label>
-                        <input type="number" id="maxZeroFuelWeight" value="49000" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
                     </div>
                 </div>
             </div>
@@ -456,7 +458,7 @@
         const G4_MAC = 109.3;
 
         // --- ARM VALUES ---
-        const ARMS = {
+        let ARMS = {
             emptyWeight: 463.9,
             crew: 123.0,
             cockpitStorage: 127.0,
@@ -488,7 +490,6 @@
             // Weight Inputs
             rampWeight: document.getElementById('rampWeight'),
             maxTakeoffWeight: document.getElementById('maxTakeoffWeight'),
-            maxZeroFuelWeight: document.getElementById('maxZeroFuelWeight'),
             emptyWeight: document.getElementById('emptyWeight'),
             pilot: document.getElementById('pilot'),
             copilot: document.getElementById('copilot'),
@@ -593,7 +594,7 @@
 
             // --- Get Weight Limit & Empty Weight ---
             const maxTowLimit = parseFloat(inputs.maxTakeoffWeight.value) || 0;
-            const maxZfwLimit = parseFloat(inputs.maxZeroFuelWeight.value) || 0;
+            const maxZfwLimit = 49000; // Hardcoded limit
             const emptyWeight = parseFloat(inputs.emptyWeight.value) || 0;
             
             // --- Get Flight Calc Values ---
@@ -723,9 +724,24 @@
                     <td>${mac > 0 ? format(mac, 2) : '-'}</td>
                 </tr>`;
             };
+            
+            const createEditableEmptyWeightRow = (data) => {
+                const weight = data.weight;
+                const arm = data.arm;
+                const moment = data.moment;
+                const mac = calculateMac(arm);
+
+                return `<tr class="border-b border-gray-700">
+                    <td>Empty Weight</td>
+                    <td>${format(weight, 1)}</td>
+                    <td><input id="emptyWeightArmInput" type="number" value="${arm.toFixed(1)}" class="editable-cell-input"></td>
+                    <td id="emptyWeightMomentCell">${formatMoment(moment)}</td>
+                    <td><input id="emptyWeightMacInput" type="number" value="${mac.toFixed(2)}" class="editable-cell-input"></td>
+                </tr>`;
+            }
 
             // BOW Items
-            html += createRow('Empty Weight', cgData.emptyWeight, false, true);
+            html += createEditableEmptyWeightRow(cgData.emptyWeight);
             html += createRow('Crew', cgData.crew);
             html += createRow('Cockpit Storage', cgData.cockpitStorage);
             html += createRow('Galley', cgData.galley);
@@ -754,6 +770,17 @@
             html += createRow('Landing Weight (LW)', lwTotal, true, true);
 
             outputs.cgTableBody.innerHTML = html;
+            
+            // Re-attach listeners for the new inputs
+            document.getElementById('emptyWeightArmInput').addEventListener('input', (e) => {
+                ARMS.emptyWeight = parseFloat(e.target.value) || 0;
+                calculateAll();
+            });
+            document.getElementById('emptyWeightMacInput').addEventListener('input', (e) => {
+                const newMac = parseFloat(e.target.value) || 0;
+                ARMS.emptyWeight = (newMac / 100 * G4_MAC) + G4_LEMAC;
+                calculateAll();
+            });
         }
 
         function updateSummariesAndFlightCalc(totalPayloadKg, totalPayloadLbs, zfw, tow, maxZfwLimit, maxTowLimit, fuelConsumption, airspeed, fuelOnBoard) {
