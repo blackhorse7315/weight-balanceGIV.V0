@@ -88,6 +88,10 @@
             border-radius: 0.25rem;
             padding-right: 0.25rem;
         }
+        input:read-only {
+            background-color: #374151; /* A slightly different gray for readonly fields */
+            cursor: not-allowed;
+        }
         /* Styles for PDF generation */
         #pdf-container {
             position: absolute;
@@ -223,11 +227,11 @@
                         </div>
                     </div>
                     <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
-                        <label for="fuelConsumption" class="flex items-center text-sm font-medium">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><path d="M14 8a2 2 0 1 0-4 0v4a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V8z"/><path d="M8.5 14.5 7 20"/><path d="M15.5 14.5 17 20"/><path d="M4 14h16"/><path d="M4 14a4 4 0 0 1-1.3-7.8A4 4 0 0 1 6.3 4.2 4 4 0 0 1 10 6"/><path d="M20 14a4 4 0 0 0 1.3-7.8 4 4 0 0 0-3.6-2 4 4 0 0 0-3.7 1.8"/></svg>
-                            Fuel Consumption (lbs/hr)
+                        <label for="elevation" class="flex items-center text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                            Elevation (ft)
                         </label>
-                        <input type="number" id="fuelConsumption" value="3933.7" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                        <input type="number" id="elevation" placeholder="0" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
                     </div>
                     <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
                         <label for="airspeed" class="flex items-center text-sm font-medium">
@@ -257,6 +261,16 @@
             <div>
                 <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Fuel Required (lbs)</h2>
                 <div class="space-y-4 bg-gray-800 p-4 rounded-lg">
+                     <div class="flex items-center justify-between">
+                        <label for="fuelConsumption" class="flex items-center text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><path d="M14 8a2 2 0 1 0-4 0v4a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V8z"/><path d="M8.5 14.5 7 20"/><path d="M15.5 14.5 17 20"/><path d="M4 14h16"/><path d="M4 14a4 4 0 0 1-1.3-7.8A4 4 0 0 1 6.3 4.2 4 4 0 0 1 10 6"/><path d="M20 14a4 4 0 0 0 1.3-7.8 4 4 0 0 0-3.6-2 4 4 0 0 0-3.7 1.8"/></svg>
+                            Fuel Consumption
+                        </label>
+                        <div>
+                            <input type="number" id="fuelConsumption" readonly class="w-28 bg-gray-600 text-white text-right font-semibold rounded-md p-1 border border-gray-600">
+                             <span class="text-sm text-gray-400">lbs/hr</span>
+                        </div>
+                    </div>
                     <div class="flex justify-between items-baseline">
                         <span class="text-sm font-medium text-gray-300">Trip Fuel</span>
                         <div>
@@ -272,7 +286,7 @@
                         </div>
                     </div>
                     <div class="flex justify-between items-baseline">
-                        <span class="text-sm font-medium text-gray-300">Reserve Fuel (20 min)</span>
+                        <span class="text-sm font-medium text-gray-300">Final Reserve 30 min</span>
                         <div>
                             <span id="reserveFuel" class="font-bold text-lg text-white">0</span>
                             <span class="text-sm text-gray-400">lbs</span>
@@ -286,9 +300,9 @@
                         </div>
                     </div>
                     <div class="flex justify-between items-baseline">
-                        <span class="text-sm font-medium text-gray-300">Start & Taxi (20 min)</span>
+                        <span class="text-sm font-medium text-gray-300">Start & Taxi</span>
                         <div>
-                            <span id="startTaxiFuel" class="font-bold text-lg text-white">0</span>
+                            <span id="startTaxiFuel" class="font-bold text-lg text-white">400</span>
                             <span class="text-sm text-gray-400">lbs</span>
                         </div>
                     </div>
@@ -416,6 +430,21 @@
                             <span id="towStatus" class="ml-2 text-sm font-semibold"></span>
                         </div>
                     </div>
+                     <div class="flex justify-between items-baseline">
+                        <span class="text-sm font-medium text-gray-300">Landing Weight</span>
+                        <div>
+                            <span id="landingWeightResult" class="font-bold text-xl text-amber-400">0</span>
+                            <span class="text-sm text-gray-400">lbs</span>
+                            <span id="landingWeightStatus" class="ml-2 text-sm font-semibold"></span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-baseline">
+                        <span class="text-sm font-medium text-gray-300">Extra Fuel</span>
+                        <div>
+                            <span id="extraFuelResult" class="font-bold text-lg text-green-400">0</span>
+                            <span class="text-sm text-gray-400">lbs</span>
+                        </div>
+                    </div>
                     <div class="flex justify-between items-baseline border-t border-gray-700 pt-3 mt-3">
                         <span class="text-sm font-medium text-gray-300">Available Payload</span>
                         <div>
@@ -454,8 +483,19 @@
     <script>
         // --- CONSTANTS ---
         const KG_TO_LBS = 2.20462;
-        const G4_LEMAC = 417.874; // Adjusted to match user's expected MAC for Empty Weight
+        const G4_LEMAC = 417.874;
         const G4_MAC = 109.3;
+
+        // --- DYNAMIC FUEL CALCULATION CONSTANTS ---
+        const BASE_ALTITUDE = 45000; // ft
+        const BASE_TRIP_FUEL = 7280; // lbs
+        const BASE_TRIP_TIME_HOURS = 2 + (6 / 60); // 2.1 hours
+        const BASE_FUEL_BURN = BASE_TRIP_FUEL / BASE_TRIP_TIME_HOURS; // lbs/hr at base altitude
+        // This factor determines how much fuel consumption changes per 1000 ft.
+        // A positive value means consumption DECREASES as altitude INCREASES.
+        // 0.005 means a 0.5% change per 1000 ft.
+        const ALTITUDE_ADJUSTMENT_FACTOR = 0.005; 
+
 
         // --- ARM VALUES ---
         let ARMS = {
@@ -522,6 +562,7 @@
             tripToAlternateMinutes: document.getElementById('tripToAlternateMinutes'),
             fuelConsumption: document.getElementById('fuelConsumption'),
             airspeed: document.getElementById('airspeed'),
+            elevation: document.getElementById('elevation'),
             fuelOnBoard: document.getElementById('fuelOnBoard'),
         };
 
@@ -539,6 +580,9 @@
             towResult: document.getElementById('towResult'),
             zfwStatus: document.getElementById('zfwStatus'),
             towStatus: document.getElementById('towStatus'),
+            landingWeightResult: document.getElementById('landingWeightResult'),
+            landingWeightStatus: document.getElementById('landingWeightStatus'),
+            extraFuelResult: document.getElementById('extraFuelResult'),
             availablePayloadLbs: document.getElementById('availablePayloadLbs'),
             availablePayloadKg: document.getElementById('availablePayloadKg'),
             availablePassengers: document.getElementById('availablePassengers'),
@@ -597,25 +641,31 @@
             const maxZfwLimit = 49000; // Hardcoded limit
             const emptyWeight = parseFloat(inputs.emptyWeight.value) || 0;
             
-            // --- Get Flight Calc Values ---
+            // --- DYNAMIC FUEL CALCULATION ---
             const tripTimeHours = parseFloat(inputs.tripTimeHours.value) || 0;
             const tripTimeMinutes = parseFloat(inputs.tripTimeMinutes.value) || 0;
-            const fuelConsumption = parseFloat(inputs.fuelConsumption.value) || 0;
+            const currentAltitude = parseFloat(inputs.elevation.value) || 0; 
+            
+            // 1. Calculate adjusted fuel consumption based on altitude
+            const altitudeDifference = currentAltitude - BASE_ALTITUDE;
+            const altitudeAdjustment = (altitudeDifference / 1000) * ALTITUDE_ADJUSTMENT_FACTOR;
+            const adjustedFuelBurn = BASE_FUEL_BURN * (1 - altitudeAdjustment);
+            
+            // Update the readonly fuel consumption input
+            inputs.fuelConsumption.value = adjustedFuelBurn.toFixed(1);
+
+            // 2. Calculate trip fuel based on adjusted consumption and time
+            const totalTripTimeInHours = tripTimeHours + (tripTimeMinutes / 60);
+            const calculatedTripFuel = totalTripTimeInHours * adjustedFuelBurn;
+
+            // --- Get Other Flight Values ---
             const airspeed = parseFloat(inputs.airspeed.value) || 0;
             const fuelOnBoard = parseFloat(inputs.fuelOnBoard.value) || 0;
 
-            // --- Calculations ---
-
-            // 1. Total Payload
+            // --- Continue with other calculations ---
             const totalPayloadKg = pilotKg + copilotKg + engineerKg + cabinServiceKg + baggageKg + cockpitStorageKg + cabinStorageKg + totalSeatPayloadKg;
             const totalPayloadLbs = totalPayloadKg * KG_TO_LBS;
             
-            // 2. Trip Fuel
-            const fuelPerMinute = fuelConsumption > 0 ? fuelConsumption / 60 : 0;
-            const totalTripTimeMinutes = (tripTimeHours * 60) + tripTimeMinutes;
-            const calculatedTripFuel = totalTripTimeMinutes * fuelPerMinute;
-
-            // 3. CG Table Data
             const cgData = {
                 emptyWeight: { weight: emptyWeight, arm: ARMS.emptyWeight },
                 crew: { weight: kgToLbs(pilotKg + copilotKg), arm: ARMS.crew },
@@ -644,12 +694,10 @@
                 tripFuel: { weight: -calculatedTripFuel, arm: ARMS.fuel },
             };
 
-            // Calculate moments for each item
             for (const key in cgData) {
                 cgData[key].moment = calculateMoment(cgData[key].weight, cgData[key].arm);
             }
 
-            // Calculate Totals
             const bowItems = ['emptyWeight', 'crew', 'cockpitStorage', 'galley', 'fwdLavatory', 'aftLavatory', 'crewBaggage', 'jumpSeat', 'cabinStorage'];
             const paxItems = ['seat1', 'seat2', 'seat3', 'seat4', 'seat5', 'seat6', 'seat7', 'seat8', 'seat9', 'seat10', 'seat11', 'seat12', 'seat13'];
             
@@ -681,7 +729,7 @@
             towTotal.mac = calculateMac(towTotal.arm);
             
             const lwTotal = {
-                weight: towTotal.weight + cgData.tripFuel.weight, // trip fuel is negative
+                weight: towTotal.weight + cgData.tripFuel.weight,
                 moment: towTotal.moment + cgData.tripFuel.moment,
             };
             lwTotal.arm = lwTotal.weight > 0 ? lwTotal.moment / lwTotal.weight : 0;
@@ -690,10 +738,9 @@
 
             // --- UPDATE UI ---
             updateCgTable(cgData, bowTotal, paxItems, zfwTotal, towTotal, lwTotal);
-            updateSummariesAndFlightCalc(totalPayloadKg, totalPayloadLbs, zfwTotal.weight, towTotal.weight, maxZfwLimit, maxTowLimit, fuelConsumption, airspeed, fuelOnBoard);
+            updateSummariesAndFlightCalc(totalPayloadKg, totalPayloadLbs, zfwTotal.weight, towTotal.weight, lwTotal.weight, maxZfwLimit, maxTowLimit, adjustedFuelBurn, airspeed, fuelOnBoard, calculatedTripFuel);
             updateCgEnvelope(zfwTotal, towTotal, lwTotal);
             
-            // Update Seat Layout Display
             outputs.pilotSeatWt.textContent = pilotKg.toFixed(0);
             outputs.copilotSeatWt.textContent = copilotKg.toFixed(0);
             outputs.jumpseatWt.textContent = engineerKg.toFixed(0);
@@ -740,7 +787,6 @@
                 </tr>`;
             }
 
-            // BOW Items
             html += createEditableEmptyWeightRow(cgData.emptyWeight);
             html += createRow('Crew', cgData.crew);
             html += createRow('Cockpit Storage', cgData.cockpitStorage);
@@ -751,19 +797,13 @@
             html += createRow('Jump Seat', cgData.jumpSeat);
             html += createRow('Cabin Storage', cgData.cabinStorage);
             html += createRow('Basic Operating Weight (BOW)', bowTotal, true, true);
-
-            // Pax Items
             html += `<tr><td class="pt-4 font-semibold">Passengers:</td></tr>`;
             paxItems.forEach(key => {
                 if(cgData[key].weight > 0) {
                      html += createRow(key.charAt(0).toUpperCase() + key.slice(1), cgData[key]);
                 }
             });
-
-            // Baggage
             html += createRow('Baggage', cgData.baggage);
-
-            // Totals
             html += createRow('Zero Fuel Weight (ZFW)', zfwTotal, true, true);
             html += createRow('Fuel', cgData.fuel);
             html += createRow('Take Off Weight (TOW)', towTotal, true, true);
@@ -771,7 +811,6 @@
 
             outputs.cgTableBody.innerHTML = html;
             
-            // Re-attach listeners for the new inputs
             document.getElementById('emptyWeightArmInput').addEventListener('input', (e) => {
                 ARMS.emptyWeight = parseFloat(e.target.value) || 0;
                 calculateAll();
@@ -783,14 +822,15 @@
             });
         }
 
-        function updateSummariesAndFlightCalc(totalPayloadKg, totalPayloadLbs, zfw, tow, maxZfwLimit, maxTowLimit, fuelConsumption, airspeed, fuelOnBoard) {
-            // Update Weight Summary
+        function updateSummariesAndFlightCalc(totalPayloadKg, totalPayloadLbs, zfw, tow, lw, maxZfwLimit, maxTowLimit, fuelConsumption, airspeed, fuelOnBoard, tripFuel) {
             outputs.totalPayloadKg.textContent = totalPayloadKg.toFixed(0);
             outputs.totalPayloadLbs.textContent = totalPayloadLbs.toFixed(0);
             outputs.zfwResult.textContent = zfw.toFixed(0);
             updateStatus(outputs.zfwStatus, zfw, maxZfwLimit);
             outputs.towResult.textContent = tow.toFixed(0);
             updateStatus(outputs.towStatus, tow, maxTowLimit);
+            outputs.landingWeightResult.textContent = lw.toFixed(0);
+            updateStatus(outputs.landingWeightStatus, lw, 66000); // Max Landing Weight
 
             const availablePayloadLbs = maxTowLimit - tow;
             const availablePayloadKg = availablePayloadLbs / KG_TO_LBS;
@@ -800,24 +840,22 @@
             outputs.availablePayloadKg.textContent = availablePayloadKg.toFixed(0);
             outputs.availablePassengers.textContent = availablePassengers;
 
-
-            // Update Flight Calc
             const maxRange = (fuelConsumption > 0 && airspeed > 0 && fuelOnBoard > 0) ? (fuelOnBoard / fuelConsumption) * airspeed : 0;
             outputs.maxRange.textContent = maxRange.toFixed(0);
             
-            // Update Fuel Required
             const fuelPerMinute = fuelConsumption > 0 ? fuelConsumption / 60 : 0;
-            const totalTripTimeMinutes = (parseFloat(inputs.tripTimeHours.value) || 0) * 60 + (parseFloat(inputs.tripTimeMinutes.value) || 0);
             const totalAlternateTimeMinutes = (parseFloat(inputs.tripToAlternateHours.value) || 0) * 60 + (parseFloat(inputs.tripToAlternateMinutes.value) || 0);
             
-            const calculatedTripFuel = totalTripTimeMinutes * fuelPerMinute;
             const calculatedAlternateFuel = totalAlternateTimeMinutes * fuelPerMinute;
-            const calculatedReserveFuel = 20 * fuelPerMinute;
-            const calculatedContingencyFuel = calculatedTripFuel * 0.10;
-            const calculatedStartTaxiFuel = 20 * fuelPerMinute;
-            const totalFuelRequired = calculatedTripFuel + calculatedAlternateFuel + calculatedReserveFuel + calculatedContingencyFuel + calculatedStartTaxiFuel;
+            const calculatedReserveFuel = 30 * fuelPerMinute; // Changed from 20 to 30
+            const calculatedContingencyFuel = tripFuel * 0.10;
+            const calculatedStartTaxiFuel = 400; // Set to a fixed value of 400 lbs
+            const totalFuelRequired = tripFuel + calculatedAlternateFuel + calculatedReserveFuel + calculatedContingencyFuel + calculatedStartTaxiFuel;
 
-            outputs.fuelTripRequired.textContent = calculatedTripFuel.toFixed(1);
+            const extraFuel = fuelOnBoard - totalFuelRequired;
+            outputs.extraFuelResult.textContent = extraFuel.toFixed(0);
+
+            outputs.fuelTripRequired.textContent = tripFuel.toFixed(1);
             outputs.alternateFuel.textContent = calculatedAlternateFuel.toFixed(1);
             outputs.reserveFuel.textContent = calculatedReserveFuel.toFixed(1);
             outputs.contingencyFuel.textContent = calculatedContingencyFuel.toFixed(1);
@@ -857,7 +895,6 @@
                 type: 'line',
                 data: {
                     datasets: [
-                        // Envelope
                         {
                             label: 'CG Envelope',
                             data: envelopeData,
@@ -868,7 +905,6 @@
                             pointRadius: 0,
                             order: 10
                         },
-                        // Dynamic Points
                         {
                             label: 'ZFW',
                             data: [],
@@ -900,50 +936,31 @@
                 },
                 options: {
                     responsive: true,
-                    aspectRatio: 1, // Make the chart square
+                    aspectRatio: 1,
                     scales: {
                         x: {
                             type: 'linear',
                             position: 'bottom',
                             min: 36,
                             max: 46,
-                            title: {
-                                display: true,
-                                text: '% MAC',
-                                color: '#9ca3af'
-                            },
-                            ticks: { 
-                                color: '#9ca3af',
-                                stepSize: 1 
-                            },
+                            title: { display: true, text: '% MAC', color: '#9ca3af' },
+                            ticks: { color: '#9ca3af', stepSize: 1 },
                             grid: { color: 'rgba(156, 163, 175, 0.2)' }
                         },
                         y: {
                             min: 36000,
                             max: 77000,
-                            title: {
-                                display: true,
-                                text: 'GROSS WEIGHT – LBS',
-                                color: '#9ca3af'
-                            },
+                            title: { display: true, text: 'GROSS WEIGHT – LBS', color: '#9ca3af' },
                             ticks: { 
                                 color: '#9ca3af',
                                 stepSize: 1000,
-                                callback: function(value, index, values) {
-                                    if (value % 1000 === 0) {
-                                        return value;
-                                    }
-                                }
+                                callback: (value) => (value % 1000 === 0) ? value : null
                             },
                             grid: { color: 'rgba(156, 163, 175, 0.2)' }
                         }
                     },
                     plugins: {
-                        legend: {
-                            labels: {
-                                color: '#d1d5db'
-                            }
-                        },
+                        legend: { labels: { color: '#d1d5db' } },
                         annotation: {
                             annotations: {
                                 maxRamp: { type: 'line', yMin: 75000, yMax: 75000, borderColor: 'rgb(239, 68, 68, 0.7)', borderWidth: 2, label: { content: 'Max Ramp', enabled: true, position: 'start', backgroundColor: 'rgba(239, 68, 68, 0.7)' } },
@@ -959,43 +976,29 @@
 
         function updateCgEnvelope(zfw, tow, lw) {
             if (!cgChart) return;
-            // Update ZFW point
             cgChart.data.datasets[1].data = [{ x: zfw.mac, y: zfw.weight }];
-            // Update TOW point
             cgChart.data.datasets[2].data = [{ x: tow.mac, y: tow.weight }];
-            // Update LW point
             cgChart.data.datasets[3].data = [{ x: lw.mac, y: lw.weight }];
-            
             cgChart.update();
         }
 
-        // --- PDF Generation ---
         async function generatePDF() {
             const pdfMessage = document.getElementById('pdf-message');
             pdfMessage.classList.remove('hidden');
             
             const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4'
-            });
+            const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
             const content = document.getElementById('main-content');
-            const canvas = await html2canvas(content, { 
-                backgroundColor: '#111827',
-                scale: 2 // Higher scale for better quality
-            });
+            const canvas = await html2canvas(content, { backgroundColor: '#111827', scale: 2 });
             const imgData = canvas.toDataURL('image/png');
 
-            // Add Logo
             const logoUrl = 'http://googleusercontent.com/file_content/1';
             const logoImg = new Image();
             logoImg.src = logoUrl;
             await new Promise(resolve => logoImg.onload = resolve);
-            pdf.addImage(logoImg, 'PNG', 15, 15, 40, 10); // x, y, width, height
+            pdf.addImage(logoImg, 'PNG', 15, 15, 40, 10);
 
-            // Add image of the app content
             const imgProps = pdf.getImageProperties(imgData);
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
@@ -1013,11 +1016,11 @@
                 
                 input.addEventListener('focus', (e) => {
                     if (e.target.value !== '0' && e.target.value !== '') {
-                       e.target.dataset.originalValue = e.target.value;
-                       e.target.value = '';
-                    } else if (e.target.value === '0') {
-                        e.target.dataset.originalValue = '0';
+                        e.target.dataset.originalValue = e.target.value;
                         e.target.value = '';
+                    } else if (e.target.value === '0') {
+                         e.target.dataset.originalValue = '0';
+                         e.target.value = '';
                     }
                 });
 
@@ -1025,10 +1028,12 @@
                     if (e.target.value === '' && e.target.dataset.originalValue) {
                         e.target.value = e.target.dataset.originalValue;
                     } else if (e.target.value === '' && !e.target.dataset.originalValue) {
-                        if (e.target.placeholder === '0') {
+                        if (e.target.placeholder === '0' || e.target.value === '') {
                            e.target.value = '0';
                         }
                     }
+                    // Recalculate on blur to ensure everything is up to date
+                    calculateAll();
                 });
             }
         });
