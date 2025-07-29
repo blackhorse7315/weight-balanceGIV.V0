@@ -335,31 +335,32 @@
                     <div class="grid grid-cols-2 gap-4">
                         <!-- Left Column -->
                         <div class="space-y-3 flex flex-col items-center justify-start">
-                             <div class="component invisible">Fwd Lav<br><input type="number" class="seat-input mt-1"></div>
-                             <div class="component invisible">Galley<br><input type="number" class="seat-input mt-1"></div>
+                             <div class="component invisible">Galley<br><input class="seat-input mt-1"></div>
+                             <div class="seat invisible">S1<br><input class="seat-input mt-1"></div>
                              <div class="seat">S3<br><input type="number" id="seat3" placeholder="0" class="seat-input"></div>
                              <div class="seat">S4<br><input type="number" id="seat4" placeholder="0" class="seat-input"></div>
                              <div class="table-box my-2 invisible"></div>
-                             <div class="seat">S5<br><input type="number" id="seat5" placeholder="0" class="seat-input"></div>
-                             <div class="table-box my-2"></div>
                              <div class="seat">S6<br><input type="number" id="seat6" placeholder="0" class="seat-input"></div>
-                             <div class="seat mt-3">S12<br><input type="number" id="seat12" placeholder="0" class="seat-input"></div>
+                             <div class="table-box my-2"></div>
+                             <div class="seat">S8<br><input type="number" id="seat8" placeholder="0" class="seat-input"></div>
+                             <div class="seat invisible">&nbsp;</div>
+                             <div class="seat invisible">&nbsp;</div>
                              <div class="table-box my-2"></div>
                              <div class="seat">S13<br><input type="number" id="seat13" placeholder="0" class="seat-input"></div>
                         </div>
                         <!-- Right Column -->
                         <div class="space-y-3 flex flex-col items-center">
-                            <div class="component w-full">Fwd Lav<br><input type="number" id="fwdLavatory" value="23" class="seat-input mt-1"></div>
                             <div class="component w-full">Galley<br><input type="number" id="galley" value="34" class="seat-input mt-1"></div>
-                            <div class="seat">S1<br><input type="number" id="seat1" placeholder="0" class="seat-input"></div>
-                            <div class="table-box my-2"></div>
+                            <div class="seat">S1<br><input type="number" id="seat1" value="23" class="seat-input mt-1"></div>
                             <div class="seat">S2<br><input type="number" id="seat2" placeholder="0" class="seat-input"></div>
+                            <div class="table-box my-2"></div>
+                            <div class="seat">S5<br><input type="number" id="seat5" placeholder="0" class="seat-input"></div>
                             <div class="seat">S7<br><input type="number" id="seat7" placeholder="0" class="seat-input"></div>
                             <div class="table-box my-2"></div>
-                            <div class="seat">S8<br><input type="number" id="seat8" placeholder="0" class="seat-input"></div>
-                            <div class="seat mt-3">S9<br><input type="number" id="seat9" placeholder="0" class="seat-input"></div>
-                            <div class="seat">S10<br><input type="number" id="seat10" placeholder="0" class="seat-input"></div>
+                            <div class="seat">S9<br><input type="number" id="seat9" placeholder="0" class="seat-input"></div>
+                            <div class="seat mt-3">S10<br><input type="number" id="seat10" placeholder="0" class="seat-input"></div>
                             <div class="seat">S11<br><input type="number" id="seat11" placeholder="0" class="seat-input"></div>
+                            <div class="seat">S12<br><input type="number" id="seat12" placeholder="0" class="seat-input"></div>
                             <div class="component w-full mt-3">Aft Lav<br><input type="number" id="aftLavatory" value="23" class="seat-input mt-1"></div>
                         </div>
                     </div>
@@ -546,26 +547,25 @@
             crew: 123.0,
             cockpitStorage: 127.0,
             galley: 537.0,
-            fwdLavatory: 595.0,
             aftLavatory: 595.0,
-            crewBaggage: 181.0, // Mapped to Cabin Service
+            crewBaggage: 181.0, 
             jumpSeat: 140.0,
             cabinStorage: 415.0,
-            seat1: 237.0,
-            seat2: 237.0,
-            seat3: 285.0,
-            seat4: 285.0,
-            seat5: 331.0,
-            seat6: 331.0,
-            seat7: 381.0,
-            seat8: 381.0,
-            seat9: 439.0,
-            seat10: 425.0,
-            seat11: 425.0,
-            seat12: 465.0,
-            seat13: 477.0,
+            seat1: 595.0,   // Was fwdLavatory
+            seat2: 237.0,   // Was seat1
+            seat3: 285.0,   // Unchanged
+            seat4: 285.0,   // Unchanged
+            seat5: 237.0,   // Was seat2
+            seat6: 331.0,   // Was seat5
+            seat7: 381.0,   // Unchanged
+            seat8: 331.0,   // Was seat6
+            seat9: 381.0,   // Was seat8
+            seat10: 439.0,  // Was seat9
+            seat11: 425.0,  // Was seat10
+            seat12: 425.0,  // Was seat11
+            seat13: 477.0,  // Unchanged
             baggage: 637.0,
-            fuel: 480.0 // Placeholder arm for fuel
+            fuel: 480.0
         };
 
         // --- ELEMENT SELECTORS ---
@@ -582,7 +582,6 @@
             cockpitStorage: document.getElementById('cockpitStorage'),
             cabinStorage: document.getElementById('cabinStorage'),
             // Seat Layout Inputs
-            fwdLavatory: document.getElementById('fwdLavatory'),
             galley: document.getElementById('galley'),
             seat1: document.getElementById('seat1'),
             seat2: document.getElementById('seat2'),
@@ -676,7 +675,6 @@
 
             // --- Get Seat Layout Payload Values ---
             const seatPayloadsKg = {
-                fwdLavatory: parseFloat(inputs.fwdLavatory.value) || 0,
                 galley: parseFloat(inputs.galley.value) || 0,
                 seat1: parseFloat(inputs.seat1.value) || 0,
                 seat2: parseFloat(inputs.seat2.value) || 0,
@@ -730,7 +728,6 @@
                 crew: { weight: kgToLbs(pilotKg + copilotKg), arm: ARMS.crew },
                 cockpitStorage: { weight: kgToLbs(cockpitStorageKg), arm: ARMS.cockpitStorage },
                 galley: { weight: kgToLbs(seatPayloadsKg.galley), arm: ARMS.galley },
-                fwdLavatory: { weight: kgToLbs(seatPayloadsKg.fwdLavatory), arm: ARMS.fwdLavatory },
                 aftLavatory: { weight: kgToLbs(seatPayloadsKg.aftLavatory), arm: ARMS.aftLavatory },
                 crewBaggage: { weight: kgToLbs(cabinServiceKg), arm: ARMS.crewBaggage },
                 jumpSeat: { weight: kgToLbs(engineerKg), arm: ARMS.jumpSeat },
@@ -757,22 +754,29 @@
                 cgData[key].moment = calculateMoment(cgData[key].weight, cgData[key].arm);
             }
 
-            const bowItems = ['emptyWeight', 'crew', 'cockpitStorage', 'galley', 'fwdLavatory', 'aftLavatory', 'crewBaggage', 'jumpSeat', 'cabinStorage'];
+            const bowItems = ['emptyWeight', 'crew', 'cockpitStorage', 'galley', 'aftLavatory', 'crewBaggage', 'jumpSeat', 'cabinStorage'];
             const paxItems = ['seat1', 'seat2', 'seat3', 'seat4', 'seat5', 'seat6', 'seat7', 'seat8', 'seat9', 'seat10', 'seat11', 'seat12', 'seat13'];
             
             const calculateTotal = (items) => {
                 const total = { weight: 0, moment: 0, arm: 0, mac: 0 };
                 items.forEach(key => {
-                    total.weight += cgData[key].weight;
-                    total.moment += cgData[key].moment;
+                    if (cgData[key]) { // Ensure the key exists
+                        total.weight += cgData[key].weight;
+                        total.moment += cgData[key].moment;
+                    }
                 });
                 total.arm = total.weight > 0 ? total.moment / total.weight : 0;
-                total.mac = getMacFromTable(total.arm);
                 return total;
             };
 
+            const MAC_FORMULA_SLOPE = 0.6025;
+            const MAC_FORMULA_INTERCEPT = -233.6508;
+
             const bowTotal = calculateTotal(bowItems);
+            bowTotal.mac = MAC_FORMULA_SLOPE * bowTotal.arm + MAC_FORMULA_INTERCEPT;
+
             const paxTotal = calculateTotal(paxItems);
+
             const zfwTotal = {
                 weight: bowTotal.weight + paxTotal.weight + cgData.baggage.weight,
                 moment: bowTotal.moment + paxTotal.moment + cgData.baggage.moment,
@@ -785,14 +789,14 @@
                 moment: zfwTotal.moment + cgData.fuel.moment,
             };
             towTotal.arm = towTotal.weight > 0 ? towTotal.moment / towTotal.weight : 0;
-            towTotal.mac = getMacFromTable(towTotal.arm);
+            towTotal.mac = MAC_FORMULA_SLOPE * towTotal.arm + MAC_FORMULA_INTERCEPT;
             
             const lwTotal = {
                 weight: towTotal.weight + cgData.tripFuel.weight,
                 moment: towTotal.moment + cgData.tripFuel.moment,
             };
             lwTotal.arm = lwTotal.weight > 0 ? lwTotal.moment / lwTotal.weight : 0;
-            lwTotal.mac = getMacFromTable(lwTotal.arm);
+            lwTotal.mac = MAC_FORMULA_SLOPE * lwTotal.arm + MAC_FORMULA_INTERCEPT;
 
 
             // --- UPDATE UI ---
@@ -827,7 +831,7 @@
                     <td>${format(weight, 1)}</td>
                     <td>${arm > 0 ? format(arm, 1) : '-'}</td>
                     <td>${formatMoment(moment)}</td>
-                    <td>${mac > 0 ? format(mac, 1) : '-'}</td>
+                    <td>${mac > 0 ? format(mac, 2) : '-'}</td>
                 </tr>`;
             };
             
@@ -850,7 +854,6 @@
             html += createRow('Crew', cgData.crew);
             html += createRow('Cockpit Storage', cgData.cockpitStorage);
             html += createRow('Galley', cgData.galley);
-            html += createRow('Forward Lavatory', cgData.fwdLavatory);
             html += createRow('Aft Lavatory', cgData.aftLavatory);
             html += createRow('Crew Baggage', cgData.crewBaggage);
             html += createRow('Jump Seat', cgData.jumpSeat);
@@ -858,7 +861,7 @@
             html += createRow('Basic Operating Weight (BOW)', bowTotal, true, true);
             html += `<tr><td class="pt-4 font-semibold">Passengers:</td></tr>`;
             paxItems.forEach(key => {
-                if(cgData[key].weight > 0) {
+                if(cgData[key] && cgData[key].weight > 0) {
                      html += createRow(key.charAt(0).toUpperCase() + key.slice(1), cgData[key]);
                 }
             });
@@ -995,8 +998,8 @@
                         x: {
                             type: 'linear',
                             position: 'bottom',
-                            min: 36,
-                            max: 46,
+                            min: 25,
+                            max: 51,
                             title: { display: true, text: '% MAC', color: '#9ca3af' },
                             ticks: { color: '#9ca3af', stepSize: 1 },
                             grid: { color: 'rgba(156, 163, 175, 0.2)' }
