@@ -114,7 +114,8 @@
             <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">G-IV SP Weight & Balance</h1>
             <p class="text-amber-400 font-semibold">PK-TWY</p>
             <p class="text-xs text-gray-500 mt-1">Made by Capt. Ramdan / Siera 7315</p>
-            <p class="text-xs text-red-400 mt-2">This Application valid until 26 October 2025</p>
+            <p class="text-xs text-red-400 mt-2">This Application valid until 30 September 2025</p>
+            <p id="expiry-countdown" class="text-xs text-amber-400 mt-1"></p>
         </header>
 
         <div id="main-content" class="space-y-6">
@@ -371,7 +372,7 @@
                     <div class="grid grid-cols-2 gap-4">
                         <!-- Left Column -->
                         <div class="space-y-3 flex flex-col items-center justify-start">
-                             <div class="component invisible w-full">&nbsp;</div>
+                             <div class="seat invisible w-full">&nbsp;</div>
                              <div class="seat invisible">&nbsp;</div>
                              <div class="seat">S3<br><input type="number" id="seat3" placeholder="0" class="seat-input"></div>
                              <div class="seat">S4<br><input type="number" id="seat4" placeholder="0" class="seat-input"></div>
@@ -1182,18 +1183,20 @@
             const doc = new jsPDF();
 
             // --- Header ---
-            doc.setFontSize(18);
+            doc.setFontSize(14);
             doc.setFont(undefined, 'bold');
-            doc.text('Weight & Balance Report', 105, 15, null, null, 'center');
+            doc.text('PT. TRANSWISATA PRIMA AVIATION', 105, 15, null, null, 'center');
+            doc.setFontSize(18);
+            doc.text('Load Sheet Gulfstream IV SP', 105, 22, null, null, 'center');
             doc.setFontSize(12);
             doc.setFont(undefined, 'normal');
-            doc.text(`Aircraft Registration: PK-TWY`, 105, 22, null, null, 'center');
+            doc.text(`Aircraft Registration: PK-TWY`, 105, 28, null, null, 'center');
             doc.setFontSize(10);
-            doc.text(`Date: ${new Date().toLocaleDateString('en-GB')}`, 105, 28, null, null, 'center');
+            doc.text(`Date: ${new Date().toLocaleDateString('en-GB')}`, 105, 34, null, null, 'center');
             
             // --- Crew Manifest ---
             doc.autoTable({
-                startY: 35,
+                startY: 40,
                 head: [['Role', 'Name']],
                 body: [
                     ['PIC', inputs.picName.value],
@@ -1320,12 +1323,28 @@
 
             // --- Signature Line ---
             const pageHeight = doc.internal.pageSize.getHeight();
+            const picName = inputs.picName.value || '_________________________'; // Get PIC name or use a blank line
+            doc.text(picName, 14, pageHeight - 30); 
             doc.line(14, pageHeight - 25, 80, pageHeight - 25); // Signature line
             doc.text('Pilot in Command Signature', 14, pageHeight - 20);
 
 
             doc.save('G-IV_SP_PK-TWY_Weight_Balance.pdf');
             pdfMessage.classList.add('hidden');
+        }
+
+        function updateExpiryCountdown() {
+            const expiryDate = new Date('2025-09-30');
+            const currentDate = new Date();
+            const timeDiff = expiryDate.getTime() - currentDate.getTime();
+            const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
+            const countdownElement = document.getElementById('expiry-countdown');
+
+            if (daysLeft > 0) {
+                countdownElement.textContent = `Remaining expired: ${daysLeft} days`;
+            } else {
+                countdownElement.textContent = 'Application Expired';
+            }
         }
 
 
@@ -1364,6 +1383,7 @@
         window.addEventListener('load', () => {
             initializeCgEnvelope();
             calculateAll();
+            updateExpiryCountdown();
         });
 
     </script>
