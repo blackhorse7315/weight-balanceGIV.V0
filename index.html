@@ -335,7 +335,6 @@
                     <div class="grid grid-cols-2 gap-4">
                         <!-- Left Column -->
                         <div class="space-y-3 flex flex-col items-center justify-start">
-                             <div class="component invisible">Galley<br><input class="seat-input mt-1"></div>
                              <div class="seat invisible">S1<br><input class="seat-input mt-1"></div>
                              <div class="seat">S3<br><input type="number" id="seat3" placeholder="0" class="seat-input"></div>
                              <div class="seat">S4<br><input type="number" id="seat4" placeholder="0" class="seat-input"></div>
@@ -350,7 +349,7 @@
                         </div>
                         <!-- Right Column -->
                         <div class="space-y-3 flex flex-col items-center">
-                            <div class="component w-full">Galley<br><input type="number" id="galley" value="34" class="seat-input mt-1"></div>
+                            <div class="seat">Galley<br><input type="number" id="galley" value="34" class="seat-input mt-1"></div>
                             <div class="seat">S1<br><input type="number" id="seat1" value="23" class="seat-input mt-1"></div>
                             <div class="seat">S2<br><input type="number" id="seat2" placeholder="0" class="seat-input"></div>
                             <div class="table-box my-2"></div>
@@ -416,26 +415,32 @@
                         </div>
                     </div>
                     <div class="flex justify-between items-baseline">
-                        <span class="text-sm font-medium text-gray-300">Zero Fuel Weight</span>
+                        <span class="text-sm font-medium text-gray-300">Zero Fuel Weight (ZFW)</span>
                         <div>
                             <span id="zfwResult" class="font-bold text-xl text-amber-400">0</span>
-                            <span class="text-sm text-gray-400">lbs</span>
+                            <span class="text-sm text-gray-400">lbs / </span>
+                            <span id="zfwMacResult" class="font-bold text-xl text-amber-400">0.00</span>
+                            <span class="text-sm text-gray-400">%MAC</span>
                             <span id="zfwStatus" class="ml-2 text-sm font-semibold"></span>
                         </div>
                     </div>
                     <div class="flex justify-between items-baseline">
-                        <span class="text-sm font-medium text-gray-300">Takeoff Weight</span>
+                        <span class="text-sm font-medium text-gray-300">Takeoff Weight (TOW)</span>
                         <div>
                             <span id="towResult" class="font-bold text-xl text-amber-400">0</span>
-                            <span class="text-sm text-gray-400">lbs</span>
+                            <span class="text-sm text-gray-400">lbs / </span>
+                            <span id="towMacResult" class="font-bold text-xl text-amber-400">0.00</span>
+                            <span class="text-sm text-gray-400">%MAC</span>
                             <span id="towStatus" class="ml-2 text-sm font-semibold"></span>
                         </div>
                     </div>
                      <div class="flex justify-between items-baseline">
-                        <span class="text-sm font-medium text-gray-300">Landing Weight</span>
+                        <span class="text-sm font-medium text-gray-300">Landing Weight (LW)</span>
                         <div>
                             <span id="landingWeightResult" class="font-bold text-xl text-amber-400">0</span>
-                            <span class="text-sm text-gray-400">lbs</span>
+                            <span class="text-sm text-gray-400">lbs / </span>
+                            <span id="landingWeightMacResult" class="font-bold text-xl text-amber-400">0.00</span>
+                            <span class="text-sm text-gray-400">%MAC</span>
                             <span id="landingWeightStatus" class="ml-2 text-sm font-semibold"></span>
                         </div>
                     </div>
@@ -628,6 +633,9 @@
             availablePayloadLbs: document.getElementById('availablePayloadLbs'),
             availablePayloadKg: document.getElementById('availablePayloadKg'),
             availablePassengers: document.getElementById('availablePassengers'),
+            zfwMacResult: document.getElementById('zfwMacResult'),
+            towMacResult: document.getElementById('towMacResult'),
+            landingWeightMacResult: document.getElementById('landingWeightMacResult'),
             // Flight Calc
             maxRange: document.getElementById('maxRange'),
             // Fuel Required
@@ -801,7 +809,7 @@
 
             // --- UPDATE UI ---
             updateCgTable(cgData, bowTotal, paxItems, zfwTotal, towTotal, lwTotal);
-            updateSummariesAndFlightCalc(totalPayloadKg, totalPayloadLbs, zfwTotal.weight, towTotal.weight, lwTotal.weight, maxZfwLimit, maxTowLimit, adjustedFuelBurn, airspeed, fuelOnBoard, calculatedTripFuel);
+            updateSummariesAndFlightCalc(totalPayloadKg, totalPayloadLbs, zfwTotal, towTotal, lwTotal, maxZfwLimit, maxTowLimit, adjustedFuelBurn, airspeed, fuelOnBoard, calculatedTripFuel);
             updateCgEnvelope(zfwTotal, towTotal, lwTotal);
             
             outputs.pilotSeatWt.textContent = pilotKg.toFixed(0);
@@ -879,17 +887,20 @@
             });
         }
 
-        function updateSummariesAndFlightCalc(totalPayloadKg, totalPayloadLbs, zfw, tow, lw, maxZfwLimit, maxTowLimit, fuelConsumption, airspeed, fuelOnBoard, tripFuel) {
+        function updateSummariesAndFlightCalc(totalPayloadKg, totalPayloadLbs, zfwTotal, towTotal, lwTotal, maxZfwLimit, maxTowLimit, fuelConsumption, airspeed, fuelOnBoard, tripFuel) {
             outputs.totalPayloadKg.textContent = totalPayloadKg.toFixed(0);
             outputs.totalPayloadLbs.textContent = totalPayloadLbs.toFixed(0);
-            outputs.zfwResult.textContent = zfw.toFixed(0);
-            updateStatus(outputs.zfwStatus, zfw, maxZfwLimit);
-            outputs.towResult.textContent = tow.toFixed(0);
-            updateStatus(outputs.towStatus, tow, maxTowLimit);
-            outputs.landingWeightResult.textContent = lw.toFixed(0);
-            updateStatus(outputs.landingWeightStatus, lw, 66000); // Max Landing Weight
+            outputs.zfwResult.textContent = zfwTotal.weight.toFixed(0);
+            outputs.zfwMacResult.textContent = zfwTotal.mac.toFixed(2);
+            updateStatus(outputs.zfwStatus, zfwTotal.weight, maxZfwLimit);
+            outputs.towResult.textContent = towTotal.weight.toFixed(0);
+            outputs.towMacResult.textContent = towTotal.mac.toFixed(2);
+            updateStatus(outputs.towStatus, towTotal.weight, maxTowLimit);
+            outputs.landingWeightResult.textContent = lwTotal.weight.toFixed(0);
+            outputs.landingWeightMacResult.textContent = lwTotal.mac.toFixed(2);
+            updateStatus(outputs.landingWeightStatus, lwTotal.weight, 66000); // Max Landing Weight
 
-            const availablePayloadLbs = maxTowLimit - tow;
+            const availablePayloadLbs = maxTowLimit - towTotal.weight;
             const availablePayloadKg = availablePayloadLbs / KG_TO_LBS;
             const availablePassengers = availablePayloadKg > 0 ? Math.floor(availablePayloadKg / 80) : 0;
 
