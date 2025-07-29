@@ -483,8 +483,6 @@
     <script>
         // --- CONSTANTS ---
         const KG_TO_LBS = 2.20462;
-        const G4_LEMAC = 417.874;
-        const G4_MAC = 109.3;
 
         // --- DYNAMIC FUEL CALCULATION CONSTANTS ---
         const BASE_ALTITUDE = 45000; // ft
@@ -495,6 +493,51 @@
         // A positive value means consumption DECREASES as altitude INCREASES.
         // 0.005 means a 0.5% change per 1000 ft.
         const ALTITUDE_ADJUSTMENT_FACTOR = 0.005; 
+
+        // --- MAC LOOKUP TABLE ---
+        const MAC_TABLE = {
+            430: [25.4, 25.5, 25.6, 25.7, 25.7, 25.8, 25.8, 25.9, 25.9, 26.0],
+            431: [26.1, 26.1, 26.2, 26.3, 26.3, 26.4, 26.4, 26.5, 26.5, 26.6],
+            432: [26.7, 26.7, 26.8, 26.9, 27.0, 27.1, 27.1, 27.2, 27.2, 27.3],
+            433: [27.3, 27.3, 27.4, 27.5, 27.5, 27.6, 27.6, 27.7, 27.7, 27.8],
+            434: [27.9, 28.0, 28.0, 28.1, 28.1, 28.2, 28.2, 28.3, 28.3, 28.4],
+            435: [28.5, 28.5, 28.6, 28.6, 28.7, 28.8, 28.8, 28.9, 28.9, 29.0],
+            436: [29.1, 29.1, 29.2, 29.2, 29.3, 29.4, 29.4, 29.5, 29.5, 29.6],
+            437: [30.3, 30.3, 30.4, 30.4, 30.5, 30.6, 30.6, 30.7, 30.7, 30.8],
+            438: [30.9, 30.9, 31.0, 31.1, 31.2, 31.3, 31.3, 31.4, 31.4, 31.5],
+            439: [31.5, 31.5, 31.6, 31.6, 31.7, 31.8, 31.8, 31.9, 31.9, 32.0],
+            440: [32.1, 32.1, 32.2, 32.3, 32.3, 32.4, 32.4, 32.5, 32.5, 32.6],
+            441: [32.7, 32.7, 32.8, 32.9, 33.0, 33.0, 33.1, 33.1, 33.2, 33.3],
+            442: [33.3, 33.3, 33.4, 33.5, 33.5, 33.6, 33.6, 33.7, 33.7, 33.8],
+            443: [33.9, 33.9, 34.0, 34.1, 34.2, 34.3, 34.3, 34.4, 34.4, 34.5],
+            444: [34.5, 34.6, 34.6, 34.7, 34.7, 34.8, 34.8, 34.9, 34.9, 35.0],
+            445: [35.1, 35.2, 35.2, 35.3, 35.3, 35.4, 35.4, 35.5, 35.5, 35.6],
+            446: [35.7, 35.8, 35.8, 35.9, 36.0, 36.1, 36.1, 36.2, 36.2, 36.3],
+            447: [36.3, 36.4, 36.4, 36.5, 36.6, 36.7, 36.7, 36.8, 36.8, 36.9],
+            448: [36.9, 37.0, 37.0, 37.1, 37.2, 37.3, 37.3, 37.4, 37.4, 37.5],
+            449: [37.5, 37.6, 37.6, 37.7, 37.8, 37.9, 37.9, 38.0, 38.0, 38.1],
+            450: [38.1, 38.2, 38.2, 38.3, 38.4, 38.5, 38.5, 38.6, 38.6, 38.7],
+            451: [38.1, 38.1, 38.2, 38.3, 38.3, 38.4, 38.4, 38.5, 38.5, 38.6],
+            452: [38.7, 38.7, 38.8, 38.8, 38.9, 39.0, 39.0, 39.1, 39.1, 39.2],
+            453: [39.3, 39.3, 39.4, 39.5, 39.5, 39.6, 39.6, 39.7, 39.7, 39.8],
+            454: [39.9, 39.9, 40.0, 40.1, 40.1, 40.2, 40.2, 40.3, 40.3, 40.4],
+            455: [40.5, 40.5, 40.6, 40.7, 40.7, 40.8, 40.8, 40.9, 40.9, 41.0],
+            456: [41.1, 41.1, 41.2, 41.3, 41.3, 41.4, 41.4, 41.5, 41.5, 41.6],
+            457: [41.7, 41.7, 41.8, 41.9, 41.9, 42.0, 42.0, 42.1, 42.1, 42.2],
+            458: [42.3, 42.3, 42.4, 42.5, 42.5, 42.6, 42.6, 42.7, 42.7, 42.8],
+            459: [42.9, 42.9, 43.0, 43.1, 43.1, 43.2, 43.2, 43.3, 43.3, 43.4],
+            460: [43.5, 43.5, 43.6, 43.7, 43.7, 43.8, 43.8, 43.9, 43.9, 44.0],
+            461: [44.1, 44.1, 44.2, 44.3, 44.3, 44.4, 44.4, 44.5, 44.5, 44.6],
+            462: [44.7, 44.7, 44.8, 44.9, 44.9, 45.0, 45.0, 45.1, 45.1, 45.2],
+            463: [45.3, 45.3, 45.4, 45.5, 45.5, 45.6, 45.6, 45.7, 45.7, 45.8],
+            464: [45.9, 45.9, 46.0, 46.1, 46.1, 46.2, 46.2, 46.3, 46.3, 46.4],
+            465: [46.5, 46.5, 46.6, 46.7, 46.7, 46.8, 46.8, 46.9, 46.9, 47.0],
+            466: [47.1, 47.1, 47.2, 47.3, 47.3, 47.4, 47.4, 47.5, 47.5, 47.6],
+            467: [47.7, 47.7, 47.8, 47.9, 47.9, 48.0, 48.0, 48.1, 48.1, 48.2],
+            468: [48.3, 48.3, 48.4, 48.5, 48.5, 48.6, 48.6, 48.7, 48.7, 48.8],
+            469: [48.9, 48.9, 49.0, 49.1, 49.1, 49.2, 49.2, 49.3, 49.3, 49.4],
+            470: [49.5, 49.5, 49.6, 49.7, 49.7, 49.8, 49.8, 49.9, 49.9, 50.0],
+        };
 
 
         // --- ARM VALUES ---
@@ -602,7 +645,23 @@
         // --- HELPER FUNCTIONS ---
         const kgToLbs = (kg) => (kg || 0) * KG_TO_LBS;
         const calculateMoment = (weight, arm) => (weight || 0) * (arm || 0);
-        const calculateMac = (arm) => arm > 0 ? ((arm - G4_LEMAC) / G4_MAC) * 100 : 0;
+        
+        const getMacFromTable = (arm) => {
+            if (!arm || arm < 430 || arm >= 471) {
+                return 0; // Return 0 if ARM is outside the table's range
+            }
+
+            const armInt = Math.floor(arm);
+            const armDecIndex = Math.round((arm - armInt) * 10); // Get the first decimal place as an index (0-9)
+
+            const row = MAC_TABLE[armInt];
+            if (row && row[armDecIndex] !== undefined) {
+                return row[armDecIndex];
+            }
+
+            return 0; // Fallback if the value is not found
+        };
+
 
         // --- CORE CALCULATION FUNCTION ---
         function calculateAll() {
@@ -708,7 +767,7 @@
                     total.moment += cgData[key].moment;
                 });
                 total.arm = total.weight > 0 ? total.moment / total.weight : 0;
-                total.mac = calculateMac(total.arm);
+                total.mac = getMacFromTable(total.arm);
                 return total;
             };
 
@@ -719,21 +778,21 @@
                 moment: bowTotal.moment + paxTotal.moment + cgData.baggage.moment,
             };
             zfwTotal.arm = zfwTotal.weight > 0 ? zfwTotal.moment / zfwTotal.weight : 0;
-            zfwTotal.mac = calculateMac(zfwTotal.arm);
+            zfwTotal.mac = getMacFromTable(zfwTotal.arm);
 
             const towTotal = {
                 weight: zfwTotal.weight + cgData.fuel.weight,
                 moment: zfwTotal.moment + cgData.fuel.moment,
             };
             towTotal.arm = towTotal.weight > 0 ? towTotal.moment / towTotal.weight : 0;
-            towTotal.mac = calculateMac(towTotal.arm);
+            towTotal.mac = getMacFromTable(towTotal.arm);
             
             const lwTotal = {
                 weight: towTotal.weight + cgData.tripFuel.weight,
                 moment: towTotal.moment + cgData.tripFuel.moment,
             };
             lwTotal.arm = lwTotal.weight > 0 ? lwTotal.moment / lwTotal.weight : 0;
-            lwTotal.mac = calculateMac(lwTotal.arm);
+            lwTotal.mac = getMacFromTable(lwTotal.arm);
 
 
             // --- UPDATE UI ---
@@ -758,7 +817,7 @@
                 const moment = data.moment;
                 let mac = 0;
                 if (showMac) {
-                    mac = isTotal ? data.mac : calculateMac(arm);
+                    mac = isTotal ? data.mac : getMacFromTable(arm);
                 }
 
                 const rowClass = isTotal ? 'total-row' : 'border-b border-gray-700';
@@ -768,7 +827,7 @@
                     <td>${format(weight, 1)}</td>
                     <td>${arm > 0 ? format(arm, 1) : '-'}</td>
                     <td>${formatMoment(moment)}</td>
-                    <td>${mac > 0 ? format(mac, 2) : '-'}</td>
+                    <td>${mac > 0 ? format(mac, 1) : '-'}</td>
                 </tr>`;
             };
             
@@ -776,14 +835,14 @@
                 const weight = data.weight;
                 const arm = data.arm;
                 const moment = data.moment;
-                const mac = calculateMac(arm);
+                const mac = getMacFromTable(arm);
 
                 return `<tr class="border-b border-gray-700">
                     <td>Empty Weight</td>
                     <td>${format(weight, 1)}</td>
                     <td><input id="emptyWeightArmInput" type="number" value="${arm.toFixed(1)}" class="editable-cell-input"></td>
                     <td id="emptyWeightMomentCell">${formatMoment(moment)}</td>
-                    <td><input id="emptyWeightMacInput" type="number" value="${mac.toFixed(2)}" class="editable-cell-input"></td>
+                    <td><input id="emptyWeightMacInput" type="number" value="${mac.toFixed(1)}" class="editable-cell-input" readonly></td>
                 </tr>`;
             }
 
@@ -813,11 +872,6 @@
             
             document.getElementById('emptyWeightArmInput').addEventListener('input', (e) => {
                 ARMS.emptyWeight = parseFloat(e.target.value) || 0;
-                calculateAll();
-            });
-            document.getElementById('emptyWeightMacInput').addEventListener('input', (e) => {
-                const newMac = parseFloat(e.target.value) || 0;
-                ARMS.emptyWeight = (newMac / 100 * G4_MAC) + G4_LEMAC;
                 calculateAll();
             });
         }
