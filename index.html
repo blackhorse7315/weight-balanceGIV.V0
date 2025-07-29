@@ -9,6 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -151,29 +152,57 @@
                         <input type="number" id="emptyWeight" value="43743" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
                     </div>
                     <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                        <label for="picName" class="flex items-center text-sm font-medium">
+                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><circle cx="12" cy="8" r="3" /><path d="M12 11v2"/><path d="M12 18c-3.31 0-6-2.69-6-6v-1a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1c0 3.31-2.69 6-6 6z"/></svg>
+                            PIC Name
+                        </label>
+                        <input list="pic-names" id="picName" name="picName" class="w-48 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                    </div>
+                    <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
                         <label for="pilot" class="flex items-center text-sm font-medium">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><circle cx="12" cy="8" r="3" /><path d="M12 11v2"/><path d="M12 18c-3.31 0-6-2.69-6-6v-1a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1c0 3.31-2.69 6-6 6z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><path d="M15.2 3.2a1 1 0 0 0-1.4 1.4L15.2 6l-2.3 2.3a1 1 0 1 0 1.4 1.4l2.3-2.3 1.4 1.4a1 1 0 0 0 1.4-1.4L18 6l1.4-1.4a1 1 0 0 0-1.4-1.4L16.6 4.8 15.2 3.2z"/><path d="m10.2 6.8 4 4"/><path d="m6.8 10.2 4 4"/><path d="m14 19.5 4.9-11.4L2.5 2.5 14 19.5z"/></svg>
                             Pilot (kg)
                         </label>
                         <input type="number" id="pilot" value="90" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
                     </div>
                     <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                        <label for="copilotName" class="flex items-center text-sm font-medium">
+                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><circle cx="12" cy="8" r="3" /><path d="M12 11v2"/><path d="M12 18c-3.31 0-6-2.69-6-6v-1a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1c0 3.31-2.69 6-6 6z"/></svg>
+                            Copilot Name
+                        </label>
+                        <input list="copilot-names" id="copilotName" name="copilotName" class="w-48 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                    </div>
+                    <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
                         <label for="copilot" class="flex items-center text-sm font-medium">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><circle cx="12" cy="8" r="3" /><path d="M12 11v2"/><path d="M12 18c-3.31 0-6-2.69-6-6v-1a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1c0 3.31-2.69 6-6 6z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><path d="M15.2 3.2a1 1 0 0 0-1.4 1.4L15.2 6l-2.3 2.3a1 1 0 1 0 1.4 1.4l2.3-2.3 1.4 1.4a1 1 0 0 0 1.4-1.4L18 6l1.4-1.4a1 1 0 0 0-1.4-1.4L16.6 4.8 15.2 3.2z"/><path d="m10.2 6.8 4 4"/><path d="m6.8 10.2 4 4"/><path d="m14 19.5 4.9-11.4L2.5 2.5 14 19.5z"/></svg>
                             Copilot (kg)
                         </label>
                         <input type="number" id="copilot" value="90" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
                     </div>
                     <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
-                        <label for="engineer" class="flex items-center text-sm font-medium">
+                        <label for="engineerName" class="flex items-center text-sm font-medium">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><path d="M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/><path d="M12 16v1a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-1a2 2 0 0 0-2-2h-1a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v1"/></svg>
+                            Engineer Name
+                        </label>
+                        <input list="engineer-names" id="engineerName" name="engineerName" class="w-48 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                    </div>
+                    <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                        <label for="engineer" class="flex items-center text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><path d="M15.2 3.2a1 1 0 0 0-1.4 1.4L15.2 6l-2.3 2.3a1 1 0 1 0 1.4 1.4l2.3-2.3 1.4 1.4a1 1 0 0 0 1.4-1.4L18 6l1.4-1.4a1 1 0 0 0-1.4-1.4L16.6 4.8 15.2 3.2z"/><path d="m10.2 6.8 4 4"/><path d="m6.8 10.2 4 4"/><path d="m14 19.5 4.9-11.4L2.5 2.5 14 19.5z"/></svg>
                             Engineer (kg)
                         </label>
                         <input type="number" id="engineer" value="90" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
                     </div>
                     <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
-                        <label for="cabinService" class="flex items-center text-sm font-medium">
+                        <label for="cabinServiceName" class="flex items-center text-sm font-medium">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M17 20a5 5 0 0 0-10 0"/><path d="M3 20a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1.1a2 2 0 0 1 1.4.6l1.4 1.4"/><path d="M21 20a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.1a2 2 0 0 0-1.4.6l-1.4 1.4"/></svg>
+                            Cabin Service Name
+                        </label>
+                        <input list="cabin-service-names" id="cabinServiceName" name="cabinServiceName" class="w-48 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                    </div>
+                    <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                        <label for="cabinService" class="flex items-center text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="icon text-gray-400"><path d="M15.2 3.2a1 1 0 0 0-1.4 1.4L15.2 6l-2.3 2.3a1 1 0 1 0 1.4 1.4l2.3-2.3 1.4 1.4a1 1 0 0 0 1.4-1.4L18 6l1.4-1.4a1 1 0 0 0-1.4-1.4L16.6 4.8 15.2 3.2z"/><path d="m10.2 6.8 4 4"/><path d="m6.8 10.2 4 4"/><path d="m14 19.5 4.9-11.4L2.5 2.5 14 19.5z"/></svg>
                             Cabin Service (kg)
                         </label>
                         <input type="number" id="cabinService" value="90" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
@@ -342,17 +371,19 @@
                     <div class="grid grid-cols-2 gap-4">
                         <!-- Left Column -->
                         <div class="space-y-3 flex flex-col items-center justify-start">
-                             <div class="seat invisible">S1<br><input class="seat-input mt-1"></div>
+                             <div class="component invisible w-full">&nbsp;</div>
+                             <div class="seat invisible">&nbsp;</div>
                              <div class="seat">S3<br><input type="number" id="seat3" placeholder="0" class="seat-input"></div>
                              <div class="seat">S4<br><input type="number" id="seat4" placeholder="0" class="seat-input"></div>
                              <div class="table-box my-2 invisible"></div>
                              <div class="seat">S6<br><input type="number" id="seat6" placeholder="0" class="seat-input"></div>
                              <div class="table-box my-2"></div>
                              <div class="seat">S8<br><input type="number" id="seat8" placeholder="0" class="seat-input"></div>
-                             <div class="seat invisible">&nbsp;</div>
+                             <div class="seat invisible mt-3">&nbsp;</div>
                              <div class="seat invisible">&nbsp;</div>
                              <div class="table-box my-2"></div>
                              <div class="seat">S13<br><input type="number" id="seat13" placeholder="0" class="seat-input"></div>
+                             <div class="component invisible w-full mt-3">&nbsp;</div>
                         </div>
                         <!-- Right Column -->
                         <div class="space-y-3 flex flex-col items-center">
@@ -459,6 +490,12 @@
                         </div>
                     </div>
                     <div class="flex justify-between items-baseline border-t border-gray-700 pt-3 mt-3">
+                        <span class="text-sm font-medium text-gray-300">Elevator Trim Tab Setting</span>
+                        <div>
+                            <span id="elevatorTrimResult" class="font-bold text-lg text-green-400">N/A</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-baseline border-t border-gray-700 pt-3 mt-3">
                         <span class="text-sm font-medium text-gray-300">Available Payload</span>
                         <div>
                             <span id="availablePayloadLbs" class="font-bold text-lg text-green-400">0</span>
@@ -489,8 +526,25 @@
 
     </div>
     
-    <!-- Hidden container for PDF generation -->
-    <div id="pdf-container"></div>
+    <datalist id="pic-names">
+        <option value="Capt. Susetyo Harijanto">
+        <option value="Capt. Purwoko">
+    </datalist>
+    <datalist id="copilot-names">
+        <option value="Capt. Susetyo Harijanto">
+        <option value="Capt. Purwoko">
+    </datalist>
+    <datalist id="engineer-names">
+        <option value="Diki Hariadi">
+        <option value="Lazarus Rio">
+        <option value="Prayit Susonko">
+    </datalist>
+    <datalist id="cabin-service-names">
+        <option value="Qorry Maulidya">
+        <option value="Tiffany Prisilia H">
+        <option value="Agustin Zulfani">
+        <option value="Nadya Casey Ivanka">
+    </datalist>
 
 
     <script>
@@ -551,6 +605,38 @@
             469: [48.9, 48.9, 49.0, 49.1, 49.1, 49.2, 49.2, 49.3, 49.3, 49.4],
             470: [49.5, 49.5, 49.6, 49.7, 49.7, 49.8, 49.8, 49.9, 49.9, 50.0],
         };
+        
+        const ELEVATOR_TRIM_TABLE = {
+            29000: { 36: 11, 37: 10, 38: 9, 39: 8, 40: 7, 41: 6, 42: 5, 43: 4, 44: 3, 45: 2 },
+            28000: { 36: 11, 37: 10, 38: 9, 39: 8, 40: 7, 41: 6, 42: 5, 43: 4, 44: 3, 45: 2 },
+            27000: { 36: 11, 37: 10, 38: 9, 39: 8, 40: 7, 41: 7, 42: 6, 43: 5, 44: 4, 45: 3 },
+            26000: { 36: 12, 37: 11, 38: 10, 39: 9, 40: 8, 41: 7, 42: 6, 43: 5, 44: 4, 45: 3 },
+            25000: { 36: 12, 37: 11, 38: 10, 39: 9, 40: 8, 41: 7, 42: 6, 43: 5, 44: 4, 45: 3 },
+            24000: { 36: 12, 37: 11, 38: 10, 39: 9, 40: 8, 41: 7, 42: 6, 43: 5, 44: 4, 45: 3 },
+            23000: { 36: 12, 37: 11, 38: 10, 39: 9, 40: 8, 41: 7, 42: 6, 43: 5, 44: 4, 45: 3 },
+            22000: { 36: 12, 37: 11, 38: 10, 39: 9, 40: 8, 41: 7, 42: 6, 43: 5, 44: 4, 45: 3 },
+            21000: { 36: 12, 37: 11, 38: 10, 39: 9, 40: 8, 41: 7, 42: 6, 43: 5, 44: 4, 45: 3 },
+            20000: { 36: 12, 37: 11, 38: 10, 39: 9, 40: 8, 41: 7, 42: 6, 43: 5, 44: 4, 45: 3 },
+            19000: { 36: 12, 37: 11, 38: 10, 39: 9, 40: 8, 41: 7, 42: 6, 43: 5, 44: 4, 45: 3 },
+            18000: { 36: 12, 37: 11, 38: 10, 39: 9, 40: 8, 41: 7, 42: 6, 43: 5, 44: 4, 45: 3 },
+            17000: { 36: 12, 37: 11, 38: 10, 39: 9, 40: 8, 41: 7, 42: 6, 43: 5, 44: 4, 45: 3 },
+            16000: { 36: 12, 37: 11, 38: 10, 39: 9, 40: 8, 41: 7, 42: 6, 43: 5, 44: 4, 45: 3 },
+            15000: { 36: 12, 37: 11, 38: 10, 39: 9, 40: 8, 41: 6, 42: 5, 43: 4, 44: 3, 45: 2 },
+            14000: { 36: 12, 37: 11, 38: 10, 39: 8, 40: 7, 41: 6, 42: 5, 43: 4, 44: 3, 45: 1 },
+            13000: { 36: 12, 37: 11, 38: 10, 39: 8, 40: 7, 41: 5, 42: 4, 43: 3, 44: 2, 45: 1 },
+            12000: { 36: 12, 37: 11, 38: 10, 39: 8, 40: 7, 41: 5, 42: 4, 43: 3, 44: 2, 45: 1 },
+            11000: { 36: 11, 37: 10, 38: 9, 39: 7, 40: 6, 41: 5, 42: 4, 43: 3, 44: 2, 45: 1 },
+            10000: { 36: 11, 37: 9, 38: 8, 39: 7, 40: 6, 41: 5, 42: 4, 43: 3, 44: 2, 45: 1 },
+            9000: { 36: 10, 37: 8, 38: 7, 39: 6, 40: 5, 41: 4, 42: 3, 43: 2, 44: 1, 45: -2 },
+            8000: { 36: 9, 37: 8, 38: 7, 39: 5, 40: 4, 41: 3, 42: 2, 43: 1, 44: -1, 45: -3 },
+            7000: { 36: 9, 37: 8, 38: 7, 39: 5, 40: 4, 41: 3, 42: 2, 43: 1, 44: -1, 45: -4 },
+            6000: { 36: 8, 37: 7, 38: 6, 39: 5, 40: 4, 41: 3, 42: 1, 43: -2, 44: -5, 45: -6 },
+            5000: { 36: 7, 37: 6, 38: 5, 39: 3, 40: 2, 41: 0, 42: -1, 43: -3, 44: -4, 45: -7 },
+            4000: { 36: 7, 37: 5, 38: 4, 39: 2, 40: 1, 41: -1, 42: -2, 43: -4, 44: -5, 45: -8 },
+            3000: { 36: 7, 37: 5, 38: 4, 39: 2, 40: 1, 41: -1, 42: -3, 43: -5, 44: -6, 45: -9 },
+            2000: { 36: 5, 37: 3, 38: 2, 39: 0, 40: -1, 41: -3, 42: -4, 43: -7, 44: -8, 45: -10 },
+            1000: { 36: 5, 37: 3, 38: 2, 39: 0, 40: -1, 41: -3, 42: -6, 43: -7, 44: -9, 45: -11 }
+        };
 
 
         // --- ARM VALUES ---
@@ -593,6 +679,10 @@
             baggage: document.getElementById('baggage'),
             cockpitStorage: document.getElementById('cockpitStorage'),
             cabinStorage: document.getElementById('cabinStorage'),
+            picName: document.getElementById('picName'),
+            copilotName: document.getElementById('copilotName'),
+            engineerName: document.getElementById('engineerName'),
+            cabinServiceName: document.getElementById('cabinServiceName'),
             // Seat Layout Inputs
             galley: document.getElementById('galley'),
             seat1: document.getElementById('seat1'),
@@ -644,6 +734,7 @@
             zfwMacResult: document.getElementById('zfwMacResult'),
             towMacResult: document.getElementById('towMacResult'),
             landingWeightMacResult: document.getElementById('landingWeightMacResult'),
+            elevatorTrimResult: document.getElementById('elevatorTrimResult'),
             // Flight Calc
             maxRange: document.getElementById('maxRange'),
             // Fuel Required
@@ -676,6 +767,28 @@
 
             return 0; // Fallback if the value is not found
         };
+        
+        const getElevatorTrimSetting = (zfwMac, fuelOnBoard) => {
+            // 1. Round fuel to the nearest 1000 lbs to match table keys.
+            const fuelKey = Math.round(fuelOnBoard / 1000) * 1000;
+
+            // 2. Round ZFW MAC to the nearest integer to match table columns.
+            const macKey = Math.round(zfwMac);
+
+            // 3. Look up the fuel row.
+            const fuelRow = ELEVATOR_TRIM_TABLE[fuelKey];
+
+            if (fuelRow) {
+                // 4. Look up the MAC value in that row.
+                const trimSetting = fuelRow[macKey];
+                if (trimSetting !== undefined) {
+                    return trimSetting;
+                }
+            }
+
+            // 5. Return a default/error value if not found.
+            return "N/A";
+        }
 
 
         // --- CORE CALCULATION FUNCTION ---
@@ -932,6 +1045,7 @@
 
             const extraFuel = fuelOnBoard - totalFuelRequired;
             outputs.extraFuelResult.textContent = extraFuel.toFixed(0);
+            outputs.elevatorTrimResult.textContent = getElevatorTrimSetting(zfwTotal.mac, fuelOnBoard);
 
             outputs.fuelTripRequired.textContent = tripFuel.toFixed(1);
             outputs.alternateFuel.textContent = calculatedAlternateFuel.toFixed(1);
@@ -1060,29 +1174,157 @@
             cgChart.update();
         }
 
-        async function generatePDF() {
+        async function generateProfessionalPDF() {
             const pdfMessage = document.getElementById('pdf-message');
             pdfMessage.classList.remove('hidden');
-            
+
             const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+            const doc = new jsPDF();
 
-            const content = document.getElementById('main-content');
-            const canvas = await html2canvas(content, { backgroundColor: '#111827', scale: 2 });
-            const imgData = canvas.toDataURL('image/png');
+            // --- Header ---
+            doc.setFontSize(18);
+            doc.setFont(undefined, 'bold');
+            doc.text('Weight & Balance Report', 105, 15, null, null, 'center');
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'normal');
+            doc.text(`Aircraft Registration: PK-TWY`, 105, 22, null, null, 'center');
+            doc.setFontSize(10);
+            doc.text(`Date: ${new Date().toLocaleDateString('en-GB')}`, 105, 28, null, null, 'center');
+            
+            // --- Crew Manifest ---
+            doc.autoTable({
+                startY: 35,
+                head: [['Role', 'Name']],
+                body: [
+                    ['PIC', inputs.picName.value],
+                    ['Copilot', inputs.copilotName.value],
+                    ['Engineer', inputs.engineerName.value],
+                    ['Cabin Service', inputs.cabinServiceName.value],
+                ],
+                theme: 'grid',
+                headStyles: { fillColor: [22, 163, 74] },
+            });
+            
+            let finalY = doc.lastAutoTable.finalY;
 
-            const logoUrl = 'http://googleusercontent.com/file_content/1';
-            const logoImg = new Image();
-            logoImg.src = logoUrl;
-            await new Promise(resolve => logoImg.onload = resolve);
-            pdf.addImage(logoImg, 'PNG', 15, 15, 40, 10);
+            // --- Flight Calculation Table ---
+            const tripTime = `${inputs.tripTimeHours.value || 0} hr ${inputs.tripTimeMinutes.value || 0} min`;
+            const alternateTime = `${inputs.tripToAlternateHours.value || 0} hr ${inputs.tripToAlternateMinutes.value || 0} min`;
+            doc.autoTable({
+                startY: finalY + 10,
+                head: [['Flight Calculation', 'Value']],
+                body: [
+                    ['Trip Time', tripTime],
+                    ['Trip to Alternate', alternateTime],
+                    ['Altitude', `${inputs.altitude.value} ft`],
+                    ['Airspeed', `${inputs.airspeed.value} kts`],
+                    ['Headwind', `${inputs.headwind.value} kts`],
+                    ['Fuel on Board', `${inputs.fuelOnBoard.value} lbs`],
+                    ['Maximum Range', `${outputs.maxRange.textContent} nm`],
+                ],
+                theme: 'grid',
+                headStyles: { fillColor: [45, 55, 72] },
+            });
+            finalY = doc.lastAutoTable.finalY;
 
-            const imgProps = pdf.getImageProperties(imgData);
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-            pdf.addImage(imgData, 'PNG', 0, 30, pdfWidth, pdfHeight);
+            // --- Fuel Required Table ---
+             doc.autoTable({
+                startY: finalY + 10,
+                head: [['Fuel Required', 'Value']],
+                body: [
+                    ['Fuel Consumption', `${inputs.fuelConsumption.value} lbs/hr`],
+                    ['Trip Fuel', `${outputs.fuelTripRequired.textContent} lbs`],
+                    ['Alternate Fuel', `${outputs.alternateFuel.textContent} lbs`],
+                    ['Final Reserve 30 min', `${outputs.reserveFuel.textContent} lbs`],
+                    ['Contingency (10%)', `${outputs.contingencyFuel.textContent} lbs`],
+                    ['Start & Taxi', `${outputs.startTaxiFuel.textContent} lbs`],
+                    ['TOTAL FUEL REQUIRED', `${outputs.totalFuelRequired.textContent} lbs`],
+                ],
+                theme: 'grid',
+                headStyles: { fillColor: [45, 55, 72] },
+                bodyStyles: { fontStyle: 'bold' },
+                didParseCell: function(data) {
+                    if (data.row.index === 6) { // Style the TOTAL row
+                        data.cell.styles.fillColor = '#1f2937';
+                        data.cell.styles.textColor = '#fcd34d';
+                    }
+                }
+            });
+            finalY = doc.lastAutoTable.finalY;
 
-            pdf.save('G-IV_SP_PK-TWY_Weight_Balance.pdf');
+
+            // --- Full Weight & CG Calculation Table ---
+            const table = document.getElementById('cg-table-body');
+            let bodyData = [];
+            table.querySelectorAll('tr').forEach(row => {
+                let rowData = [];
+                row.querySelectorAll('td').forEach(cell => {
+                    let cellText = cell.querySelector('input') ? cell.querySelector('input').value : cell.innerText;
+                    rowData.push(cellText);
+                });
+                bodyData.push(rowData);
+            });
+            
+            if (finalY + 20 > doc.internal.pageSize.getHeight() - 30) {
+                doc.addPage();
+                finalY = 10;
+            }
+
+            doc.autoTable({
+                startY: finalY + 10,
+                head: [['Item', 'Weight (lbs)', 'Arm (in)', 'Moment', '%MAC']],
+                body: bodyData,
+                theme: 'striped',
+                headStyles: { fillColor: [45, 55, 72] },
+                styles: { fontSize: 8 },
+                columnStyles: {
+                    0: { cellWidth: 60 },
+                    1: { halign: 'right' },
+                    2: { halign: 'right' },
+                    3: { halign: 'right' },
+                    4: { halign: 'right' },
+                },
+                didParseCell: function(data) {
+                    const originalTable = document.getElementById('cg-table-body');
+                    const originalRow = originalTable.querySelectorAll('tr')[data.row.index];
+                    if (originalRow && originalRow.classList.contains('total-row')) {
+                        data.cell.styles.fillColor = '#1f2937';
+                        data.cell.styles.textColor = '#fcd34d';
+                        data.cell.styles.fontStyle = 'bold';
+                    }
+                }
+            });
+
+            finalY = doc.lastAutoTable.finalY;
+
+            // --- Add Elevator Trim and Chart below the big table ---
+            doc.setFontSize(11);
+            doc.setFont(undefined, 'bold');
+            doc.text('Elevator Trim Tab Setting:', 14, finalY + 10);
+            doc.setFont(undefined, 'normal');
+            doc.text(outputs.elevatorTrimResult.textContent, 65, finalY + 10);
+
+            const chartCanvas = document.getElementById('cgEnvelopeChart');
+            const chartImage = chartCanvas.toDataURL('image/png', 1.0);
+            const chartWidth = 80;
+            const chartHeight = 80;
+            const chartX = (doc.internal.pageSize.getWidth() - chartWidth) / 2;
+            
+            if (finalY + 20 + chartHeight > doc.internal.pageSize.getHeight() - 30) {
+                doc.addPage();
+                finalY = 10; // Reset Y position for the new page
+            }
+            
+            doc.addImage(chartImage, 'PNG', chartX, finalY + 20, chartWidth, chartHeight);
+
+
+            // --- Signature Line ---
+            const pageHeight = doc.internal.pageSize.getHeight();
+            doc.line(14, pageHeight - 25, 80, pageHeight - 25); // Signature line
+            doc.text('Pilot in Command Signature', 14, pageHeight - 20);
+
+
+            doc.save('G-IV_SP_PK-TWY_Weight_Balance.pdf');
             pdfMessage.classList.add('hidden');
         }
 
@@ -1116,7 +1358,7 @@
             }
         });
         
-        document.getElementById('downloadPdfBtn').addEventListener('click', generatePDF);
+        document.getElementById('downloadPdfBtn').addEventListener('click', generateProfessionalPDF);
 
         // --- INITIALIZATION ---
         window.addEventListener('load', () => {
