@@ -227,11 +227,11 @@
                         </div>
                     </div>
                     <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
-                        <label for="elevation" class="flex items-center text-sm font-medium">
+                        <label for="altitude" class="flex items-center text-sm font-medium">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-                            Elevation (ft)
+                            Altitude (ft)
                         </label>
-                        <input type="number" id="elevation" placeholder="0" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                        <input type="number" id="altitude" placeholder="0" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
                     </div>
                     <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
                         <label for="airspeed" class="flex items-center text-sm font-medium">
@@ -239,6 +239,13 @@
                             Airspeed (kts)
                         </label>
                         <input type="number" id="airspeed" value="450" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                    </div>
+                     <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                        <label for="headwind" class="flex items-center text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M17.7 7.7a2.5 2.5 0 1 1-5 0"/><path d="M12 5v14"/><path d="M18 8.6a2.5 2.5 0 1 0-5 0"/><path d="M7 15h1"/><path d="M4.5 12.5h1"/><path d="M10 17.5h1"/></svg>
+                            Headwind (kts)
+                        </label>
+                        <input type="number" id="headwind" placeholder="0" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
                     </div>
                     <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
                         <label for="fuelOnBoard" class="flex items-center text-sm font-medium">
@@ -492,8 +499,8 @@
 
         // --- DYNAMIC FUEL CALCULATION CONSTANTS ---
         const BASE_ALTITUDE = 45000; // ft
-        const BASE_TRIP_FUEL = 7280; // lbs
-        const BASE_TRIP_TIME_HOURS = 2 + (6 / 60); // 2.1 hours
+        const BASE_TRIP_FUEL = 5129; // lbs
+        const BASE_TRIP_TIME_HOURS = 1 + (25 / 60); // 1.4166... hours
         const BASE_FUEL_BURN = BASE_TRIP_FUEL / BASE_TRIP_TIME_HOURS; // lbs/hr at base altitude
         // This factor determines how much fuel consumption changes per 1000 ft.
         // A positive value means consumption DECREASES as altitude INCREASES.
@@ -609,7 +616,8 @@
             tripToAlternateMinutes: document.getElementById('tripToAlternateMinutes'),
             fuelConsumption: document.getElementById('fuelConsumption'),
             airspeed: document.getElementById('airspeed'),
-            elevation: document.getElementById('elevation'),
+            altitude: document.getElementById('altitude'),
+            headwind: document.getElementById('headwind'),
             fuelOnBoard: document.getElementById('fuelOnBoard'),
         };
 
@@ -709,7 +717,7 @@
             // --- DYNAMIC FUEL CALCULATION ---
             const tripTimeHours = parseFloat(inputs.tripTimeHours.value) || 0;
             const tripTimeMinutes = parseFloat(inputs.tripTimeMinutes.value) || 0;
-            const currentAltitude = parseFloat(inputs.elevation.value) || 0; 
+            const currentAltitude = parseFloat(inputs.altitude.value) || 0; 
             
             // 1. Calculate adjusted fuel consumption based on altitude
             const altitudeDifference = currentAltitude - BASE_ALTITUDE;
@@ -725,6 +733,7 @@
 
             // --- Get Other Flight Values ---
             const airspeed = parseFloat(inputs.airspeed.value) || 0;
+            const headwind = parseFloat(inputs.headwind.value) || 0;
             const fuelOnBoard = parseFloat(inputs.fuelOnBoard.value) || 0;
 
             // --- Continue with other calculations ---
@@ -809,7 +818,7 @@
 
             // --- UPDATE UI ---
             updateCgTable(cgData, bowTotal, paxItems, zfwTotal, towTotal, lwTotal);
-            updateSummariesAndFlightCalc(totalPayloadKg, totalPayloadLbs, zfwTotal, towTotal, lwTotal, maxZfwLimit, maxTowLimit, adjustedFuelBurn, airspeed, fuelOnBoard, calculatedTripFuel);
+            updateSummariesAndFlightCalc(totalPayloadKg, totalPayloadLbs, zfwTotal, towTotal, lwTotal, maxZfwLimit, maxTowLimit, adjustedFuelBurn, airspeed, headwind, fuelOnBoard, calculatedTripFuel);
             updateCgEnvelope(zfwTotal, towTotal, lwTotal);
             
             outputs.pilotSeatWt.textContent = pilotKg.toFixed(0);
@@ -887,7 +896,7 @@
             });
         }
 
-        function updateSummariesAndFlightCalc(totalPayloadKg, totalPayloadLbs, zfwTotal, towTotal, lwTotal, maxZfwLimit, maxTowLimit, fuelConsumption, airspeed, fuelOnBoard, tripFuel) {
+        function updateSummariesAndFlightCalc(totalPayloadKg, totalPayloadLbs, zfwTotal, towTotal, lwTotal, maxZfwLimit, maxTowLimit, fuelConsumption, airspeed, headwind, fuelOnBoard, tripFuel) {
             outputs.totalPayloadKg.textContent = totalPayloadKg.toFixed(0);
             outputs.totalPayloadLbs.textContent = totalPayloadLbs.toFixed(0);
             outputs.zfwResult.textContent = zfwTotal.weight.toFixed(0);
@@ -908,7 +917,8 @@
             outputs.availablePayloadKg.textContent = availablePayloadKg.toFixed(0);
             outputs.availablePassengers.textContent = availablePassengers;
 
-            const maxRange = (fuelConsumption > 0 && airspeed > 0 && fuelOnBoard > 0) ? (fuelOnBoard / fuelConsumption) * airspeed : 0;
+            const groundSpeed = airspeed - headwind;
+            const maxRange = (fuelConsumption > 0 && groundSpeed > 0 && fuelOnBoard > 0) ? (fuelOnBoard / fuelConsumption) * groundSpeed : 0;
             outputs.maxRange.textContent = maxRange.toFixed(0);
             
             const fuelPerMinute = fuelConsumption > 0 ? fuelConsumption / 60 : 0;
