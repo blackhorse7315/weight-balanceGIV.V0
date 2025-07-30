@@ -119,6 +119,27 @@
         </header>
 
         <div id="main-content" class="space-y-6">
+            
+            <!-- Route Section -->
+            <div>
+                <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Route</h2>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                        <label for="routeFrom" class="flex items-center text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M2 22h20"/><path d="M6.3 17.2 4.2 15.1c-.6-.6-.7-1.5-.3-2.2l5-5c.4-.4 1-.6 1.6-.6h2c.4 0 .9.2 1.2.5l4.2 4.2c.5.5.7 1.2.5 1.9l-2 7C20.2 21.1 19.1 22 18 22H8c-1.1 0-2.2-.9-2.5-2l-1.2-4.8Z"/></svg>
+                            From
+                        </label>
+                        <input type="text" id="routeFrom" class="w-48 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                    </div>
+                    <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                        <label for="routeTo" class="flex items-center text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M2 22h20"/><path d="M18.6 16.5a2.5 2.5 0 0 0-2-2.46l-5.6-1.55a2.5 2.5 0 0 0-2.8 2.22l-1.2 5.6a2.5 2.5 0 0 0 2.22 2.8l5.6 1.2a2.5 2.5 0 0 0 2.46-2L19 18.3a2 2 0 0 0-2-2.46Z"/><path d="m6.23 16.37 3.32-3.32"/><path d="m14 7 3-3 3 3-3 3Z"/></svg>
+                            Destination
+                        </label>
+                        <input type="text" id="routeTo" class="w-48 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                    </div>
+                </div>
+            </div>
 
             <!-- Aircraft Limits Section -->
             <div>
@@ -372,7 +393,7 @@
                     <div class="grid grid-cols-2 gap-4">
                         <!-- Left Column -->
                         <div class="space-y-3 flex flex-col items-center justify-start">
-                             <div class="seat invisible w-full">&nbsp;</div>
+                             <div class="component invisible w-full">&nbsp;</div>
                              <div class="seat invisible">&nbsp;</div>
                              <div class="seat">S3<br><input type="number" id="seat3" placeholder="0" class="seat-input"></div>
                              <div class="seat">S4<br><input type="number" id="seat4" placeholder="0" class="seat-input"></div>
@@ -710,6 +731,8 @@
             altitude: document.getElementById('altitude'),
             headwind: document.getElementById('headwind'),
             fuelOnBoard: document.getElementById('fuelOnBoard'),
+            routeFrom: document.getElementById('routeFrom'),
+            routeTo: document.getElementById('routeTo'),
         };
 
         const outputs = {
@@ -1194,9 +1217,21 @@
             doc.setFontSize(10);
             doc.text(`Date: ${new Date().toLocaleDateString('en-GB')}`, 105, 34, null, null, 'center');
             
-            // --- Crew Manifest ---
+            // --- Route Info ---
             doc.autoTable({
                 startY: 40,
+                head: [['Route Information', '']],
+                body: [
+                    ['From', inputs.routeFrom.value],
+                    ['Destination', inputs.routeTo.value],
+                ],
+                theme: 'grid',
+                headStyles: { fillColor: [45, 55, 72] },
+            });
+
+            // --- Crew Manifest ---
+            doc.autoTable({
+                startY: doc.lastAutoTable.finalY + 10,
                 head: [['Role', 'Name']],
                 body: [
                     ['PIC', inputs.picName.value],
