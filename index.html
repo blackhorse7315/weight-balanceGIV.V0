@@ -127,14 +127,14 @@
                     <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
                         <label for="routeFrom" class="flex items-center text-sm font-medium">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M2 22h20"/><path d="M6.3 17.2 4.2 15.1c-.6-.6-.7-1.5-.3-2.2l5-5c.4-.4 1-.6 1.6-.6h2c.4 0 .9.2 1.2.5l4.2 4.2c.5.5.7 1.2.5 1.9l-2 7C20.2 21.1 19.1 22 18 22H8c-1.1 0-2.2-.9-2.5-2l-1.2-4.8Z"/></svg>
-                            From
+                            From (Example WIHH)
                         </label>
                         <input type="text" id="routeFrom" class="w-48 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
                     </div>
                     <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
                         <label for="routeTo" class="flex items-center text-sm font-medium">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M2 22h20"/><path d="M18.6 16.5a2.5 2.5 0 0 0-2-2.46l-5.6-1.55a2.5 2.5 0 0 0-2.8 2.22l-1.2 5.6a2.5 2.5 0 0 0 2.22 2.8l5.6 1.2a2.5 2.5 0 0 0 2.46-2L19 18.3a2 2 0 0 0-2-2.46Z"/><path d="m6.23 16.37 3.32-3.32"/><path d="m14 7 3-3 3 3-3 3Z"/></svg>
-                            Destination
+                            Destination (WARR)
                         </label>
                         <input type="text" id="routeTo" class="w-48 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
                     </div>
@@ -1356,12 +1356,21 @@
             doc.addImage(chartImage, 'PNG', chartX, finalY + 20, chartWidth, chartHeight);
 
 
-            // --- Signature Line ---
-            const pageHeight = doc.internal.pageSize.getHeight();
-            const picName = inputs.picName.value || '_________________________'; // Get PIC name or use a blank line
-            doc.text(picName, 14, pageHeight - 30); 
-            doc.line(14, pageHeight - 25, 80, pageHeight - 25); // Signature line
-            doc.text('Pilot in Command Signature', 14, pageHeight - 20);
+            // --- Signature Line and Page Number ---
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                const pageHeight = doc.internal.pageSize.getHeight();
+                const pageWidth = doc.internal.pageSize.getWidth();
+                if (i === pageCount) {
+                    const picName = inputs.picName.value || '_________________________'; // Get PIC name or use a blank line
+                    doc.text(picName, 14, pageHeight - 30); 
+                    doc.line(14, pageHeight - 25, 80, pageHeight - 25); // Signature line
+                    doc.text('Pilot in Command Signature', 14, pageHeight - 20);
+                }
+                doc.setFontSize(10);
+                doc.text(`Page ${i} of ${pageCount}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+            }
 
 
             doc.save('G-IV_SP_PK-TWY_Weight_Balance.pdf');
