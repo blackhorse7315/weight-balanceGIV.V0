@@ -230,6 +230,13 @@
                         <input type="number" id="cabinService" value="90" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
                     </div>
                     <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                        <label for="totalPob" class="flex items-center text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            Total Person on Board (POB)
+                        </label>
+                        <input type="number" id="totalPob" placeholder="0" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                    </div>
+                    <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
                         <label for="baggage" class="flex items-center text-sm font-medium">
                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M8 6h8"/><path d="M8 10h8"/><path d="M8 14h4"/></svg>
                             Baggage (kg)
@@ -705,6 +712,7 @@
             copilotName: document.getElementById('copilotName'),
             engineerName: document.getElementById('engineerName'),
             cabinServiceName: document.getElementById('cabinServiceName'),
+            totalPob: document.getElementById('totalPob'),
             // Seat Layout Inputs
             galley: document.getElementById('galley'),
             seat1: document.getElementById('seat1'),
@@ -1238,6 +1246,7 @@
                     ['Copilot', inputs.copilotName.value],
                     ['Engineer', inputs.engineerName.value],
                     ['Cabin Service', inputs.cabinServiceName.value],
+                    ['Total Person on Board (POB)', inputs.totalPob.value],
                 ],
                 theme: 'grid',
                 headStyles: { fillColor: [22, 163, 74] },
