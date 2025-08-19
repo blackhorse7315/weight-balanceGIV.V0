@@ -1281,6 +1281,36 @@
             }
             doc.addImage(chartImage, 'PNG', chartX, finalY + 20, chartWidth, chartHeight);
 
+            // --- ADD NEW PAGE FOR SUMMARY ---
+            doc.addPage();
+
+            // --- Weight Summary Table (On Last Page) ---
+            const weightSummaryBody = [
+                ['Total Payload', `${outputs.totalPayloadLbs.textContent} lbs / ${outputs.totalPayloadKg.textContent} kg`],
+                ['Zero Fuel Weight (ZFW)', `${outputs.zfwResult.textContent} lbs / ${outputs.zfwMacResult.textContent} %MAC (${outputs.zfwStatus.textContent})`],
+                ['Takeoff Weight (TOW)', `${outputs.towResult.textContent} lbs / ${outputs.towMacResult.textContent} %MAC (${outputs.towStatus.textContent})`],
+                ['Landing Weight (LW)', `${outputs.landingWeightResult.textContent} lbs / ${outputs.landingWeightMacResult.textContent} %MAC (${outputs.landingWeightStatus.textContent})`],
+                ['Extra Fuel', `${outputs.extraFuelResult.textContent} lbs`],
+                ['Available Payload', `${outputs.availablePayloadLbs.textContent} lbs / ${outputs.availablePayloadKg.textContent} kg`],
+            ];
+
+            doc.autoTable({
+                startY: 20, // Start near top of new page
+                head: [['Weight Summary', 'Value']],
+                body: weightSummaryBody,
+                theme: 'grid',
+                headStyles: { fillColor: [217, 119, 6] }, // Amber color
+                didParseCell: function(data) {
+                    const statusText = data.cell.raw.toString();
+                    if (statusText.includes('OVERWEIGHT')) {
+                        data.cell.styles.textColor = '#EF4444'; // Red
+                        data.cell.styles.fontStyle = 'bold';
+                    } else if (statusText.includes('OK')) {
+                        data.cell.styles.textColor = '#22C55E'; // Green
+                    }
+                }
+            });
+
             // --- Signature Line and Page Number ---
             const pageCount = doc.internal.getNumberOfPages();
             for (let i = 1; i <= pageCount; i++) {
