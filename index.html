@@ -3,1764 +3,794 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weight & Balance - Gulfstream IV SP</title>
+    <title>G-IV SP Weight & Balance Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
             margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            color: #ffffff;
-            min-height: 100vh;
         }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+        input[type=number] {
+            -moz-appearance: textfield;
         }
-
-        .login-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
+        .icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-right: 0.75rem;
+            stroke-width: 1.5;
         }
-
-        .login-card {
-            background: rgba(45, 45, 45, 0.95);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            border: 1px solid #444;
-            width: 100%;
-            max-width: 400px;
+        .time-input {
+            width: 4rem;
         }
-
-        .app-card {
-            background: rgba(45, 45, 45, 0.95);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            border: 1px solid #444;
-            margin-bottom: 20px;
-        }
-
-        .header {
+        .seat {
+            border: 1px solid #4a5568;
+            background-color: #2d3748;
+            border-radius: 0.375rem;
+            padding: 0.5rem;
             text-align: center;
-            margin-bottom: 30px;
+            font-size: 0.75rem;
+            min-width: 50px;
         }
-
-        .aircraft-title {
-            font-size: 28px;
-            font-weight: bold;
-            color: #ffd700;
-            margin-bottom: 10px;
+        .seat-input {
+            width: 50px;
+            background-color: #4a5568;
+            border: 1px solid #718096;
+            text-align: center;
+            border-radius: 0.25rem;
         }
-
-        .subtitle {
-            font-size: 16px;
-            color: #cccccc;
-            margin-bottom: 5px;
+        .table-box {
+            border: 2px solid #fdba74; /* Amber color to match theme */
+            background-color: #4a5568;
+            border-radius: 0.25rem;
+            width: 20px;
+            height: 20px;
+            align-self: center;
         }
-
-        .made-by {
-            font-size: 14px;
-            color: #888;
+        .component {
+            border: 1px solid #4a5568;
+            background-color: #2d3748;
+            border-radius: 0.375rem;
+            padding: 0.5rem;
+            text-align: center;
+            font-size: 0.875rem;
         }
-
-        .section {
-            margin-bottom: 30px;
+        .cg-table th, .cg-table td {
+            padding: 0.5rem 0.25rem;
+            text-align: right;
+            font-size: 0.875rem;
+            vertical-align: middle;
         }
-
-        .section-title {
-            font-size: 20px;
-            font-weight: bold;
-            color: #ffd700;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .input-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .input-field {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .input-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            color: #cccccc;
+        .cg-table th:first-child, .cg-table td:first-child {
+            text-align: left;
             font-weight: 500;
         }
-
-        .input-box {
-            background: rgba(0, 0, 0, 0.3);
-            border: 2px solid #555;
-            border-radius: 10px;
-            padding: 12px 15px;
-            color: #ffffff;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-
-        .input-box:focus {
-            outline: none;
-            border-color: #ffd700;
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
-        }
-
-        .login-input {
-            width: 100%;
-            margin-bottom: 20px;
-        }
-
-        .login-btn, .logout-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-            color: #000;
-            border: none;
-            border-radius: 10px;
-            padding: 15px;
-            font-size: 16px;
+        .total-row {
+            background-color: #1f2937;
             font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            color: #fcd34d;
         }
-
-        .login-btn:hover, .logout-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+        .editable-cell-input {
+            width: 100%;
+            background-color: #4a5568;
+            border: 1px solid #718096;
+            text-align: right;
+            border-radius: 0.25rem;
+            padding-right: 0.25rem;
         }
-
-        .logout-btn {
-            max-width: 150px;
-            margin: 20px auto 0;
-            display: block;
-        }
-
-        .error-message {
-            color: #ff6b6b;
-            text-align: center;
-            margin-top: 15px;
-            font-size: 14px;
-        }
-
-        .icon {
-            font-size: 18px;
-        }
-
-        .summary {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
-            padding: 20px;
-            border: 2px solid #ffd700;
-        }
-
-        .summary-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #444;
-        }
-
-        .summary-item:last-child {
-            border-bottom: none;
-            font-weight: bold;
-            color: #ffd700;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        @media (max-width: 768px) {
-            .input-group {
-                grid-template-columns: 1fr;
-            }
-            
-            .container {
-                padding: 15px;
-            }
-            
-            .app-card {
-                padding: 20px;
-            }
-            
-            .aircraft-title {
-                font-size: 24px;
-            }
+        input:read-only {
+            background-color: #374151; /* A slightly different gray for readonly fields */
+            cursor: not-allowed;
         }
     </style>
 </head>
-<body>
-    <!-- Login Screen -->
-    <div id="loginScreen" class="login-container">
-        <div class="login-card">
-            <div class="header">
-                <div class="aircraft-title">✈️ Gulfstream IV SP</div>
-                <div class="subtitle">PK-TWY</div>
-                <div class="made-by">Made by Capt. Ramdan / Siera 7315</div>
-            </div>
-            
-            <form id="loginForm">
-                <div class="input-field">
-                    <label class="input-label">
-                        👤 Username
-                    </label>
-                    <input type="email" id="username" class="input-box login-input" placeholder="Enter username" required>
+<body class="bg-gray-900 text-gray-200">
+
+    <div id="login-page" class="flex flex-col items-center justify-center min-h-screen px-4">
+        <h1 class="text-3xl font-bold text-white mb-8 text-center">Welcome to GIV-SP PK-TWY Apps</h1>
+        <div class="w-full max-w-sm p-6 bg-gray-800 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold text-center text-white mb-6">Login</h2>
+            <form id="login-form">
+                <div class="mb-4">
+                    <label for="username" class="block text-sm font-medium text-gray-300 mb-2">Username</label>
+                    <input type="text" id="username" class="w-full p-2 bg-gray-700 text-white border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-400" required>
                 </div>
-                
-                <div class="input-field">
-                    <label class="input-label">
-                        🔒 Password
-                    </label>
-                    <input type="password" id="password" class="input-box login-input" placeholder="Enter password" required>
+                <div class="mb-6">
+                    <label for="password" class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                    <input type="password" id="password" class="w-full p-2 bg-gray-700 text-white border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-400" required>
                 </div>
-                
-                <button type="submit" class="login-btn">Login</button>
-                <div id="loginError" class="error-message hidden"></div>
+                <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold py-2 px-4 rounded-lg">Login</button>
+                <p id="login-error" class="text-red-400 text-sm mt-4 text-center hidden"></p>
             </form>
         </div>
     </div>
 
-    <!-- Admin Panel -->
-    <div id="adminPanel" class="container hidden">
-        <div class="app-card">
-            <div class="header">
-                <div class="aircraft-title">⚙️ Admin Panel</div>
-                <div class="subtitle">Application Settings</div>
-                <div class="made-by">Made by Capt. Ramdan / Siera 7315</div>
+    <div id="admin-page" class="hidden container mx-auto max-w-lg p-4 sm:p-6 bg-gray-900 min-h-screen">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-white">Admin Settings</h1>
+            <button id="admin-logout-btn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg">Logout</button>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-lg">
+            <h2 class="text-lg font-semibold text-white mb-4">Application Expiry Date</h2>
+            <div class="flex items-center space-x-4">
+                <label for="expiry-date-input" class="text-sm font-medium text-gray-300">Set Expiry Date:</label>
+                <input type="date" id="expiry-date-input" class="bg-gray-700 text-white p-2 border border-gray-600 rounded-md">
             </div>
-
-            <div class="section">
-                <div class="section-title">
-                    📅 Application Expiry Settings
-                </div>
-                <div class="input-group">
-                    <div class="input-field">
-                        <label class="input-label">
-                            <span class="icon">📆</span>
-                            Expiry Date
-                        </label>
-                        <input type="date" id="expiryDate" class="input-box">
-                    </div>
-                </div>
-                <button class="login-btn" onclick="saveExpiryDate()" style="max-width: 200px; margin: 20px 0;">Save Expiry Date</button>
-                <div id="saveMessage" class="error-message hidden" style="color: #4ade80;"></div>
-            </div>
-
-            <div class="section">
-                <div class="section-title">
-                    📊 Current Status
-                </div>
-                <div class="summary">
-                    <div class="summary-item">
-                        <span>Current Expiry Date:</span>
-                        <span id="currentExpiry">Not Set</span>
-                    </div>
-                    <div class="summary-item">
-                        <span>Days Remaining:</span>
-                        <span id="daysRemaining">-</span>
-                    </div>
-                    <div class="summary-item">
-                        <span>Application Status:</span>
-                        <span id="appStatus">Active</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Weight Summary -->
-            <div class="section">
-                <div class="section-title">
-                    📋 Weight Summary
-                </div>
-                <div class="summary">
-                    <div class="summary-item">
-                        <span>Empty Weight:</span>
-                        <span id="summaryEmptyWeight">43,743 lbs</span>
-                    </div>
-                    <div class="summary-item">
-                        <span>Total Crew & Baggage:</span>
-                        <span id="summaryPayload">0 lbs</span>
-                    </div>
-                    <div class="summary-item">
-                        <span>Gross Weight:</span>
-                        <span id="summaryGrossWeight">43,743 lbs</span>
-                    </div>
-                    <div class="summary-item">
-                        <span>Weight Status:</span>
-                        <span id="weightStatus">WITHIN LIMITS</span>
-                    </div>
-                </div>
-            </div>
-
-            <button class="logout-btn" onclick="logout()">Logout</button>
+            <button id="save-expiry-btn" class="mt-6 bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold py-2 px-4 rounded-lg">Save Date</button>
+            <p id="admin-message" class="text-green-400 text-sm mt-4 hidden"></p>
         </div>
     </div>
 
-    <!-- Main Application -->
-    <div id="mainApp" class="container hidden">
-        <!-- Expiry Banner -->
-        <div id="expiryBanner" class="app-card hidden" style="background: rgba(255, 165, 0, 0.1); border: 2px solid #ffa500; margin-bottom: 20px;">
-            <div style="text-align: center; padding: 10px;">
-                <div style="color: #ffa500; font-weight: bold; font-size: 16px;">⚠️ Application Expiry Notice</div>
-                <div id="expiryMessage" style="color: #cccccc; margin-top: 5px;"></div>
-            </div>
-        </div>
-
-        <div class="app-card">
-            <div class="header">
-                <div class="aircraft-title">✈️ Weight & Balance Calculator</div>
-                <div class="subtitle">Gulfstream IV SP - PK-TWY</div>
-                <div class="made-by">Made by Capt. Ramdan / Siera 7315</div>
-            </div>
-
-            <!-- Aircraft Limits -->
-            <div class="section">
-                <div class="section-title">
-                    ⚖️ Aircraft Limits
-                </div>
-                <div class="input-group">
-                    <div class="input-field">
-                        <label class="input-label">
-                            <span class="icon">🏋️</span>
-                            Ramp Weight (lbs)
-                        </label>
-                        <input type="number" id="rampWeight" class="input-box" value="75000" step="1">
-                    </div>
-                    <div class="input-field">
-                        <label class="input-label">
-                            <span class="icon">🛫</span>
-                            Max Takeoff Weight (lbs)
-                        </label>
-                        <input type="number" id="maxTakeoffWeight" class="input-box" value="74600" step="1">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <div class="input-field">
-                        <label class="input-label">
-                            <span class="icon">📊</span>
-                            Empty Weight (lbs)
-                        </label>
-                        <input type="number" id="emptyWeight" class="input-box" value="43743" step="1">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Crew Weights -->
-            <div class="section">
-                <div class="section-title">
-                    👥 Crew Weights
-                </div>
-                <div class="input-group">
-                    <div class="input-field">
-                        <label class="input-label">
-                            <span class="icon">👨‍✈️</span>
-                            Pilot (kg)
-                        </label>
-                        <input type="number" id="pilot" class="input-box" placeholder="90" step="1">
-                    </div>
-                    <div class="input-field">
-                        <label class="input-label">
-                            <span class="icon">👨‍✈️</span>
-                            Copilot (kg)
-                        </label>
-                        <input type="number" id="copilot" class="input-box" placeholder="90" step="1">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <div class="input-field">
-                        <label class="input-label">
-                            <span class="icon">🔧</span>
-                            Engineer (kg)
-                        </label>
-                        <input type="number" id="engineer" class="input-box" placeholder="90" step="1">
-                    </div>
-                    <div class="input-field">
-                        <label class="input-label">
-                            <span class="icon">🛎️</span>
-                            Cabin Service (kg)
-                        </label>
-                        <input type="number" id="cabinService" class="input-box" placeholder="90" step="1">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Baggage & Storage -->
-            <div class="section">
-                <div class="section-title">
-                    🧳 Baggage & Storage
-                </div>
-                <div class="input-group">
-                    <div class="input-field">
-                        <label class="input-label">
-                            <span class="icon">🧳</span>
-                            Baggage (kg)
-                        </label>
-                        <input type="number" id="baggage" class="input-box" placeholder="90" step="1">
-                    </div>
-                    <div class="input-field">
-                        <label class="input-label">
-                            <span class="icon">🗃️</span>
-                            Cockpit Storage (kg)
-                        </label>
-                        <input type="number" id="cockpitStorage" class="input-box" placeholder="0" step="1">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <div class="input-field">
-                        <label class="input-label">
-                            <span class="icon">📦</span>
-                            Cabin Storage (kg)
-                        </label>
-                        <input type="number" id="cabinStorage" class="input-box" placeholder="0" step="1">
-                    </div>
-                </div>
-            </div>
-
-
-
-            <!-- Flight Calculation -->
-            <div class="section">
-                <div class="section-title">
-                    ✈️ Flight Calculation
-                </div>
-                <div class="input-group">
-                    <div class="input-field">
-                        <label class="input-label">
-                            <span class="icon">⏱️</span>
-                            Trip Time (Hours)
-                        </label>
-                        <input type="number" id="tripTimeHours" class="input-box" placeholder="0" step="1" min="0" max="23">
-                    </div>
-                    <div class="input-field">
-                        <label class="input-label">
-                            <span class="icon">⏱️</span>
-                            Trip Time (Minutes)
-                        </label>
-                        <input type="number" id="tripTimeMinutes" class="input-box" placeholder="0" step="1" min="0" max="59">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <div class="input-field">
-                        <label class="input-label">
-                            <span class="icon">🔄</span>
-                            Alternate Time (Hours)
-                        </label>
-                        <input type="number" id="alternateTimeHours" class="input-box" placeholder="0" step="1" min="0" max="23">
-                    </div>
-                    <div class="input-field">
-                        <label class="input-label">
-                            <span class="icon">🔄</span>
-                            Alternate Time (Minutes)
-                        </label>
-                        <input type="number" id="alternateTimeMinutes" class="input-box" placeholder="0" step="1" min="0" max="59">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <div class="input-field">
-                        <label class="input-label">
-                            <span class="icon">⛽</span>
-                            Fuel Consumption (lbs/hr)
-                        </label>
-                        <input type="number" id="fuelConsumption" class="input-box" value="3933.7" step="0.1">
-                    </div>
-                    <div class="input-field">
-                        <label class="input-label">
-                            <span class="icon">🚀</span>
-                            Airspeed (kts)
-                        </label>
-                        <input type="number" id="airspeed" class="input-box" value="450" step="1">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <div class="input-field">
-                        <label class="input-label">
-                            <span class="icon">⛽</span>
-                            Fuel Onboard (lbs)
-                        </label>
-                        <input type="number" id="fuelOnboard" class="input-box" placeholder="0" step="1">
-                    </div>
-                    <div class="input-field">
-                        <label class="input-label">
-                            <span class="icon">⛽</span>
-                            Fuel Trip Required (lbs)
-                        </label>
-                        <input type="number" id="fuelTripRequired" class="input-box" readonly style="background: rgba(255, 215, 0, 0.1); border-color: #ffd700;">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <div class="input-field">
-                        <label class="input-label">
-                            <span class="icon">📏</span>
-                            Maximum Range (nm)
-                        </label>
-                        <input type="number" id="maximumRange" class="input-box" readonly style="background: rgba(255, 215, 0, 0.1); border-color: #ffd700;">
-                    </div>
-                </div>
-            </div>
-
-
-
-            <!-- Fuel Required -->
-            <div class="section">
-                <div class="section-title">
-                    ⛽ Fuel Required
-                </div>
-                <div class="input-group">
-                    <div class="input-field">
-                        <label class="input-label">
-                            <span class="icon">⛽</span>
-                            Fuel Trip (lbs)
-                        </label>
-                        <input type="number" id="fuelTripRequired" class="input-box" readonly style="background: rgba(255, 215, 0, 0.1); border-color: #ffd700;">
-                    </div>
-                    <div class="input-field">
-                        <label class="input-label">
-                            <span class="icon">🔄</span>
-                            Alternate Fuel (lbs)
-                        </label>
-                        <input type="number" id="alternateFuel" class="input-box" readonly style="background: rgba(255, 215, 0, 0.1); border-color: #ffd700;">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <div class="input-field">
-                        <label class="input-label">
-                            <span class="icon">🛡️</span>
-                            Reserve Fuel (lbs)
-                        </label>
-                        <input type="number" id="reserveFuel" class="input-box" readonly style="background: rgba(255, 215, 0, 0.1); border-color: #ffd700;">
-                    </div>
-                    <div class="input-field">
-                        <label class="input-label">
-                            <span class="icon">📊</span>
-                            Contingency Fuel (lbs)
-                        </label>
-                        <input type="number" id="fuelContingency" class="input-box" readonly style="background: rgba(255, 215, 0, 0.1); border-color: #ffd700;">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <div class="input-field">
-                        <label class="input-label">
-                            <span class="icon">🚀</span>
-                            Starting Fuel (lbs)
-                        </label>
-                        <input type="number" id="fuelStarting" class="input-box" readonly style="background: rgba(255, 215, 0, 0.1); border-color: #ffd700;">
-                    </div>
-                    <div class="input-field">
-                        <label class="input-label">
-                            <span class="icon">🚕</span>
-                            Taxi Fuel (lbs)
-                        </label>
-                        <input type="number" id="fuelTaxi" class="input-box" readonly style="background: rgba(255, 215, 0, 0.1); border-color: #ffd700;">
-                    </div>
-                </div>
-                
-                <!-- Fuel Summary -->
-                <div class="summary" style="margin-top: 20px;">
-                    <div class="summary-item">
-                        <span>Fuel Trip:</span>
-                        <span id="summaryFuelTrip">0 lbs</span>
-                    </div>
-                    <div class="summary-item">
-                        <span>Reserve Fuel:</span>
-                        <span id="summaryReserveFuel">0 lbs</span>
-                    </div>
-                    <div class="summary-item">
-                        <span>Contingency Fuel:</span>
-                        <span id="summaryContingencyFuel">0 lbs</span>
-                    </div>
-                    <div class="summary-item">
-                        <span>Alternate Fuel:</span>
-                        <span id="summaryAlternateFuel">0 lbs</span>
-                    </div>
-                    <div class="summary-item">
-                        <span>Start & Taxi Fuel:</span>
-                        <span id="summaryStartTaxiFuel">0 lbs</span>
-                    </div>
-                    <div class="summary-item">
-                        <span>Total Fuel Required:</span>
-                        <span id="totalFuelRequired">0 lbs</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Seat Layout Configuration -->
-            <div class="section">
-                <div class="section-title">
-                    💺 Seat Layout Configuration
-                </div>
-                
-                <!-- Aircraft Layout Visual -->
-                <div style="background: rgba(0, 0, 0, 0.3); border-radius: 15px; padding: 20px; margin-bottom: 20px; border: 2px solid #ffd700;">
-                    <!-- Cockpit Area -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px; padding: 15px; background: rgba(255, 215, 0, 0.1); border-radius: 10px;">
-                        <div style="text-align: center; color: #ffd700; font-weight: bold; grid-column: 1 / -1; margin-bottom: 10px;">🛩️ COCKPIT</div>
-                        
-                        <!-- Pilot -->
-                        <div style="background: rgba(45, 45, 45, 0.8); border-radius: 8px; padding: 10px; text-align: center; border: 1px solid #555;">
-                            <div style="color: #ffd700; font-size: 12px; margin-bottom: 5px;">👨‍✈️ PILOT</div>
-                            <input type="number" id="seatPilot" class="input-box" readonly style="background: rgba(255, 215, 0, 0.1); border-color: #ffd700; font-size: 12px; padding: 5px; text-align: center;">
-                        </div>
-                        
-                        <!-- Jumpseat -->
-                        <div style="background: rgba(45, 45, 45, 0.8); border-radius: 8px; padding: 10px; text-align: center; border: 1px solid #555;">
-                            <div style="color: #ffd700; font-size: 12px; margin-bottom: 5px;">🔧 JUMPSEAT</div>
-                            <input type="number" id="seatJumpseat" class="input-box" readonly style="background: rgba(255, 215, 0, 0.1); border-color: #ffd700; font-size: 12px; padding: 5px; text-align: center;">
-                        </div>
-                        
-                        <!-- Copilot -->
-                        <div style="background: rgba(45, 45, 45, 0.8); border-radius: 8px; padding: 10px; text-align: center; border: 1px solid #555;">
-                            <div style="color: #ffd700; font-size: 12px; margin-bottom: 5px;">👨‍✈️ COPILOT</div>
-                            <input type="number" id="seatCopilot" class="input-box" readonly style="background: rgba(255, 215, 0, 0.1); border-color: #ffd700; font-size: 12px; padding: 5px; text-align: center;">
-                        </div>
-                    </div>
-
-                    <!-- Forward Area -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px;">
-                        <div></div>
-                        
-                        <!-- Fwd Lavatory -->
-                        <div style="background: rgba(45, 45, 45, 0.8); border-radius: 8px; padding: 10px; text-align: center; border: 1px solid #555;">
-                            <div style="color: #87ceeb; font-size: 12px; margin-bottom: 5px;">🚿 FWD LAV</div>
-                            <input type="number" id="fwdLavatory" class="input-box" value="23" style="font-size: 12px; padding: 5px; text-align: center;">
-                        </div>
-                        
-                        <!-- Galley -->
-                        <div style="background: rgba(45, 45, 45, 0.8); border-radius: 8px; padding: 10px; text-align: center; border: 1px solid #555;">
-                            <div style="color: #90ee90; font-size: 12px; margin-bottom: 5px;">🍽️ GALLEY</div>
-                            <input type="number" id="galley" class="input-box" value="34" style="font-size: 12px; padding: 5px; text-align: center;">
-                        </div>
-                    </div>
-
-                    <!-- Row 1 -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px;">
-                        <!-- Seat 3 & 4 (Sofa) -->
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
-                            <div style="background: rgba(45, 45, 45, 0.8); border-radius: 8px; padding: 8px; text-align: center; border: 1px solid #555;">
-                                <div style="color: #ffd700; font-size: 11px; margin-bottom: 3px;">💺 SEAT 3</div>
-                                <input type="number" id="seat3" class="input-box" placeholder="0" style="font-size: 11px; padding: 3px; text-align: center;">
-                            </div>
-                            <div style="background: rgba(45, 45, 45, 0.8); border-radius: 8px; padding: 8px; text-align: center; border: 1px solid #555;">
-                                <div style="color: #ffd700; font-size: 11px; margin-bottom: 3px;">💺 SEAT 4</div>
-                                <input type="number" id="seat4" class="input-box" placeholder="0" style="font-size: 11px; padding: 3px; text-align: center;">
-                            </div>
-                        </div>
-                        
-                        <!-- Seat 1 -->
-                        <div style="background: rgba(45, 45, 45, 0.8); border-radius: 8px; padding: 10px; text-align: center; border: 1px solid #555;">
-                            <div style="color: #ffd700; font-size: 12px; margin-bottom: 5px;">💺 SEAT 1</div>
-                            <input type="number" id="seat1" class="input-box" placeholder="0" style="font-size: 12px; padding: 5px; text-align: center;">
-                        </div>
-                        
-                        <!-- Seat 2 -->
-                        <div style="background: rgba(45, 45, 45, 0.8); border-radius: 8px; padding: 10px; text-align: center; border: 1px solid #555;">
-                            <div style="color: #ffd700; font-size: 12px; margin-bottom: 5px;">💺 SEAT 2</div>
-                            <input type="number" id="seat2" class="input-box" placeholder="0" style="font-size: 12px; padding: 5px; text-align: center;">
-                        </div>
-                    </div>
-
-                    <!-- Row 2 -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px;">
-                        <!-- Seat 5 -->
-                        <div style="background: rgba(45, 45, 45, 0.8); border-radius: 8px; padding: 10px; text-align: center; border: 1px solid #555;">
-                            <div style="color: #ffd700; font-size: 12px; margin-bottom: 5px;">💺 SEAT 5</div>
-                            <input type="number" id="seat5" class="input-box" placeholder="0" style="font-size: 12px; padding: 5px; text-align: center;">
-                        </div>
-                        
-                        <!-- Seat 6 -->
-                        <div style="background: rgba(45, 45, 45, 0.8); border-radius: 8px; padding: 10px; text-align: center; border: 1px solid #555;">
-                            <div style="color: #ffd700; font-size: 12px; margin-bottom: 5px;">💺 SEAT 6</div>
-                            <input type="number" id="seat6" class="input-box" placeholder="0" style="font-size: 12px; padding: 5px; text-align: center;">
-                        </div>
-                        
-                        <!-- Seat 7 -->
-                        <div style="background: rgba(45, 45, 45, 0.8); border-radius: 8px; padding: 10px; text-align: center; border: 1px solid #555;">
-                            <div style="color: #ffd700; font-size: 12px; margin-bottom: 5px;">💺 SEAT 7</div>
-                            <input type="number" id="seat7" class="input-box" placeholder="0" style="font-size: 12px; padding: 5px; text-align: center;">
-                        </div>
-                    </div>
-
-                    <!-- Row 3 -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px;">
-                        <div></div>
-                        
-                        <!-- Seat 8 -->
-                        <div style="background: rgba(45, 45, 45, 0.8); border-radius: 8px; padding: 10px; text-align: center; border: 1px solid #555;">
-                            <div style="color: #ffd700; font-size: 12px; margin-bottom: 5px;">💺 SEAT 8</div>
-                            <input type="number" id="seat8" class="input-box" placeholder="0" style="font-size: 12px; padding: 5px; text-align: center;">
-                        </div>
-                        
-                        <!-- Seat 12 -->
-                        <div style="background: rgba(45, 45, 45, 0.8); border-radius: 8px; padding: 10px; text-align: center; border: 1px solid #555;">
-                            <div style="color: #ffd700; font-size: 12px; margin-bottom: 5px;">💺 SEAT 12</div>
-                            <input type="number" id="seat12" class="input-box" placeholder="0" style="font-size: 12px; padding: 5px; text-align: center;">
-                        </div>
-                    </div>
-
-                    <!-- Row 4 -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px;">
-                        <!-- Sofa Seats 9, 10, 11 -->
-                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3px;">
-                            <div style="background: rgba(45, 45, 45, 0.8); border-radius: 8px; padding: 6px; text-align: center; border: 1px solid #555;">
-                                <div style="color: #ffd700; font-size: 10px; margin-bottom: 2px;">💺 9</div>
-                                <input type="number" id="seat9" class="input-box" placeholder="0" style="font-size: 10px; padding: 2px; text-align: center;">
-                            </div>
-                            <div style="background: rgba(45, 45, 45, 0.8); border-radius: 8px; padding: 6px; text-align: center; border: 1px solid #555;">
-                                <div style="color: #ffd700; font-size: 10px; margin-bottom: 2px;">💺 10</div>
-                                <input type="number" id="seat10" class="input-box" placeholder="0" style="font-size: 10px; padding: 2px; text-align: center;">
-                            </div>
-                            <div style="background: rgba(45, 45, 45, 0.8); border-radius: 8px; padding: 6px; text-align: center; border: 1px solid #555;">
-                                <div style="color: #ffd700; font-size: 10px; margin-bottom: 2px;">💺 11</div>
-                                <input type="number" id="seat11" class="input-box" placeholder="0" style="font-size: 10px; padding: 2px; text-align: center;">
-                            </div>
-                        </div>
-                        
-                        <div></div>
-                        
-                        <!-- Seat 13 -->
-                        <div style="background: rgba(45, 45, 45, 0.8); border-radius: 8px; padding: 10px; text-align: center; border: 1px solid #555;">
-                            <div style="color: #ffd700; font-size: 12px; margin-bottom: 5px;">💺 SEAT 13</div>
-                            <input type="number" id="seat13" class="input-box" placeholder="0" style="font-size: 12px; padding: 5px; text-align: center;">
-                        </div>
-                    </div>
-
-                    <!-- Separator Line -->
-                    <div style="height: 2px; background: #ffd700; margin: 15px 0; border-radius: 1px;"></div>
-
-                    <!-- Aft Area -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px;">
-                        <div></div>
-                        
-                        <!-- Aft Lavatory -->
-                        <div style="background: rgba(45, 45, 45, 0.8); border-radius: 8px; padding: 10px; text-align: center; border: 1px solid #555;">
-                            <div style="color: #87ceeb; font-size: 12px; margin-bottom: 5px;">🚿 AFT LAV</div>
-                            <input type="number" id="aftLavatory" class="input-box" value="23" style="font-size: 12px; padding: 5px; text-align: center;">
-                        </div>
-                        
-                        <div></div>
-                    </div>
-
-                    <!-- Baggage Area -->
-                    <div style="display: grid; grid-template-columns: 1fr; gap: 10px; padding: 15px; background: rgba(139, 69, 19, 0.2); border-radius: 10px;">
-                        <div style="text-align: center; color: #deb887; font-weight: bold; margin-bottom: 10px;">📦 BAGGAGE COMPARTMENT</div>
-                        <div style="background: rgba(45, 45, 45, 0.8); border-radius: 8px; padding: 10px; text-align: center; border: 1px solid #555;">
-                            <div style="color: #deb887; font-size: 12px; margin-bottom: 5px;">🧳 BAGGAGE</div>
-                            <input type="number" id="seatBaggage" class="input-box" readonly style="background: rgba(222, 184, 135, 0.1); border-color: #deb887; font-size: 12px; padding: 5px; text-align: center;">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Weight and CG Calculation -->
-            <div class="section">
-                <div class="section-title">
-                    ⚖️ Weight and CG Calculation
-                </div>
-                
-                <div style="background: rgba(0, 0, 0, 0.3); border-radius: 15px; padding: 20px; margin-bottom: 20px; border: 2px solid #ffd700; overflow-x: auto;">
-                    <table style="width: 100%; border-collapse: collapse; color: #ffffff; font-size: 14px;">
-                        <thead>
-                            <tr style="background: rgba(255, 215, 0, 0.2); border-bottom: 2px solid #ffd700;">
-                                <th style="padding: 12px; text-align: left; border: 1px solid #555; color: #ffd700; font-weight: bold;">Item</th>
-                                <th style="padding: 12px; text-align: center; border: 1px solid #555; color: #ffd700; font-weight: bold;">Weight (lbs)</th>
-                                <th style="padding: 12px; text-align: center; border: 1px solid #555; color: #ffd700; font-weight: bold;">Arm (in)</th>
-                                <th style="padding: 12px; text-align: center; border: 1px solid #555; color: #ffd700; font-weight: bold;">Moment (in-lbs)</th>
-                                <th style="padding: 12px; text-align: center; border: 1px solid #555; color: #ffd700; font-weight: bold;">%MAC</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Basic Operating Weight Section -->
-                            <tr style="background: rgba(45, 45, 45, 0.8);">
-                                <td style="padding: 10px; border: 1px solid #555; font-weight: bold;">Empty Weight</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgEmptyWeight">43,743</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">463.9</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgEmptyMoment">20,291,717</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgEmptyMAC">-</span>
-                                </td>
-                            </tr>
-                            <tr id="rowCrew" style="background: rgba(45, 45, 45, 0.6); display: none;">
-                                <td style="padding: 10px; border: 1px solid #555;">Crew</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgCrew">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">123.0</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgCrewMoment">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgCrewMAC">-</span>
-                                </td>
-                            </tr>
-                            <tr id="rowCockpitStorage" style="background: rgba(45, 45, 45, 0.6); display: none;">
-                                <td style="padding: 10px; border: 1px solid #555;">Cockpit Storage</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgCockpitStorage">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">127.0</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgCockpitStorageMoment">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgCockpitStorageMAC">-</span>
-                                </td>
-                            </tr>
-                            <tr style="background: rgba(45, 45, 45, 0.6);">
-                                <td style="padding: 10px; border: 1px solid #555;">Galley</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgGalley">75</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">537.0</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgGalleyMoment">40,275</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgGalleyMAC">-</span>
-                                </td>
-                            </tr>
-                            <tr style="background: rgba(45, 45, 45, 0.6);">
-                                <td style="padding: 10px; border: 1px solid #555;">Forward Lavatory/Toilet</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgFwdLav">51</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">595.0</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgFwdLavMoment">30,345</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgFwdLavMAC">-</span>
-                                </td>
-                            </tr>
-                            <tr style="background: rgba(45, 45, 45, 0.6);">
-                                <td style="padding: 10px; border: 1px solid #555;">Aft Lavatory/Toilet</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgAftLav">51</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">595.0</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgAftLavMoment">30,345</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgAftLavMAC">-</span>
-                                </td>
-                            </tr>
-                            <tr id="rowCrewBaggage" style="background: rgba(45, 45, 45, 0.6); display: none;">
-                                <td style="padding: 10px; border: 1px solid #555;">Crew Baggage</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgCrewBaggage">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">181.0</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgCrewBaggageMoment">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgCrewBaggageMAC">-</span>
-                                </td>
-                            </tr>
-                            <tr id="rowJumpSeat" style="background: rgba(45, 45, 45, 0.6); display: none;">
-                                <td style="padding: 10px; border: 1px solid #555;">Jump Seat</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgJumpSeat">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">140.0</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgJumpSeatMoment">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgJumpSeatMAC">-</span>
-                                </td>
-                            </tr>
-                            <tr id="rowCabinStorage" style="background: rgba(45, 45, 45, 0.6); display: none;">
-                                <td style="padding: 10px; border: 1px solid #555;">Cabin Storage</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgCabinStorage">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">415.0</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgCabinStorageMoment">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgCabinStorageMAC">-</span>
-                                </td>
-                            </tr>
-                            
-                            <!-- BOW Total -->
-                            <tr style="background: rgba(255, 215, 0, 0.2); border-top: 2px solid #ffd700; border-bottom: 2px solid #ffd700;">
-                                <td style="padding: 12px; border: 1px solid #555; font-weight: bold; color: #ffd700;">BASIC OPERATING WEIGHT (BOW)</td>
-                                <td style="padding: 12px; border: 1px solid #555; text-align: center; font-weight: bold; color: #ffd700;">
-                                    <span id="cgBOW">43,920</span>
-                                </td>
-                                <td style="padding: 12px; border: 1px solid #555; text-align: center; font-weight: bold; color: #ffd700;">
-                                    <span id="cgBOWArm">463.1</span>
-                                </td>
-                                <td style="padding: 12px; border: 1px solid #555; text-align: center; font-weight: bold; color: #ffd700;">
-                                    <span id="cgBOWMoment">20,362,682</span>
-                                </td>
-                                <td style="padding: 12px; border: 1px solid #555; text-align: center; font-weight: bold; color: #ffd700;">
-                                    <span id="cgBOWMAC">-</span>
-                                </td>
-                            </tr>
-                            
-                            <!-- Passengers Section -->
-                            <tr style="background: rgba(45, 45, 45, 0.8); border-top: 1px solid #777;">
-                                <td style="padding: 10px; border: 1px solid #555; font-weight: bold; color: #87ceeb;">Passengers:</td>
-                                <td style="padding: 10px; border: 1px solid #555;"></td>
-                                <td style="padding: 10px; border: 1px solid #555;"></td>
-                                <td style="padding: 10px; border: 1px solid #555;"></td>
-                                <td style="padding: 10px; border: 1px solid #555;"></td>
-                            </tr>
-                            <tr id="rowSeat1" style="background: rgba(45, 45, 45, 0.6); display: none;">
-                                <td style="padding: 10px; border: 1px solid #555;">Seat 1</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat1">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">237.0</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat1Moment">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat1MAC">-</span>
-                                </td>
-                            </tr>
-                            <tr id="rowSeat2" style="background: rgba(45, 45, 45, 0.6); display: none;">
-                                <td style="padding: 10px; border: 1px solid #555;">Seat 2</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat2">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">237.0</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat2Moment">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat2MAC">-</span>
-                                </td>
-                            </tr>
-                            <tr id="rowSeat3" style="background: rgba(45, 45, 45, 0.6); display: none;">
-                                <td style="padding: 10px; border: 1px solid #555;">Seat 3</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat3">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">285.0</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat3Moment">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat3MAC">-</span>
-                                </td>
-                            </tr>
-                            <tr id="rowSeat4" style="background: rgba(45, 45, 45, 0.6); display: none;">
-                                <td style="padding: 10px; border: 1px solid #555;">Seat 4</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat4">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">285.0</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat4Moment">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat4MAC">-</span>
-                                </td>
-                            </tr>
-                            <tr id="rowSeat5" style="background: rgba(45, 45, 45, 0.6); display: none;">
-                                <td style="padding: 10px; border: 1px solid #555;">Seat 5</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat5">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">331.0</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat5Moment">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat5MAC">-</span>
-                                </td>
-                            </tr>
-                            <tr id="rowSeat6" style="background: rgba(45, 45, 45, 0.6); display: none;">
-                                <td style="padding: 10px; border: 1px solid #555;">Seat 6</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat6">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">331.0</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat6Moment">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat6MAC">-</span>
-                                </td>
-                            </tr>
-                            <tr id="rowSeat7" style="background: rgba(45, 45, 45, 0.6); display: none;">
-                                <td style="padding: 10px; border: 1px solid #555;">Seat 7</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat7">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">381.0</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat7Moment">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat7MAC">-</span>
-                                </td>
-                            </tr>
-                            <tr id="rowSeat8" style="background: rgba(45, 45, 45, 0.6); display: none;">
-                                <td style="padding: 10px; border: 1px solid #555;">Seat 8</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat8">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">381.0</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat8Moment">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat8MAC">-</span>
-                                </td>
-                            </tr>
-                            <tr id="rowSeat9" style="background: rgba(45, 45, 45, 0.6); display: none;">
-                                <td style="padding: 10px; border: 1px solid #555;">Seat 9</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat9">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">439.0</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat9Moment">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat9MAC">-</span>
-                                </td>
-                            </tr>
-                            <tr id="rowSeat10" style="background: rgba(45, 45, 45, 0.6); display: none;">
-                                <td style="padding: 10px; border: 1px solid #555;">Seat 10</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat10">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">425.0</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat10Moment">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat10MAC">-</span>
-                                </td>
-                            </tr>
-                            <tr id="rowSeat11" style="background: rgba(45, 45, 45, 0.6); display: none;">
-                                <td style="padding: 10px; border: 1px solid #555;">Seat 11</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat11">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">425.0</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat11Moment">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat11MAC">-</span>
-                                </td>
-                            </tr>
-                            <tr id="rowSeat12" style="background: rgba(45, 45, 45, 0.6); display: none;">
-                                <td style="padding: 10px; border: 1px solid #555;">Seat 12</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat12">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">465.0</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat12Moment">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgSeat12MAC">-</span>
-                                </td>
-                            </tr>
-                            <tr id="rowBaggage" style="background: rgba(45, 45, 45, 0.6); display: none;">
-                                <td style="padding: 10px; border: 1px solid #555;">Baggage</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgBaggage">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">637.0</td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgBaggageMoment">0</span>
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #555; text-align: center;">
-                                    <span id="cgBaggageMAC">-</span>
-                                </td>
-                            </tr>
-                            
-                            <!-- Weight Totals -->
-                            <tr style="background: rgba(135, 206, 235, 0.2); border-top: 2px solid #87ceeb; border-bottom: 2px solid #87ceeb;">
-                                <td style="padding: 12px; border: 1px solid #555; font-weight: bold; color: #87ceeb;">Zero Fuel Weight (ZFW)</td>
-                                <td style="padding: 12px; border: 1px solid #555; text-align: center; font-weight: bold; color: #87ceeb;">
-                                    <span id="cgZFW">43,920</span>
-                                </td>
-                                <td style="padding: 12px; border: 1px solid #555; text-align: center; font-weight: bold; color: #87ceeb;">
-                                    <span id="cgZFWArm">463.1</span>
-                                </td>
-                                <td style="padding: 12px; border: 1px solid #555; text-align: center; font-weight: bold; color: #87ceeb;">
-                                    <span id="cgZFWMoment">20,362,682</span>
-                                </td>
-                                <td style="padding: 12px; border: 1px solid #555; text-align: center; font-weight: bold; color: #87ceeb;">
-                                    <span id="cgZFWMAC">-</span>
-                                </td>
-                            </tr>
-                            <tr style="background: rgba(144, 238, 144, 0.2); border-bottom: 2px solid #90ee90;">
-                                <td style="padding: 12px; border: 1px solid #555; font-weight: bold; color: #90ee90;">Take Off Weight (TOW)</td>
-                                <td style="padding: 12px; border: 1px solid #555; text-align: center; font-weight: bold; color: #90ee90;">
-                                    <span id="cgTOW">43,920</span>
-                                </td>
-                                <td style="padding: 12px; border: 1px solid #555; text-align: center; font-weight: bold; color: #90ee90;">
-                                    <span id="cgTOWArm">463.1</span>
-                                </td>
-                                <td style="padding: 12px; border: 1px solid #555; text-align: center; font-weight: bold; color: #90ee90;">
-                                    <span id="cgTOWMoment">20,362,682</span>
-                                </td>
-                                <td style="padding: 12px; border: 1px solid #555; text-align: center; font-weight: bold; color: #90ee90;">
-                                    <span id="cgTOWMAC">-</span>
-                                </td>
-                            </tr>
-                            <tr style="background: rgba(255, 182, 193, 0.2); border-bottom: 2px solid #ffb6c1;">
-                                <td style="padding: 12px; border: 1px solid #555; font-weight: bold; color: #ffb6c1;">Landing Weight (LW)</td>
-                                <td style="padding: 12px; border: 1px solid #555; text-align: center; font-weight: bold; color: #ffb6c1;">
-                                    <span id="cgLW">43,920</span>
-                                </td>
-                                <td style="padding: 12px; border: 1px solid #555; text-align: center; font-weight: bold; color: #ffb6c1;">
-                                    <span id="cgLWArm">463.1</span>
-                                </td>
-                                <td style="padding: 12px; border: 1px solid #555; text-align: center; font-weight: bold; color: #ffb6c1;">
-                                    <span id="cgLWMoment">20,362,682</span>
-                                </td>
-                                <td style="padding: 12px; border: 1px solid #555; text-align: center; font-weight: bold; color: #ffb6c1;">
-                                    <span id="cgLWMAC">-</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-
-
-
-
-            <!-- Weight Summary -->
-            <div class="section">
-                <div class="section-title">
-                    📋 Weight Summary
-                </div>
-                <div class="summary">
-                    <div class="summary-item">
-                        <span>Empty Weight:</span>
-                        <span id="summaryEmptyWeight">43,743 lbs</span>
-                    </div>
-                    <div class="summary-item">
-                        <span>Total Crew & Baggage:</span>
-                        <span id="summaryPayload">0 lbs</span>
-                    </div>
-                    <div class="summary-item">
-                        <span>Gross Weight:</span>
-                        <span id="summaryGrossWeight">43,743 lbs</span>
-                    </div>
-                    <div class="summary-item">
-                        <span>Weight Status:</span>
-                        <span id="weightStatus">WITHIN LIMITS</span>
-                    </div>
-                </div>
-            </div>
-
-            <button class="logout-btn" onclick="logout()">Logout</button>
+    <div id="expired-page" class="hidden flex items-center justify-center min-h-screen text-center">
+        <div class="w-full max-w-md p-8 bg-gray-800 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold text-red-400 mb-4">Aplikasi Telah Kadaluarsa</h2>
+            <p class="text-gray-300 mb-6">Mohon segera hubungi administrator untuk memperpanjang masa aktif aplikasi Anda.</p>
+            <a href="https://wa.me/6281215917554" target="_blank" class="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg">
+                <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.487 5.235 3.487 8.413.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 4.315 1.731 6.086l.057.098-1.152 4.205 4.283-1.124.11.069z"/></svg>
+                Hubungi via WhatsApp
+            </a>
         </div>
     </div>
 
-    <!-- Expired Application Screen -->
-    <div id="expiredScreen" class="login-container hidden">
-        <div class="login-card" style="border: 2px solid #ff6b6b; background: rgba(45, 45, 45, 0.95);">
-            <div class="header">
-                <div class="aircraft-title" style="color: #ff6b6b;">❌ Application Expired</div>
-                <div class="subtitle">Gulfstream IV SP - PK-TWY</div>
-                <div class="made-by">Made by Capt. Ramdan / Siera 7315</div>
+    <div id="app-page" class="hidden">
+        <div class="container mx-auto max-w-lg p-4 sm:p-6 bg-gray-900 min-h-screen">
+            <!-- Header -->
+            <header class="text-center sticky top-0 bg-gray-900 z-10 py-4 mb-6 relative">
+                <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">G-IV SP Weight & Balance</h1>
+                <p class="text-amber-400 font-semibold">PK-TWY</p>
+                <p class="text-xs text-gray-500 mt-1">by SkyOps Solutions</p>
+                <p id="expiry-date-display" class="text-xs text-red-400 mt-2"></p>
+                <p id="expiry-countdown" class="text-xs text-amber-400 mt-1"></p>
+                <button id="app-logout-btn" class="absolute top-4 right-4 bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded-lg text-sm">Logout</button>
+            </header>
+
+            <div id="main-content" class="space-y-6">
+                
+                <!-- Route Section -->
+                <div>
+                    <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Route</h2>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                            <label for="routeFrom" class="flex items-center text-sm font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                                From (Example: WIHH)
+                            </label>
+                            <input type="text" id="routeFrom" class="w-48 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                            <label for="routeTo" class="flex items-center text-sm font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M2 12h20"/><path d="m18 8-4 4 4 4"/><path d="m6 8 4 4-4 4"/></svg>
+                                Destination (Example: WARR)
+                            </label>
+                            <input type="text" id="routeTo" class="w-48 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aircraft Limits Section -->
+                <div>
+                    <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Aircraft Limits (lbs)</h2>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                            <label for="rampWeight" class="flex items-center text-sm font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M5 5a5 5 0 0 1 10 0v2A5 5 0 0 1 5 7V5Z"/><path d="M12 12a5 5 0 0 1 5 5v2a5 5 0 0 1-10 0v-2a5 5 0 0 1 5-5Z"/></svg>
+                                Ramp Weight
+                            </label>
+                            <input type="number" id="rampWeight" value="75000" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                            <label for="maxTakeoffWeight" class="flex items-center text-sm font-medium">
+                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M2 22h20"/><path d="M18.6 16.5a2.5 2.5 0 0 0-2-2.46l-5.6-1.55a2.5 2.5 0 0 0-2.8 2.22l-1.2 5.6a2.5 2.5 0 0 0 2.22 2.8l5.6 1.2a2.5 2.5 0 0 0 2.46-2L19 18.3a2 2 0 0 0-2-2.46Z"/><path d="m6.23 16.37 3.32-3.32"/><path d="m14 7 3-3 3 3-3 3Z"/></svg>
+                                Max Takeoff Weight
+                            </label>
+                            <input type="number" id="maxTakeoffWeight" value="74600" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payload Section -->
+                <div>
+                    <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Aircraft & Payload Data</h2>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                            <label for="emptyWeight" class="flex items-center text-sm font-medium">
+                               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M15.2 3.2a1 1 0 0 0-1.4 1.4L15.2 6l-2.3 2.3a1 1 0 1 0 1.4 1.4l2.3-2.3 1.4 1.4a1 1 0 0 0 1.4-1.4L18 6l1.4-1.4a1 1 0 0 0-1.4-1.4L16.6 4.8 15.2 3.2z"/><path d="m10.2 6.8 4 4"/><path d="m6.8 10.2 4 4"/><path d="m14 19.5 4.9-11.4L2.5 2.5 14 19.5z"/></svg>
+                                Empty Weight (lbs)
+                            </label>
+                            <input type="number" id="emptyWeight" value="43743" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                            <label for="picName" class="flex items-center text-sm font-medium">
+                               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/><circle cx="12" cy="12" r="10"/></svg>
+                                PIC Name
+                            </label>
+                            <input list="pic-names" id="picName" name="picName" class="w-48 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                            <label for="pilot" class="flex items-center text-sm font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M5 5a5 5 0 0 1 10 0v2A5 5 0 0 1 5 7V5Z"/><path d="M12 12a5 5 0 0 1 5 5v2a5 5 0 0 1-10 0v-2a5 5 0 0 1 5-5Z"/></svg>
+                                Pilot (kg)
+                            </label>
+                            <input type="number" id="pilot" value="90" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                            <label for="copilotName" class="flex items-center text-sm font-medium">
+                               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/><circle cx="12" cy="12" r="10"/></svg>
+                                Copilot Name
+                            </label>
+                            <input list="copilot-names" id="copilotName" name="copilotName" class="w-48 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                            <label for="copilot" class="flex items-center text-sm font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M5 5a5 5 0 0 1 10 0v2A5 5 0 0 1 5 7V5Z"/><path d="M12 12a5 5 0 0 1 5 5v2a5 5 0 0 1-10 0v-2a5 5 0 0 1 5-5Z"/></svg>
+                                Copilot (kg)
+                            </label>
+                            <input type="number" id="copilot" value="90" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                            <label for="engineerName" class="flex items-center text-sm font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/><circle cx="12" cy="12" r="10"/></svg>
+                                Engineer Name
+                            </label>
+                            <input list="engineer-names" id="engineerName" name="engineerName" class="w-48 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                            <label for="engineer" class="flex items-center text-sm font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M5 5a5 5 0 0 1 10 0v2A5 5 0 0 1 5 7V5Z"/><path d="M12 12a5 5 0 0 1 5 5v2a5 5 0 0 1-10 0v-2a5 5 0 0 1 5-5Z"/></svg>
+                                Engineer (kg)
+                            </label>
+                            <input type="number" id="engineer" value="90" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                            <label for="cabinServiceName" class="flex items-center text-sm font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/><circle cx="12" cy="12" r="10"/></svg>
+                                Cabin Service Name
+                            </label>
+                            <input list="cabin-service-names" id="cabinServiceName" name="cabinServiceName" class="w-48 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                            <label for="cabinService" class="flex items-center text-sm font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M5 5a5 5 0 0 1 10 0v2A5 5 0 0 1 5 7V5Z"/><path d="M12 12a5 5 0 0 1 5 5v2a5 5 0 0 1-10 0v-2a5 5 0 0 1 5-5Z"/></svg>
+                                Cabin Service (kg)
+                            </label>
+                            <input type="number" id="cabinService" value="90" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                            <label for="totalPob" class="flex items-center text-sm font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                Total Person on Board (POB)
+                            </label>
+                            <input type="number" id="totalPob" placeholder="0" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                            <label for="baggage" class="flex items-center text-sm font-medium">
+                               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M8 6h8"/><path d="M8 10h8"/><path d="M8 14h4"/></svg>
+                                Baggage (kg)
+                            </label>
+                            <input type="number" id="baggage" value="90" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                            <label for="cockpitStorage" class="flex items-center text-sm font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M21 10V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h7"/><path d="M18 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="m15 15-2-2 4-4 2 2-4 4Z"/></svg>
+                                Cockpit Storage (kg)
+                            </label>
+                            <input type="number" id="cockpitStorage" placeholder="0" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                            <label for="cabinStorage" class="flex items-center text-sm font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                                Cabin Storage (kg)
+                            </label>
+                            <input type="number" id="cabinStorage" placeholder="0" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Flight Calculation Section -->
+                <div>
+                    <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Flight Calculation</h2>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                            <label for="tripTimeHours" class="flex items-center text-sm font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                Trip Time
+                            </label>
+                            <div class="flex items-center space-x-2">
+                                <input type="number" id="tripTimeHours" placeholder="hr" class="time-input bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                                <input type="number" id="tripTimeMinutes" placeholder="min" class="time-input bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                            <label for="tripToAlternateHours" class="flex items-center text-sm font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                Trip to Alternate
+                            </label>
+                             <div class="flex items-center space-x-2">
+                                <input type="number" id="tripToAlternateHours" placeholder="hr" class="time-input bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                                <input type="number" id="tripToAlternateMinutes" placeholder="min" class="time-input bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                            <label for="altitude" class="flex items-center text-sm font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                                Altitude (ft)
+                            </label>
+                            <input type="number" id="altitude" placeholder="0" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                            <label for="airspeed" class="flex items-center text-sm font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg>
+                                Airspeed (kts)
+                            </label>
+                            <input type="number" id="airspeed" value="450" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                        </div>
+                         <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                            <label for="headwind" class="flex items-center text-sm font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M17.7 7.7a2.5 2.5 0 1 1-5 0"/><path d="M12 5v14"/><path d="M18 8.6a2.5 2.5 0 1 0-5 0"/><path d="M7 15h1"/><path d="M4.5 12.5h1"/><path d="M10 17.5h1"/></svg>
+                                Headwind (kts)
+                            </label>
+                            <input type="number" id="headwind" placeholder="0" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                            <label for="fuelOnBoard" class="flex items-center text-sm font-medium">
+                               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H7"/></svg>
+                                Fuel on Board (lbs)
+                            </label>
+                            <input type="number" id="fuelOnBoard" placeholder="0" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                        </div>
+                        <div class="flex justify-between items-baseline bg-gray-800 p-3 rounded-lg">
+                            <span class="text-sm font-medium text-gray-300">Maximum Range</span>
+                            <div>
+                                <span id="maxRange" class="font-bold text-lg text-white">0</span>
+                                <span class="text-sm text-gray-400">nm</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fuel Required Section -->
+                <div>
+                    <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Fuel Required (lbs)</h2>
+                    <div class="space-y-4 bg-gray-800 p-4 rounded-lg">
+                         <div class="flex items-center justify-between">
+                            <label for="fuelConsumption" class="flex items-center text-sm font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M14 8a2 2 0 1 0-4 0v4a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V8z"/><path d="M8.5 14.5 7 20"/><path d="M15.5 14.5 17 20"/><path d="M4 14h16"/><path d="M4 14a4 4 0 0 1-1.3-7.8A4 4 0 0 1 6.3 4.2 4 4 0 0 1 10 6"/><path d="M20 14a4 4 0 0 0 1.3-7.8 4 4 0 0 0-3.6-2 4 4 0 0 0-3.7 1.8"/></svg>
+                                Fuel Consumption
+                            </label>
+                            <div>
+                                <input type="number" id="fuelConsumption" readonly class="w-28 bg-gray-600 text-white text-right font-semibold rounded-md p-1 border border-gray-600">
+                                 <span class="text-sm text-gray-400">lbs/hr</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-sm font-medium text-gray-300">Trip Fuel</span>
+                            <div>
+                                <span id="fuelTripRequired" class="font-bold text-lg text-white">0</span>
+                                <span class="text-sm text-gray-400">lbs</span>
+                            </div>
+                        </div>
+                         <div class="flex justify-between items-baseline">
+                            <span class="text-sm font-medium text-gray-300">Alternate Fuel</span>
+                            <div>
+                                <span id="alternateFuel" class="font-bold text-lg text-white">0</span>
+                                <span class="text-sm text-gray-400">lbs</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-sm font-medium text-gray-300">Final Reserve 30 min</span>
+                            <div>
+                                <span id="reserveFuel" class="font-bold text-lg text-white">0</span>
+                                <span class="text-sm text-gray-400">lbs</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-sm font-medium text-gray-300">Contingency (10%)</span>
+                            <div>
+                                <span id="contingencyFuel" class="font-bold text-lg text-white">0</span>
+                                <span class="text-sm text-gray-400">lbs</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-sm font-medium text-gray-300">Start & Taxi</span>
+                            <div>
+                                <span id="startTaxiFuel" class="font-bold text-lg text-white">400</span>
+                                <span class="text-sm text-gray-400">lbs</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-baseline border-t border-gray-600 pt-3 mt-2">
+                            <span class="text-sm font-semibold text-amber-400">TOTAL FUEL REQUIRED</span>
+                            <div>
+                                <span id="totalFuelRequired" class="font-bold text-xl text-amber-400">0</span>
+                                <span class="text-sm text-gray-400">lbs</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Seat Layout Configuration -->
+                <div>
+                    <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Seat Layout Configuration (kg)</h2>
+                    <div class="bg-gray-800 p-4 rounded-lg space-y-4">
+                        <!-- Cockpit -->
+                        <div class="text-center text-xs text-gray-400 mb-2">-- COCKPIT --</div>
+                        <div class="flex justify-around items-center">
+                            <div class="seat">Pilot<br><span id="pilotSeatWt" class="font-bold text-amber-400">0</span> kg</div>
+                            <div class="seat">Copilot<br><span id="copilotSeatWt" class="font-bold text-amber-400">0</span> kg</div>
+                        </div>
+                        <div class="flex justify-center mt-2">
+                            <div class="seat">Jumpseat<br><span id="jumpseatWt" class="font-bold text-amber-400">0</span> kg</div>
+                        </div>
+
+                        <!-- Cabin -->
+                        <div class="text-center text-xs text-gray-400 mt-4 mb-2">-- CABIN --</div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <!-- Left Column -->
+                            <div class="space-y-3 flex flex-col items-center">
+                                 <div class="seat invisible">&nbsp;</div>
+                                 <div class="seat invisible">&nbsp;</div>
+                                 <div class="seat">S3<br><input type="number" id="seat3" placeholder="0" class="seat-input"></div>
+                                 <div class="table-box my-2 invisible"></div>
+                                 <div class="seat">S4<br><input type="number" id="seat4" placeholder="0" class="seat-input"></div>
+                                 <div class="seat">S6<br><input type="number" id="seat6" placeholder="0" class="seat-input"></div>
+                                 <div class="table-box my-2"></div>
+                                 <div class="seat">S8<br><input type="number" id="seat8" placeholder="0" class="seat-input"></div>
+                                 <div class="seat invisible mt-3">&nbsp;</div>
+                                 <div class="seat invisible">&nbsp;</div>
+                                 <div class="seat invisible">&nbsp;</div>
+                                 <div class="component invisible w-full mt-3">&nbsp;</div>
+                            </div>
+                            <!-- Right Column -->
+                            <div class="space-y-3 flex flex-col items-center">
+                                <div class="seat">Galley<br><input type="number" id="galley" value="34" class="seat-input mt-1"></div>
+                                <div class="seat">S1<br><input type="number" id="seat1" value="23" class="seat-input mt-1"></div>
+                                <div class="seat">S2<br><input type="number" id="seat2" placeholder="0" class="seat-input"></div>
+                                <div class="table-box my-2"></div>
+                                <div class="seat">S5<br><input type="number" id="seat5" placeholder="0" class="seat-input"></div>
+                                <div class="seat">S7<br><input type="number" id="seat7" placeholder="0" class="seat-input"></div>
+                                <div class="table-box my-2"></div>
+                                <div class="seat">S9<br><input type="number" id="seat9" placeholder="0" class="seat-input"></div>
+                                <div class="seat mt-3">S10<br><input type="number" id="seat10" placeholder="0" class="seat-input"></div>
+                                <div class="seat">S11<br><input type="number" id="seat11" placeholder="0" class="seat-input"></div>
+                                <div class="seat">S12<br><input type="number" id="seat12" placeholder="0" class="seat-input"></div>
+                                <div class="component w-full mt-3">Aft Lav<br><input type="number" id="aftLavatory" value="23" class="seat-input mt-1"></div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mt-3">
+                            <div class="flex flex-col items-center space-y-3">
+                                <div class="table-box"></div>
+                                <div class="seat">S13<br><input type="number" id="seat13" placeholder="0" class="seat-input"></div>
+                            </div>
+                             <div class="flex flex-col items-center">
+                                <!-- This is an empty column for alignment -->
+                             </div>
+                        </div>
+                         <!-- Baggage Area -->
+                        <div class="text-center text-xs text-gray-400 mt-4 mb-2">-- BAGGAGE --</div>
+                        <div class="component w-full bg-green-800 border-green-600">
+                            Baggage: <span id="baggageLayoutWt" class="font-bold text-white">0</span> kg
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weight & CG Calculation -->
+                <div>
+                    <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Weight & CG Calculation</h2>
+                    <div class="bg-gray-800 p-2 sm:p-4 rounded-lg overflow-x-auto">
+                        <table class="w-full cg-table">
+                            <thead class="border-b border-gray-600">
+                                <tr>
+                                    <th class="w-2/5">Item</th>
+                                    <th>Weight (lbs)</th>
+                                    <th>Arm (in)</th>
+                                    <th>Moment</th>
+                                    <th>%MAC</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cg-table-body">
+                                <!-- Rows will be dynamically inserted here by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Weight & CG Envelope -->
+                <div>
+                    <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Weight & CG Envelope</h2>
+                    <div class="bg-gray-800 p-4 rounded-lg">
+                        <canvas id="cgEnvelopeChart"></canvas>
+                    </div>
+                </div>
+
+
+                <!-- Weight Summary Section -->
+                <div>
+                    <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Weight Summary</h2>
+                    <div class="space-y-4 bg-gray-800 p-4 rounded-lg">
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-sm font-medium text-gray-300">Total Payload</span>
+                            <div>
+                                <span id="totalPayloadLbs" class="font-bold text-lg text-white">0</span>
+                                <span class="text-sm text-gray-400">lbs / </span>
+                                <span id="totalPayloadKg" class="font-bold text-lg text-white">0</span>
+                                <span class="text-sm text-gray-400">kg</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-sm font-medium text-gray-300">Zero Fuel Weight (ZFW)</span>
+                            <div>
+                                <span id="zfwResult" class="font-bold text-xl text-amber-400">0</span>
+                                <span class="text-sm text-gray-400">lbs / </span>
+                                <span id="zfwMacResult" class="font-bold text-xl text-amber-400">0.00</span>
+                                <span class="text-sm text-gray-400">%MAC</span>
+                                <span id="zfwStatus" class="ml-2 text-sm font-semibold"></span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-sm font-medium text-gray-300">Takeoff Weight (TOW)</span>
+                            <div>
+                                <span id="towResult" class="font-bold text-xl text-amber-400">0</span>
+                                <span class="text-sm text-gray-400">lbs / </span>
+                                <span id="towMacResult" class="font-bold text-xl text-amber-400">0.00</span>
+                                <span class="text-sm text-gray-400">%MAC</span>
+                                <span id="towStatus" class="ml-2 text-sm font-semibold"></span>
+                            </div>
+                        </div>
+                         <div class="flex justify-between items-baseline">
+                            <span class="text-sm font-medium text-gray-300">Landing Weight (LW)</span>
+                            <div>
+                                <span id="landingWeightResult" class="font-bold text-xl text-amber-400">0</span>
+                                <span class="text-sm text-gray-400">lbs / </span>
+                                <span id="landingWeightMacResult" class="font-bold text-xl text-amber-400">0.00</span>
+                                <span class="text-sm text-gray-400">%MAC</span>
+                                <span id="landingWeightStatus" class="ml-2 text-sm font-semibold"></span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-sm font-medium text-gray-300">Extra Fuel</span>
+                            <div>
+                                <span id="extraFuelResult" class="font-bold text-lg text-green-400">0</span>
+                                <span class="text-sm text-gray-400">lbs</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-baseline border-t border-gray-700 pt-3 mt-3">
+                            <span class="text-sm font-medium text-gray-300">Elevator Trim Tab Setting</span>
+                            <div>
+                                <span id="elevatorTrimResult" class="font-bold text-lg text-green-400">N/A</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-baseline border-t border-gray-700 pt-3 mt-3">
+                            <span class="text-sm font-medium text-gray-300">Available Payload</span>
+                            <div>
+                                <span id="availablePayloadLbs" class="font-bold text-lg text-green-400">0</span>
+                                <span class="text-sm text-gray-400">lbs / </span>
+                                <span id="availablePayloadKg" class="font-bold text-lg text-green-400">0</span>
+                                <span class="text-sm text-gray-400">kg</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-sm font-medium text-gray-300">Available Passengers (@80kg)</span>
+                            <div>
+                                <span id="availablePassengers" class="font-bold text-lg text-green-400">0</span>
+                                <span class="text-sm text-gray-400">pax</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-            
-            <div style="text-align: center; padding: 20px;">
-                <div style="color: #ff6b6b; font-size: 18px; margin-bottom: 15px;">
-                    🚫 Access Denied
-                </div>
-                <div style="color: #cccccc; margin-bottom: 20px;">
-                    This application has expired and is no longer accessible.
-                </div>
-                <div style="color: #888; font-size: 14px; margin-bottom: 30px;">
-                    Please contact your administrator for license renewal.
-                </div>
-                <button class="login-btn" onclick="backToLogin()" style="background: linear-gradient(135deg, #666 0%, #888 100%);">
-                    Back to Login
+
+            <!-- Footer with PDF Button -->
+            <footer class="text-center mt-8 pb-4">
+                <button id="downloadPdfBtn" class="bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold py-2 px-4 rounded-lg mb-4">
+                    Download as PDF
                 </button>
-            </div>
+                <p id="pdf-message" class="text-sm text-amber-400 mb-4 hidden">Generating PDF...</p>
+            </footer>
+
         </div>
     </div>
+    
+    <datalist id="pic-names">
+        <option value="Capt. Susetyo Harijanto">
+        <option value="Capt. Purwoko">
+    </datalist>
+    <datalist id="copilot-names">
+        <option value="Capt. Susetyo Harijanto">
+        <option value="Capt. Purwoko">
+    </datalist>
+    <datalist id="engineer-names">
+        <option value="Diki Hariadi">
+        <option value="Lazarus Rio">
+        <option value="Prayit Susonko">
+    </datalist>
+    <datalist id="cabin-service-names">
+        <option value="Qorry Maulidya">
+        <option value="Tiffany Prisilia H">
+        <option value="Agustin Zulfani">
+        <option value="Nadya Casey Ivanka">
+    </datalist>
+
 
     <script>
-        // Login functionality
-        const loginForm = document.getElementById('loginForm');
-        const loginScreen = document.getElementById('loginScreen');
-        const mainApp = document.getElementById('mainApp');
-        const adminPanel = document.getElementById('adminPanel');
-        const expiredScreen = document.getElementById('expiredScreen');
-        const loginError = document.getElementById('loginError');
+        // --- USERS & EXPIRY ---
+        const users = {
+            'harijantosusetyo@gmail.com': { password: 'user1', role: 'user' },
+            'purwoko.mulyono@yahoo.com': { password: 'user2', role: 'user' },
+            'admin@twa.com': { password: 'admin321', role: 'admin' }
+        };
+        const EXPIRY_DATE_KEY = 'g4AppExpiryDate';
+        const DEFAULT_EXPIRY_DATE = '2025-09-30';
 
-        const validCredentials = [
-            { username: 'harijantosusetyo@gmail.com', password: 'user1', role: 'user' },
-            { username: 'purwoko.mulyono@yahoo.com', password: 'user2', role: 'user' },
-            { username: 'admin@twa.com', password: 'admin123', role: 'admin' }
-        ];
+        // --- PAGE ELEMENTS ---
+        const loginPage = document.getElementById('login-page');
+        const appPage = document.getElementById('app-page');
+        const adminPage = document.getElementById('admin-page');
+        const expiredPage = document.getElementById('expired-page');
+        const loginForm = document.getElementById('login-form');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const loginError = document.getElementById('login-error');
+        const expiryDateInput = document.getElementById('expiry-date-input');
+        const saveExpiryBtn = document.getElementById('save-expiry-btn');
+        const adminMessage = document.getElementById('admin-message');
+        const appLogoutBtn = document.getElementById('app-logout-btn');
+        const adminLogoutBtn = document.getElementById('admin-logout-btn');
 
-        // Expiry management
-        function getExpiryDate() {
-            return localStorage.getItem('appExpiryDate');
-        }
+        // --- CONSTANTS ---
+        const KG_TO_LBS = 2.20462;
 
-        function setExpiryDate(date) {
-            localStorage.setItem('appExpiryDate', date);
-        }
+        // --- DYNAMIC FUEL CALCULATION CONSTANTS ---
+        const BASE_ALTITUDE = 45000; // ft
+        const BASE_TRIP_FUEL = 5129; // lbs
+        const BASE_TRIP_TIME_HOURS = 1 + (25 / 60); // 1.4166... hours
+        const BASE_FUEL_BURN = BASE_TRIP_FUEL / BASE_TRIP_TIME_HOURS; // lbs/hr at base altitude
+        const ALTITUDE_ADJUSTMENT_FACTOR = 0.005; 
 
-        function isAppExpired() {
-            const expiryDate = getExpiryDate();
-            if (!expiryDate) return false;
-            
-            const today = new Date();
-            const expiry = new Date(expiryDate);
-            return today > expiry;
-        }
+        // --- MAC LOOKUP TABLE ---
+        const MAC_TABLE = {
+            430: [25.4, 25.5, 25.6, 25.7, 25.7, 25.8, 25.8, 25.9, 25.9, 26.0], 431: [26.1, 26.1, 26.2, 26.3, 26.3, 26.4, 26.4, 26.5, 26.5, 26.6], 432: [26.7, 26.7, 26.8, 26.9, 27.0, 27.1, 27.1, 27.2, 27.2, 27.3], 433: [27.3, 27.3, 27.4, 27.5, 27.5, 27.6, 27.6, 27.7, 27.7, 27.8], 434: [27.9, 28.0, 28.0, 28.1, 28.1, 28.2, 28.2, 28.3, 28.3, 28.4], 435: [28.5, 28.5, 28.6, 28.6, 28.7, 28.8, 28.8, 28.9, 28.9, 29.0], 436: [29.1, 29.1, 29.2, 29.2, 29.3, 29.4, 29.4, 29.5, 29.5, 29.6], 437: [30.3, 30.3, 30.4, 30.4, 30.5, 30.6, 30.6, 30.7, 30.7, 30.8], 438: [30.9, 30.9, 31.0, 31.1, 31.2, 31.3, 31.3, 31.4, 31.4, 31.5], 439: [31.5, 31.5, 31.6, 31.6, 31.7, 31.8, 31.8, 31.9, 31.9, 32.0], 440: [32.1, 32.1, 32.2, 32.3, 32.3, 32.4, 32.4, 32.5, 32.5, 32.6], 441: [32.7, 32.7, 32.8, 32.9, 33.0, 33.0, 33.1, 33.1, 33.2, 33.3], 442: [33.3, 33.3, 33.4, 33.5, 33.5, 33.6, 33.6, 33.7, 33.7, 33.8], 443: [33.9, 33.9, 34.0, 34.1, 34.2, 34.3, 34.3, 34.4, 34.4, 34.5], 444: [34.5, 34.6, 34.6, 34.7, 34.7, 34.8, 34.8, 34.9, 34.9, 35.0], 445: [35.1, 35.2, 35.2, 35.3, 35.3, 35.4, 35.4, 35.5, 35.5, 35.6], 446: [35.7, 35.8, 35.8, 35.9, 36.0, 36.1, 36.1, 36.2, 36.2, 36.3], 447: [36.3, 36.4, 36.4, 36.5, 36.6, 36.7, 36.7, 36.8, 36.8, 36.9], 448: [36.9, 37.0, 37.0, 37.1, 37.2, 37.3, 37.3, 37.4, 37.4, 37.5], 449: [37.5, 37.6, 37.6, 37.7, 37.8, 37.9, 37.9, 38.0, 38.0, 38.1], 450: [38.1, 38.2, 38.2, 38.3, 38.4, 38.5, 38.5, 38.6, 38.6, 38.7], 451: [38.1, 38.1, 38.2, 38.3, 38.3, 38.4, 38.4, 38.5, 38.5, 38.6], 452: [38.7, 38.7, 38.8, 38.8, 38.9, 39.0, 39.0, 39.1, 39.1, 39.2], 453: [39.3, 39.3, 39.4, 39.5, 39.5, 39.6, 39.6, 39.7, 39.7, 39.8], 454: [39.9, 39.9, 40.0, 40.1, 40.1, 40.2, 40.2, 40.3, 40.3, 40.4], 455: [40.5, 40.5, 40.6, 40.7, 40.7, 40.8, 40.8, 40.9, 40.9, 41.0], 456: [41.1, 41.1, 41.2, 41.3, 41.3, 41.4, 41.4, 41.5, 41.5, 41.6], 457: [41.7, 41.7, 41.8, 41.9, 41.9, 42.0, 42.0, 42.1, 42.1, 42.2], 458: [42.3, 42.3, 42.4, 42.5, 42.5, 42.6, 42.6, 42.7, 42.7, 42.8], 459: [42.9, 42.9, 43.0, 43.1, 43.1, 43.2, 43.2, 43.3, 43.3, 43.4], 460: [43.5, 43.5, 43.6, 43.7, 43.7, 43.8, 43.8, 43.9, 43.9, 44.0], 461: [44.1, 44.1, 44.2, 44.3, 44.3, 44.4, 44.4, 44.5, 44.5, 44.6], 462: [44.7, 44.7, 44.8, 44.9, 44.9, 45.0, 45.0, 45.1, 45.1, 45.2], 463: [45.3, 45.3, 45.4, 45.5, 45.5, 45.6, 45.6, 45.7, 45.7, 45.8], 464: [45.9, 45.9, 46.0, 46.1, 46.1, 46.2, 46.2, 46.3, 46.3, 46.4], 465: [46.5, 46.5, 46.6, 46.7, 46.7, 46.8, 46.8, 46.9, 46.9, 47.0], 466: [47.1, 47.1, 47.2, 47.3, 47.3, 47.4, 47.4, 47.5, 47.5, 47.6], 467: [47.7, 47.7, 47.8, 47.9, 47.9, 48.0, 48.0, 48.1, 48.1, 48.2], 468: [48.3, 48.3, 48.4, 48.5, 48.5, 48.6, 48.6, 48.7, 48.7, 48.8], 469: [48.9, 48.9, 49.0, 49.1, 49.1, 49.2, 49.2, 49.3, 49.3, 49.4], 470: [49.5, 49.5, 49.6, 49.7, 49.7, 49.8, 49.8, 49.9, 49.9, 50.0],
+        };
+        const ELEVATOR_TRIM_TABLE = { 29000: { 36: 11, 37: 10, 38: 9, 39: 8, 40: 7, 41: 6, 42: 5, 43: 4, 44: 3, 45: 2 }, 28000: { 36: 11, 37: 10, 38: 9, 39: 8, 40: 7, 41: 6, 42: 5, 43: 4, 44: 3, 45: 2 }, 27000: { 36: 11, 37: 10, 38: 9, 39: 8, 40: 7, 41: 7, 42: 6, 43: 5, 44: 4, 45: 3 }, 26000: { 36: 12, 37: 11, 38: 10, 39: 9, 40: 8, 41: 7, 42: 6, 43: 5, 44: 4, 45: 3 }, 25000: { 36: 12, 37: 11, 38: 10, 39: 9, 40: 8, 41: 7, 42: 6, 43: 5, 44: 4, 45: 3 }, 24000: { 36: 12, 37: 11, 38: 10, 39: 9, 40: 8, 41: 7, 42: 6, 43: 5, 44: 4, 45: 3 }, 23000: { 36: 12, 37: 11, 38: 10, 39: 9, 40: 8, 41: 7, 42: 6, 43: 5, 44: 4, 45: 3 }, 22000: { 36: 12, 37: 11, 38: 10, 39: 9, 40: 8, 41: 7, 42: 6, 43: 5, 44: 4, 45: 3 }, 21000: { 36: 12, 37: 11, 38: 10, 39: 9, 40: 8, 41: 7, 42: 6, 43: 5, 44: 4, 45: 3 }, 20000: { 36: 12, 37: 11, 38: 10, 39: 9, 40: 8, 41: 7, 42: 6, 43: 5, 44: 4, 45: 3 }, 19000: { 36: 12, 37: 11, 38: 10, 39: 9, 40: 8, 41: 7, 42: 6, 43: 5, 44: 4, 45: 3 }, 18000: { 36: 12, 37: 11, 38: 10, 39: 9, 40: 8, 41: 7, 42: 6, 43: 5, 44: 4, 45: 3 }, 17000: { 36: 12, 37: 11, 38: 10, 39: 9, 40: 8, 41: 7, 42: 6, 43: 5, 44: 4, 45: 3 }, 16000: { 36: 12, 37: 11, 38: 10, 39: 9, 40: 8, 41: 7, 42: 6, 43: 5, 44: 4, 45: 3 }, 15000: { 36: 12, 37: 11, 38: 10, 39: 9, 40: 8, 41: 6, 42: 5, 43: 4, 44: 3, 45: 2 }, 14000: { 36: 12, 37: 11, 38: 10, 39: 8, 40: 7, 41: 6, 42: 5, 43: 4, 44: 3, 45: 1 }, 13000: { 36: 12, 37: 11, 38: 10, 39: 8, 40: 7, 41: 5, 42: 4, 43: 3, 44: 2, 45: 1 }, 12000: { 36: 12, 37: 11, 38: 10, 39: 8, 40: 7, 41: 5, 42: 4, 43: 3, 44: 2, 45: 1 }, 11000: { 36: 11, 37: 10, 38: 9, 39: 7, 40: 6, 41: 5, 42: 4, 43: 3, 44: 2, 45: 1 }, 10000: { 36: 11, 37: 9, 38: 8, 39: 7, 40: 6, 41: 5, 42: 4, 43: 3, 44: 2, 45: 1 }, 9000: { 36: 10, 37: 8, 38: 7, 39: 6, 40: 5, 41: 4, 42: 3, 43: 2, 44: 1, 45: -2 }, 8000: { 36: 9, 37: 8, 38: 7, 39: 5, 40: 4, 41: 3, 42: 2, 43: 1, 44: -1, 45: -3 }, 7000: { 36: 9, 37: 8, 38: 7, 39: 5, 40: 4, 41: 3, 42: 2, 43: 1, 44: -1, 45: -4 }, 6000: { 36: 8, 37: 7, 38: 6, 39: 5, 40: 4, 41: 3, 42: 1, 43: -2, 44: -5, 45: -6 }, 5000: { 36: 7, 37: 6, 38: 5, 39: 3, 40: 2, 41: 0, 42: -1, 43: -3, 44: -4, 45: -7 }, 4000: { 36: 7, 37: 5, 38: 4, 39: 2, 40: 1, 41: -1, 42: -2, 43: -4, 44: -5, 45: -8 }, 3000: { 36: 7, 37: 5, 38: 4, 39: 2, 40: 1, 41: -1, 42: -3, 43: -5, 44: -6, 45: -9 }, 2000: { 36: 5, 37: 3, 38: 2, 39: 0, 40: -1, 41: -3, 42: -4, 43: -7, 44: -8, 45: -10 }, 1000: { 36: 5, 37: 3, 38: 2, 39: 0, 40: -1, 41: -3, 42: -6, 43: -7, 44: -9, 45: -11 }
+        };
 
-        function getDaysRemaining() {
-            const expiryDate = getExpiryDate();
-            if (!expiryDate) return null;
-            
-            const today = new Date();
-            const expiry = new Date(expiryDate);
-            const diffTime = expiry - today;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            return diffDays;
-        }
+        // --- ARM VALUES ---
+        let ARMS = { emptyWeight: 463.9, crew: 123.0, cockpitStorage: 127.0, galley: 537.0, aftLavatory: 595.0, crewBaggage: 181.0,  jumpSeat: 140.0, cabinStorage: 415.0, seat1: 595.0, seat2: 237.0, seat3: 285.0, seat4: 285.0, seat5: 237.0, seat6: 331.0, seat7: 381.0, seat8: 331.0, seat9: 381.0, seat10: 439.0, seat11: 425.0, seat12: 425.0, seat13: 477.0, baggage: 637.0, fuel: 480.0 };
 
-        function updateExpiryDisplay() {
-            const expiryDate = getExpiryDate();
-            const daysRemaining = getDaysRemaining();
-            
-            if (expiryDate) {
-                const formattedDate = new Date(expiryDate).toLocaleDateString();
-                document.getElementById('currentExpiry').textContent = formattedDate;
-                
-                if (daysRemaining !== null) {
-                    if (daysRemaining > 0) {
-                        document.getElementById('daysRemaining').textContent = daysRemaining + ' days';
-                        document.getElementById('appStatus').textContent = 'Active';
-                        document.getElementById('appStatus').style.color = '#4ade80';
-                    } else {
-                        document.getElementById('daysRemaining').textContent = 'Expired';
-                        document.getElementById('appStatus').textContent = 'Expired';
-                        document.getElementById('appStatus').style.color = '#ff6b6b';
-                    }
-                }
-            }
-        }
+        // --- ELEMENT SELECTORS ---
+        const inputs = { rampWeight: document.getElementById('rampWeight'), maxTakeoffWeight: document.getElementById('maxTakeoffWeight'), emptyWeight: document.getElementById('emptyWeight'), pilot: document.getElementById('pilot'), copilot: document.getElementById('copilot'), engineer: document.getElementById('engineer'), cabinService: document.getElementById('cabinService'), baggage: document.getElementById('baggage'), cockpitStorage: document.getElementById('cockpitStorage'), cabinStorage: document.getElementById('cabinStorage'), picName: document.getElementById('picName'), copilotName: document.getElementById('copilotName'), engineerName: document.getElementById('engineerName'), cabinServiceName: document.getElementById('cabinServiceName'), totalPob: document.getElementById('totalPob'), galley: document.getElementById('galley'), seat1: document.getElementById('seat1'), seat2: document.getElementById('seat2'), seat3: document.getElementById('seat3'), seat4: document.getElementById('seat4'), seat5: document.getElementById('seat5'), seat6: document.getElementById('seat6'), seat7: document.getElementById('seat7'), seat8: document.getElementById('seat8'), seat9: document.getElementById('seat9'), seat10: document.getElementById('seat10'), seat11: document.getElementById('seat11'), seat12: document.getElementById('seat12'), seat13: document.getElementById('seat13'), aftLavatory: document.getElementById('aftLavatory'), tripTimeHours: document.getElementById('tripTimeHours'), tripTimeMinutes: document.getElementById('tripTimeMinutes'), tripToAlternateHours: document.getElementById('tripToAlternateHours'), tripToAlternateMinutes: document.getElementById('tripToAlternateMinutes'), fuelConsumption: document.getElementById('fuelConsumption'), airspeed: document.getElementById('airspeed'), altitude: document.getElementById('altitude'), headwind: document.getElementById('headwind'), fuelOnBoard: document.getElementById('fuelOnBoard'), routeFrom: document.getElementById('routeFrom'), routeTo: document.getElementById('routeTo'), };
+        const outputs = { pilotSeatWt: document.getElementById('pilotSeatWt'), copilotSeatWt: document.getElementById('copilotSeatWt'), jumpseatWt: document.getElementById('jumpseatWt'), baggageLayoutWt: document.getElementById('baggageLayoutWt'), cgTableBody: document.getElementById('cg-table-body'), totalPayloadLbs: document.getElementById('totalPayloadLbs'), totalPayloadKg: document.getElementById('totalPayloadKg'), zfwResult: document.getElementById('zfwResult'), towResult: document.getElementById('towResult'), zfwStatus: document.getElementById('zfwStatus'), towStatus: document.getElementById('towStatus'), landingWeightResult: document.getElementById('landingWeightResult'), landingWeightStatus: document.getElementById('landingWeightStatus'), extraFuelResult: document.getElementById('extraFuelResult'), availablePayloadLbs: document.getElementById('availablePayloadLbs'), availablePayloadKg: document.getElementById('availablePayloadKg'), availablePassengers: document.getElementById('availablePassengers'), zfwMacResult: document.getElementById('zfwMacResult'), towMacResult: document.getElementById('towMacResult'), landingWeightMacResult: document.getElementById('landingWeightMacResult'), elevatorTrimResult: document.getElementById('elevatorTrimResult'), maxRange: document.getElementById('maxRange'), fuelTripRequired: document.getElementById('fuelTripRequired'), alternateFuel: document.getElementById('alternateFuel'), reserveFuel: document.getElementById('reserveFuel'), contingencyFuel: document.getElementById('contingencyFuel'), startTaxiFuel: document.getElementById('startTaxiFuel'), totalFuelRequired: document.getElementById('totalFuelRequired'), };
+        let cgChart;
 
-        function showExpiryBanner() {
-            const expiryDate = getExpiryDate();
-            const daysRemaining = getDaysRemaining();
-            
-            if (expiryDate && daysRemaining !== null && daysRemaining > 0) {
-                const expiryBanner = document.getElementById('expiryBanner');
-                const expiryMessage = document.getElementById('expiryMessage');
-                
-                const formattedDate = new Date(expiryDate).toLocaleDateString();
-                expiryMessage.textContent = `Application expires on ${formattedDate} (${daysRemaining} days remaining)`;
-                expiryBanner.classList.remove('hidden');
-            }
-        }
-
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            const user = validCredentials.find(cred => 
-                cred.username === username && cred.password === password
-            );
-            
-            if (user) {
-                loginScreen.classList.add('hidden');
-                loginError.classList.add('hidden');
-                
-                if (user.role === 'admin') {
-                    adminPanel.classList.remove('hidden');
-                    updateExpiryDisplay();
+        // --- LOGIN & EXPIRY LOGIC ---
+        function getExpiryDate() { return localStorage.getItem(EXPIRY_DATE_KEY) || DEFAULT_EXPIRY_DATE; }
+        function checkExpiry() { const expiryDate = new Date(getExpiryDate()); const today = new Date(); today.setHours(0, 0, 0, 0); return today > expiryDate; }
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = usernameInput.value;
+            const password = passwordInput.value;
+            const user = users[username];
+            if (user && user.password === password) {
+                if (checkExpiry() && user.role !== 'admin') {
+                    loginPage.classList.add('hidden');
+                    expiredPage.classList.remove('hidden');
                 } else {
-                    // Check if app is expired for regular users
-                    if (isAppExpired()) {
-                        expiredScreen.classList.remove('hidden');
+                    if (user.role === 'admin') {
+                        loginPage.classList.add('hidden');
+                        adminPage.classList.remove('hidden');
+                        expiryDateInput.value = getExpiryDate();
                     } else {
-                        mainApp.classList.remove('hidden');
-                        showExpiryBanner();
+                        loginPage.classList.add('hidden');
+                        appPage.classList.remove('hidden');
+                        initializeCgEnvelope();
+                        calculateAll();
+                        updateExpiryCountdown();
                     }
                 }
             } else {
-                loginError.textContent = 'Invalid username or password';
+                loginError.textContent = 'Invalid username or password.';
                 loginError.classList.remove('hidden');
             }
-        });
-
-        function logout() {
-            loginScreen.classList.remove('hidden');
-            mainApp.classList.add('hidden');
-            adminPanel.classList.add('hidden');
-            expiredScreen.classList.add('hidden');
-            document.getElementById('expiryBanner').classList.add('hidden');
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-            loginError.classList.add('hidden');
         }
-
-        function backToLogin() {
-            expiredScreen.classList.add('hidden');
-            loginScreen.classList.remove('hidden');
-        }
-
-        function saveExpiryDate() {
-            const expiryDate = document.getElementById('expiryDate').value;
-            if (expiryDate) {
-                setExpiryDate(expiryDate);
-                updateExpiryDisplay();
-                
-                const saveMessage = document.getElementById('saveMessage');
-                saveMessage.textContent = 'Expiry date saved successfully!';
-                saveMessage.classList.remove('hidden');
-                
-                setTimeout(() => {
-                    saveMessage.classList.add('hidden');
-                }, 3000);
-            }
-        }
-
-        // Weight calculation functionality
-        function kgToLbs(kg) {
-            return kg * 2.20462;
-        }
-
-        function formatNumber(num) {
-            return num.toLocaleString();
-        }
-
-        function calculateCGTable() {
-            // Get all input values and convert to lbs
-            const emptyWeight = parseFloat(document.getElementById('emptyWeight').value) || 43743;
-            const pilot = parseFloat(document.getElementById('pilot').value) || 0;
-            const copilot = parseFloat(document.getElementById('copilot').value) || 0;
-            const engineer = parseFloat(document.getElementById('engineer').value) || 0;
-            const cabinService = parseFloat(document.getElementById('cabinService').value) || 0;
-            const baggage = parseFloat(document.getElementById('baggage').value) || 0;
-            const cockpitStorage = parseFloat(document.getElementById('cockpitStorage').value) || 0;
-            const cabinStorage = parseFloat(document.getElementById('cabinStorage').value) || 0;
-            
-            // Get seat layout values and convert to lbs
-            const fwdLavatory = parseFloat(document.getElementById('fwdLavatory').value) || 0;
-            const galley = parseFloat(document.getElementById('galley').value) || 0;
-            const aftLavatory = parseFloat(document.getElementById('aftLavatory').value) || 0;
-            
-            // Get passenger seat weights and convert to lbs
-            const seat1 = parseFloat(document.getElementById('seat1').value) || 0;
-            const seat2 = parseFloat(document.getElementById('seat2').value) || 0;
-            const seat3 = parseFloat(document.getElementById('seat3').value) || 0;
-            const seat4 = parseFloat(document.getElementById('seat4').value) || 0;
-            const seat5 = parseFloat(document.getElementById('seat5').value) || 0;
-            const seat6 = parseFloat(document.getElementById('seat6').value) || 0;
-            const seat7 = parseFloat(document.getElementById('seat7').value) || 0;
-            const seat8 = parseFloat(document.getElementById('seat8').value) || 0;
-            const seat9 = parseFloat(document.getElementById('seat9').value) || 0;
-            const seat10 = parseFloat(document.getElementById('seat10').value) || 0;
-            const seat11 = parseFloat(document.getElementById('seat11').value) || 0;
-            const seat12 = parseFloat(document.getElementById('seat12').value) || 0;
-            const seat13 = parseFloat(document.getElementById('seat13').value) || 0;
-
-            // Show/hide rows based on input values
-            const rowVisibility = [
-                { row: 'rowCrew', condition: (pilot + copilot) > 0 },
-                { row: 'rowCockpitStorage', condition: cockpitStorage > 0 },
-                { row: 'rowCrewBaggage', condition: cabinService > 0 },
-                { row: 'rowJumpSeat', condition: engineer > 0 },
-                { row: 'rowCabinStorage', condition: cabinStorage > 0 },
-                { row: 'rowSeat1', condition: seat1 > 0 },
-                { row: 'rowSeat2', condition: seat2 > 0 },
-                { row: 'rowSeat3', condition: seat3 > 0 },
-                { row: 'rowSeat4', condition: seat4 > 0 },
-                { row: 'rowSeat5', condition: seat5 > 0 },
-                { row: 'rowSeat6', condition: seat6 > 0 },
-                { row: 'rowSeat7', condition: seat7 > 0 },
-                { row: 'rowSeat8', condition: seat8 > 0 },
-                { row: 'rowSeat9', condition: seat9 > 0 },
-                { row: 'rowSeat10', condition: seat10 > 0 },
-                { row: 'rowSeat11', condition: seat11 > 0 },
-                { row: 'rowSeat12', condition: seat12 > 0 },
-                { row: 'rowBaggage', condition: baggage > 0 }
-            ];
-
-            rowVisibility.forEach(item => {
-                const rowElement = document.getElementById(item.row);
-                if (rowElement) {
-                    rowElement.style.display = item.condition ? 'table-row' : 'none';
-                }
-            });
-
-            // Convert kg values to lbs
-            const crewLbs = kgToLbs(pilot + copilot);
-            const jumpSeatLbs = kgToLbs(engineer);
-            const cockpitStorageLbs = kgToLbs(cockpitStorage);
-            const galleyLbs = kgToLbs(galley);
-            const fwdLavLbs = kgToLbs(fwdLavatory);
-            const aftLavLbs = kgToLbs(aftLavatory);
-            const crewBaggageLbs = kgToLbs(cabinService); // Assuming cabin service is crew baggage
-            const cabinStorageLbs = kgToLbs(cabinStorage);
-            const baggageLbs = kgToLbs(baggage);
-            
-            // Convert passenger seats to lbs
-            const seat1Lbs = kgToLbs(seat1);
-            const seat2Lbs = kgToLbs(seat2);
-            const seat3Lbs = kgToLbs(seat3);
-            const seat4Lbs = kgToLbs(seat4);
-            const seat5Lbs = kgToLbs(seat5);
-            const seat6Lbs = kgToLbs(seat6);
-            const seat7Lbs = kgToLbs(seat7);
-            const seat8Lbs = kgToLbs(seat8);
-            const seat9Lbs = kgToLbs(seat9);
-            const seat10Lbs = kgToLbs(seat10);
-            const seat11Lbs = kgToLbs(seat11);
-            const seat12Lbs = kgToLbs(seat12);
-
-            // Calculate moments (Weight × Arm)
-            const emptyMoment = emptyWeight * 463.9;
-            const crewMoment = crewLbs * 123.0;
-            const cockpitStorageMoment = cockpitStorageLbs * 127.0;
-            const galleyMoment = galleyLbs * 537.0;
-            const fwdLavMoment = fwdLavLbs * 595.0;
-            const aftLavMoment = aftLavLbs * 595.0;
-            const crewBaggageMoment = crewBaggageLbs * 181.0;
-            const jumpSeatMoment = jumpSeatLbs * 140.0;
-            const cabinStorageMoment = cabinStorageLbs * 415.0;
-            
-            // Passenger seat moments
-            const seat1Moment = seat1Lbs * 237.0;
-            const seat2Moment = seat2Lbs * 237.0;
-            const seat3Moment = seat3Lbs * 285.0;
-            const seat4Moment = seat4Lbs * 285.0;
-            const seat5Moment = seat5Lbs * 331.0;
-            const seat6Moment = seat6Lbs * 331.0;
-            const seat7Moment = seat7Lbs * 381.0;
-            const seat8Moment = seat8Lbs * 381.0;
-            const seat9Moment = seat9Lbs * 439.0;
-            const seat10Moment = seat10Lbs * 425.0;
-            const seat11Moment = seat11Lbs * 425.0;
-            const seat12Moment = seat12Lbs * 465.0;
-            const baggageMoment = baggageLbs * 637.0;
-
-            // Update CG table values
-            document.getElementById('cgEmptyWeight').textContent = formatNumber(Math.round(emptyWeight));
-            document.getElementById('cgEmptyMoment').textContent = formatNumber(Math.round(emptyMoment));
-            
-            document.getElementById('cgCrew').textContent = formatNumber(Math.round(crewLbs));
-            document.getElementById('cgCrewMoment').textContent = formatNumber(Math.round(crewMoment));
-            
-            document.getElementById('cgCockpitStorage').textContent = formatNumber(Math.round(cockpitStorageLbs));
-            document.getElementById('cgCockpitStorageMoment').textContent = formatNumber(Math.round(cockpitStorageMoment));
-            
-            document.getElementById('cgGalley').textContent = formatNumber(Math.round(galleyLbs));
-            document.getElementById('cgGalleyMoment').textContent = formatNumber(Math.round(galleyMoment));
-            
-            document.getElementById('cgFwdLav').textContent = formatNumber(Math.round(fwdLavLbs));
-            document.getElementById('cgFwdLavMoment').textContent = formatNumber(Math.round(fwdLavMoment));
-            
-            document.getElementById('cgAftLav').textContent = formatNumber(Math.round(aftLavLbs));
-            document.getElementById('cgAftLavMoment').textContent = formatNumber(Math.round(aftLavMoment));
-            
-            document.getElementById('cgCrewBaggage').textContent = formatNumber(Math.round(crewBaggageLbs));
-            document.getElementById('cgCrewBaggageMoment').textContent = formatNumber(Math.round(crewBaggageMoment));
-            
-            document.getElementById('cgJumpSeat').textContent = formatNumber(Math.round(jumpSeatLbs));
-            document.getElementById('cgJumpSeatMoment').textContent = formatNumber(Math.round(jumpSeatMoment));
-            
-            document.getElementById('cgCabinStorage').textContent = formatNumber(Math.round(cabinStorageLbs));
-            document.getElementById('cgCabinStorageMoment').textContent = formatNumber(Math.round(cabinStorageMoment));
-
-            // Update passenger seats
-            document.getElementById('cgSeat1').textContent = formatNumber(Math.round(seat1Lbs));
-            document.getElementById('cgSeat1Moment').textContent = formatNumber(Math.round(seat1Moment));
-            
-            document.getElementById('cgSeat2').textContent = formatNumber(Math.round(seat2Lbs));
-            document.getElementById('cgSeat2Moment').textContent = formatNumber(Math.round(seat2Moment));
-            
-            document.getElementById('cgSeat3').textContent = formatNumber(Math.round(seat3Lbs));
-            document.getElementById('cgSeat3Moment').textContent = formatNumber(Math.round(seat3Moment));
-            
-            document.getElementById('cgSeat4').textContent = formatNumber(Math.round(seat4Lbs));
-            document.getElementById('cgSeat4Moment').textContent = formatNumber(Math.round(seat4Moment));
-            
-            document.getElementById('cgSeat5').textContent = formatNumber(Math.round(seat5Lbs));
-            document.getElementById('cgSeat5Moment').textContent = formatNumber(Math.round(seat5Moment));
-            
-            document.getElementById('cgSeat6').textContent = formatNumber(Math.round(seat6Lbs));
-            document.getElementById('cgSeat6Moment').textContent = formatNumber(Math.round(seat6Moment));
-            
-            document.getElementById('cgSeat7').textContent = formatNumber(Math.round(seat7Lbs));
-            document.getElementById('cgSeat7Moment').textContent = formatNumber(Math.round(seat7Moment));
-            
-            document.getElementById('cgSeat8').textContent = formatNumber(Math.round(seat8Lbs));
-            document.getElementById('cgSeat8Moment').textContent = formatNumber(Math.round(seat8Moment));
-            
-            document.getElementById('cgSeat9').textContent = formatNumber(Math.round(seat9Lbs));
-            document.getElementById('cgSeat9Moment').textContent = formatNumber(Math.round(seat9Moment));
-            
-            document.getElementById('cgSeat10').textContent = formatNumber(Math.round(seat10Lbs));
-            document.getElementById('cgSeat10Moment').textContent = formatNumber(Math.round(seat10Moment));
-            
-            document.getElementById('cgSeat11').textContent = formatNumber(Math.round(seat11Lbs));
-            document.getElementById('cgSeat11Moment').textContent = formatNumber(Math.round(seat11Moment));
-            
-            document.getElementById('cgSeat12').textContent = formatNumber(Math.round(seat12Lbs));
-            document.getElementById('cgSeat12Moment').textContent = formatNumber(Math.round(seat12Moment));
-            
-            document.getElementById('cgBaggage').textContent = formatNumber(Math.round(baggageLbs));
-            document.getElementById('cgBaggageMoment').textContent = formatNumber(Math.round(baggageMoment));
-
-            // Calculate BOW (Basic Operating Weight)
-            const bowWeight = emptyWeight + crewLbs + cockpitStorageLbs + galleyLbs + fwdLavLbs + 
-                            aftLavLbs + crewBaggageLbs + jumpSeatLbs + cabinStorageLbs;
-            const bowMoment = emptyMoment + crewMoment + cockpitStorageMoment + galleyMoment + 
-                            fwdLavMoment + aftLavMoment + crewBaggageMoment + jumpSeatMoment + cabinStorageMoment;
-            const bowArm = bowWeight > 0 ? bowMoment / bowWeight : 0;
-
-            document.getElementById('cgBOW').textContent = formatNumber(Math.round(bowWeight));
-            document.getElementById('cgBOWMoment').textContent = formatNumber(Math.round(bowMoment));
-            document.getElementById('cgBOWArm').textContent = (Math.round(bowArm * 10) / 10).toFixed(1);
-
-            // Calculate ZFW (Zero Fuel Weight)
-            const zfwWeight = bowWeight + seat1Lbs + seat2Lbs + seat3Lbs + seat4Lbs + seat5Lbs + 
-                            seat6Lbs + seat7Lbs + seat8Lbs + seat9Lbs + seat10Lbs + seat11Lbs + 
-                            seat12Lbs + baggageLbs;
-            const zfwMoment = bowMoment + seat1Moment + seat2Moment + seat3Moment + seat4Moment + 
-                            seat5Moment + seat6Moment + seat7Moment + seat8Moment + seat9Moment + 
-                            seat10Moment + seat11Moment + seat12Moment + baggageMoment;
-            const zfwArm = zfwWeight > 0 ? zfwMoment / zfwWeight : 0;
-
-            document.getElementById('cgZFW').textContent = formatNumber(Math.round(zfwWeight));
-            document.getElementById('cgZFWMoment').textContent = formatNumber(Math.round(zfwMoment));
-            document.getElementById('cgZFWArm').textContent = (Math.round(zfwArm * 10) / 10).toFixed(1);
-
-            // For now, TOW and LW are same as ZFW (fuel calculations would be added later)
-            document.getElementById('cgTOW').textContent = formatNumber(Math.round(zfwWeight));
-            document.getElementById('cgTOWMoment').textContent = formatNumber(Math.round(zfwMoment));
-            document.getElementById('cgTOWArm').textContent = (Math.round(zfwArm * 10) / 10).toFixed(1);
-
-            document.getElementById('cgLW').textContent = formatNumber(Math.round(zfwWeight));
-            document.getElementById('cgLWMoment').textContent = formatNumber(Math.round(zfwMoment));
-            document.getElementById('cgLWArm').textContent = (Math.round(zfwArm * 10) / 10).toFixed(1);
-        }
-
-        function calculateWeights() {
-            // Get all input values
-            const emptyWeight = parseFloat(document.getElementById('emptyWeight').value) || 43743;
-            const pilot = parseFloat(document.getElementById('pilot').value) || 0;
-            const copilot = parseFloat(document.getElementById('copilot').value) || 0;
-            const engineer = parseFloat(document.getElementById('engineer').value) || 0;
-            const cabinService = parseFloat(document.getElementById('cabinService').value) || 0;
-            const baggage = parseFloat(document.getElementById('baggage').value) || 0;
-            const cockpitStorage = parseFloat(document.getElementById('cockpitStorage').value) || 0;
-            const cabinStorage = parseFloat(document.getElementById('cabinStorage').value) || 0;
-            
-            // Get seat layout values
-            const fwdLavatory = parseFloat(document.getElementById('fwdLavatory').value) || 0;
-            const galley = parseFloat(document.getElementById('galley').value) || 0;
-            const aftLavatory = parseFloat(document.getElementById('aftLavatory').value) || 0;
-            
-            // Get passenger seat weights
-            const seat1 = parseFloat(document.getElementById('seat1').value) || 0;
-            const seat2 = parseFloat(document.getElementById('seat2').value) || 0;
-            const seat3 = parseFloat(document.getElementById('seat3').value) || 0;
-            const seat4 = parseFloat(document.getElementById('seat4').value) || 0;
-            const seat5 = parseFloat(document.getElementById('seat5').value) || 0;
-            const seat6 = parseFloat(document.getElementById('seat6').value) || 0;
-            const seat7 = parseFloat(document.getElementById('seat7').value) || 0;
-            const seat8 = parseFloat(document.getElementById('seat8').value) || 0;
-            const seat9 = parseFloat(document.getElementById('seat9').value) || 0;
-            const seat10 = parseFloat(document.getElementById('seat10').value) || 0;
-            const seat11 = parseFloat(document.getElementById('seat11').value) || 0;
-            const seat12 = parseFloat(document.getElementById('seat12').value) || 0;
-            const seat13 = parseFloat(document.getElementById('seat13').value) || 0;
-            
-            const rampWeight = parseFloat(document.getElementById('rampWeight').value) || 75000;
-            const maxTakeoffWeight = parseFloat(document.getElementById('maxTakeoffWeight').value) || 74600;
-
-            // Update seat layout auto-filled values
-            document.getElementById('seatPilot').value = pilot;
-            document.getElementById('seatCopilot').value = copilot;
-            document.getElementById('seatJumpseat').value = engineer;
-            document.getElementById('seatBaggage').value = baggage;
-
-            // Convert kg to lbs and calculate totals
-            const totalCrewLbs = kgToLbs(pilot + copilot + engineer + cabinService);
-            const totalPassengerSeatsLbs = kgToLbs(seat1 + seat2 + seat3 + seat4 + seat5 + seat6 + seat7 + seat8 + seat9 + seat10 + seat11 + seat12 + seat13);
-            const totalServiceItemsLbs = kgToLbs(fwdLavatory + galley + aftLavatory);
-            const totalBaggageStorageLbs = kgToLbs(baggage + cockpitStorage + cabinStorage);
-            
-            const totalCrewBaggageLbs = totalCrewLbs + totalPassengerSeatsLbs + totalServiceItemsLbs + totalBaggageStorageLbs;
-            const grossWeight = emptyWeight + totalCrewBaggageLbs;
-
-            // Update summary
-            document.getElementById('summaryEmptyWeight').textContent = formatNumber(emptyWeight) + ' lbs';
-            document.getElementById('summaryPayload').textContent = formatNumber(Math.round(totalCrewBaggageLbs)) + ' lbs';
-            document.getElementById('summaryGrossWeight').textContent = formatNumber(Math.round(grossWeight)) + ' lbs';
-
-            // Check weight status
-            const weightStatus = document.getElementById('weightStatus');
-            if (grossWeight > rampWeight) {
-                weightStatus.textContent = 'OVER RAMP WEIGHT';
-                weightStatus.style.color = '#ff6b6b';
-            } else if (grossWeight > maxTakeoffWeight) {
-                weightStatus.textContent = 'OVER MTOW';
-                weightStatus.style.color = '#ffa500';
+        function handleLogout() { loginPage.classList.remove('hidden'); appPage.classList.add('hidden'); adminPage.classList.add('hidden'); expiredPage.classList.add('hidden'); loginForm.reset(); loginError.classList.add('hidden'); }
+        function handleSaveExpiry() { const newDate = expiryDateInput.value; if (newDate) { localStorage.setItem(EXPIRY_DATE_KEY, newDate); adminMessage.textContent = 'Expiry date saved successfully!'; adminMessage.classList.remove('hidden'); setTimeout(() => adminMessage.classList.add('hidden'), 3000); } }
+        function updateExpiryCountdown() {
+            const expiryDateStr = getExpiryDate();
+            document.getElementById('expiry-date-display').textContent = `This Application is valid until ${new Date(expiryDateStr).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })}`;
+            const expiryDate = new Date(expiryDateStr);
+            expiryDate.setDate(expiryDate.getDate() + 1);
+            const currentDate = new Date();
+            const timeDiff = expiryDate.getTime() - currentDate.getTime();
+            const daysLeft = Math.floor(timeDiff / (1000 * 3600 * 24));
+            const countdownElement = document.getElementById('expiry-countdown');
+            if (daysLeft >= 0) {
+                countdownElement.textContent = `Remaining validity: ${daysLeft} days`;
+                countdownElement.classList.remove('text-red-400');
+                countdownElement.classList.add('text-amber-400');
             } else {
-                weightStatus.textContent = 'WITHIN LIMITS';
-                weightStatus.style.color = '#4ade80';
+                countdownElement.textContent = 'Application Expired';
+                countdownElement.classList.remove('text-amber-400');
+                countdownElement.classList.add('text-red-400');
             }
         }
 
-        // Flight calculation functionality
-        function calculateFlightData() {
-            // Get flight input values
-            const tripTimeHours = parseFloat(document.getElementById('tripTimeHours').value) || 0;
-            const tripTimeMinutes = parseFloat(document.getElementById('tripTimeMinutes').value) || 0;
-            const alternateTimeHours = parseFloat(document.getElementById('alternateTimeHours').value) || 0;
-            const alternateTimeMinutes = parseFloat(document.getElementById('alternateTimeMinutes').value) || 0;
-            const fuelConsumption = parseFloat(document.getElementById('fuelConsumption').value) || 3933.7;
-            const airspeed = parseFloat(document.getElementById('airspeed').value) || 450;
-            const fuelOnboard = parseFloat(document.getElementById('fuelOnboard').value) || 0;
+        // --- HELPER FUNCTIONS ---
+        const kgToLbs = (kg) => (kg || 0) * KG_TO_LBS;
+        const calculateMoment = (weight, arm) => (weight || 0) * (arm || 0);
+        const getMacFromTable = (arm) => { if (!arm || arm < 430 || arm >= 471) return 0; const armInt = Math.floor(arm); const armDecIndex = Math.round((arm - armInt) * 10); const row = MAC_TABLE[armInt]; if (row && row[armDecIndex] !== undefined) return row[armDecIndex]; return 0; };
+        const getElevatorTrimSetting = (zfwMac, fuelOnBoard) => { const fuelKey = Math.max(1000, Math.min(29000, Math.round(fuelOnBoard / 1000) * 1000)); const macKey = Math.max(36, Math.min(45, Math.round(zfwMac))); const fuelRow = ELEVATOR_TRIM_TABLE[fuelKey]; if (fuelRow) { const trimSetting = fuelRow[macKey]; if (trimSetting !== undefined) return trimSetting; } return "N/A"; };
 
-            // Convert time to total minutes
-            const totalTripMinutes = (tripTimeHours * 60) + tripTimeMinutes;
-            const totalAlternateMinutes = (alternateTimeHours * 60) + alternateTimeMinutes;
-
-            // Calculate fuel per minute (fuel consumption per hour / 60)
-            const fuelPerMinute = fuelConsumption / 60;
-
-            // Calculate fuel trip required (trip time + alternate time in minutes * fuel per minute)
-            const fuelTripRequired = (totalTripMinutes + totalAlternateMinutes) * fuelPerMinute;
-
-            // Calculate maximum range with fuel onboard
-            const maxFlightTimeMinutes = fuelOnboard / fuelPerMinute;
-            const maxFlightTimeHours = maxFlightTimeMinutes / 60;
-            const maximumRange = maxFlightTimeHours * airspeed;
-
-            // Update flight calculation fields
-            document.getElementById('fuelTripRequired').value = Math.round(fuelTripRequired * 100) / 100;
-            document.getElementById('maximumRange').value = Math.round(maximumRange * 100) / 100;
-
-            // Calculate alternate fuel
-            const alternateFuel = totalAlternateMinutes * fuelPerMinute;
-            document.getElementById('alternateFuel').value = Math.round(alternateFuel * 100) / 100;
-
-            return {
-                fuelTripRequired: fuelTripRequired,
-                alternateFuel: alternateFuel,
-                fuelPerMinute: fuelPerMinute
-            };
+        // --- CORE CALCULATION FUNCTION ---
+        function calculateAll() {
+            const pilotKg = parseFloat(inputs.pilot.value) || 0; const copilotKg = parseFloat(inputs.copilot.value) || 0; const engineerKg = parseFloat(inputs.engineer.value) || 0; const cabinServiceKg = parseFloat(inputs.cabinService.value) || 0; const baggageKg = parseFloat(inputs.baggage.value) || 0; const cockpitStorageKg = parseFloat(inputs.cockpitStorage.value) || 0; const cabinStorageKg = parseFloat(inputs.cabinStorage.value) || 0;
+            const seatPayloadsKg = { galley: parseFloat(inputs.galley.value) || 0, seat1: parseFloat(inputs.seat1.value) || 0, seat2: parseFloat(inputs.seat2.value) || 0, seat3: parseFloat(inputs.seat3.value) || 0, seat4: parseFloat(inputs.seat4.value) || 0, seat5: parseFloat(inputs.seat5.value) || 0, seat6: parseFloat(inputs.seat6.value) || 0, seat7: parseFloat(inputs.seat7.value) || 0, seat8: parseFloat(inputs.seat8.value) || 0, seat9: parseFloat(inputs.seat9.value) || 0, seat10: parseFloat(inputs.seat10.value) || 0, seat11: parseFloat(inputs.seat11.value) || 0, seat12: parseFloat(inputs.seat12.value) || 0, seat13: parseFloat(inputs.seat13.value) || 0, aftLavatory: parseFloat(inputs.aftLavatory.value) || 0, };
+            const totalSeatPayloadKg = Object.values(seatPayloadsKg).reduce((sum, val) => sum + val, 0);
+            const maxTowLimit = parseFloat(inputs.maxTakeoffWeight.value) || 0; const maxZfwLimit = 49000; const emptyWeight = parseFloat(inputs.emptyWeight.value) || 0;
+            const tripTimeHours = parseFloat(inputs.tripTimeHours.value) || 0; const tripTimeMinutes = parseFloat(inputs.tripTimeMinutes.value) || 0; const currentAltitude = parseFloat(inputs.altitude.value) || 0; 
+            const altitudeDifference = currentAltitude - BASE_ALTITUDE; const altitudeAdjustment = (altitudeDifference / 1000) * ALTITUDE_ADJUSTMENT_FACTOR; const adjustedFuelBurn = BASE_FUEL_BURN * (1 - altitudeAdjustment);
+            inputs.fuelConsumption.value = adjustedFuelBurn.toFixed(1);
+            const totalTripTimeInHours = tripTimeHours + (tripTimeMinutes / 60); const calculatedTripFuel = totalTripTimeInHours * adjustedFuelBurn;
+            const airspeed = parseFloat(inputs.airspeed.value) || 0; const headwind = parseFloat(inputs.headwind.value) || 0; const fuelOnBoard = parseFloat(inputs.fuelOnBoard.value) || 0;
+            const totalPayloadKg = pilotKg + copilotKg + engineerKg + cabinServiceKg + baggageKg + cockpitStorageKg + cabinStorageKg + totalSeatPayloadKg; const totalPayloadLbs = totalPayloadKg * KG_TO_LBS;
+            const cgData = { emptyWeight: { weight: emptyWeight, arm: ARMS.emptyWeight }, crew: { weight: kgToLbs(pilotKg + copilotKg), arm: ARMS.crew }, cockpitStorage: { weight: kgToLbs(cockpitStorageKg), arm: ARMS.cockpitStorage }, galley: { weight: kgToLbs(seatPayloadsKg.galley), arm: ARMS.galley }, aftLavatory: { weight: kgToLbs(seatPayloadsKg.aftLavatory), arm: ARMS.aftLavatory }, crewBaggage: { weight: kgToLbs(cabinServiceKg), arm: ARMS.crewBaggage }, jumpSeat: { weight: kgToLbs(engineerKg), arm: ARMS.jumpSeat }, cabinStorage: { weight: kgToLbs(cabinStorageKg), arm: ARMS.cabinStorage }, seat1: { weight: kgToLbs(seatPayloadsKg.seat1), arm: ARMS.seat1 }, seat2: { weight: kgToLbs(seatPayloadsKg.seat2), arm: ARMS.seat2 }, seat3: { weight: kgToLbs(seatPayloadsKg.seat3), arm: ARMS.seat3 }, seat4: { weight: kgToLbs(seatPayloadsKg.seat4), arm: ARMS.seat4 }, seat5: { weight: kgToLbs(seatPayloadsKg.seat5), arm: ARMS.seat5 }, seat6: { weight: kgToLbs(seatPayloadsKg.seat6), arm: ARMS.seat6 }, seat7: { weight: kgToLbs(seatPayloadsKg.seat7), arm: ARMS.seat7 }, seat8: { weight: kgToLbs(seatPayloadsKg.seat8), arm: ARMS.seat8 }, seat9: { weight: kgToLbs(seatPayloadsKg.seat9), arm: ARMS.seat9 }, seat10: { weight: kgToLbs(seatPayloadsKg.seat10), arm: ARMS.seat10 }, seat11: { weight: kgToLbs(seatPayloadsKg.seat11), arm: ARMS.seat11 }, seat12: { weight: kgToLbs(seatPayloadsKg.seat12), arm: ARMS.seat12 }, seat13: { weight: kgToLbs(seatPayloadsKg.seat13), arm: ARMS.seat13 }, baggage: { weight: kgToLbs(baggageKg), arm: ARMS.baggage }, fuel: { weight: fuelOnBoard, arm: ARMS.fuel }, tripFuel: { weight: -calculatedTripFuel, arm: ARMS.fuel }, };
+            for (const key in cgData) { cgData[key].moment = calculateMoment(cgData[key].weight, cgData[key].arm); }
+            const bowItems = ['emptyWeight', 'crew', 'cockpitStorage', 'galley', 'aftLavatory', 'crewBaggage', 'jumpSeat', 'cabinStorage']; const paxItems = ['seat1', 'seat2', 'seat3', 'seat4', 'seat5', 'seat6', 'seat7', 'seat8', 'seat9', 'seat10', 'seat11', 'seat12', 'seat13'];
+            const calculateTotal = (items) => { const total = { weight: 0, moment: 0, arm: 0, mac: 0 }; items.forEach(key => { if (cgData[key]) { total.weight += cgData[key].weight; total.moment += cgData[key].moment; } }); total.arm = total.weight > 0 ? total.moment / total.weight : 0; return total; };
+            const MAC_FORMULA_SLOPE = 0.6025; const MAC_FORMULA_INTERCEPT = -233.6508;
+            const bowTotal = calculateTotal(bowItems); bowTotal.mac = MAC_FORMULA_SLOPE * bowTotal.arm + MAC_FORMULA_INTERCEPT;
+            const paxTotal = calculateTotal(paxItems);
+            const zfwTotal = { weight: bowTotal.weight + paxTotal.weight + cgData.baggage.weight, moment: bowTotal.moment + paxTotal.moment + cgData.baggage.moment, }; zfwTotal.arm = zfwTotal.weight > 0 ? zfwTotal.moment / zfwTotal.weight : 0; zfwTotal.mac = getMacFromTable(zfwTotal.arm);
+            const towTotal = { weight: zfwTotal.weight + cgData.fuel.weight, moment: zfwTotal.moment + cgData.fuel.moment, }; towTotal.arm = towTotal.weight > 0 ? towTotal.moment / towTotal.weight : 0; towTotal.mac = MAC_FORMULA_SLOPE * towTotal.arm + MAC_FORMULA_INTERCEPT;
+            const lwTotal = { weight: towTotal.weight + cgData.tripFuel.weight, moment: towTotal.moment + cgData.tripFuel.moment, }; lwTotal.arm = lwTotal.weight > 0 ? lwTotal.moment / lwTotal.weight : 0; lwTotal.mac = MAC_FORMULA_SLOPE * lwTotal.arm + MAC_FORMULA_INTERCEPT;
+            updateCgTable(cgData, bowTotal, paxItems, zfwTotal, towTotal, lwTotal);
+            updateSummariesAndFlightCalc(totalPayloadKg, totalPayloadLbs, zfwTotal, towTotal, lwTotal, maxZfwLimit, maxTowLimit, adjustedFuelBurn, airspeed, headwind, fuelOnBoard, calculatedTripFuel);
+            updateCgEnvelope(zfwTotal, towTotal, lwTotal);
+            outputs.pilotSeatWt.textContent = pilotKg.toFixed(0); outputs.copilotSeatWt.textContent = copilotKg.toFixed(0); outputs.jumpseatWt.textContent = engineerKg.toFixed(0); outputs.baggageLayoutWt.textContent = baggageKg.toFixed(0);
+        }
+        function updateCgTable(cgData, bowTotal, paxItems, zfwTotal, towTotal, lwTotal) { const format = (val, dec = 0) => val.toFixed(dec); const formatMoment = (val) => (val / 1000).toFixed(2); let html = ''; const createRow = (label, data, isTotal = false, showMac = false) => { const weight = data.weight; const arm = data.arm; const moment = data.moment; let mac = 0; if (showMac) mac = isTotal ? data.mac : getMacFromTable(arm); const rowClass = isTotal ? 'total-row' : 'border-b border-gray-700'; return `<tr class="${rowClass}"><td>${label}</td><td>${format(weight, 1)}</td><td>${arm > 0 ? format(arm, 1) : '-'}</td><td>${formatMoment(moment)}</td><td>${mac > 0 ? format(mac, 2) : '-'}</td></tr>`; }; const createEditableEmptyWeightRow = (data) => { const weight = data.weight; const arm = data.arm; const moment = data.moment; const mac = getMacFromTable(arm); return `<tr class="border-b border-gray-700"><td>Empty Weight</td><td>${format(weight, 1)}</td><td><input id="emptyWeightArmInput" type="number" value="${arm.toFixed(1)}" class="editable-cell-input"></td><td id="emptyWeightMomentCell">${formatMoment(moment)}</td><td><input id="emptyWeightMacInput" type="number" value="${mac.toFixed(1)}" class="editable-cell-input" readonly></td></tr>`; }; html += createEditableEmptyWeightRow(cgData.emptyWeight); html += createRow('Crew', cgData.crew); html += createRow('Cockpit Storage', cgData.cockpitStorage); html += createRow('Galley', cgData.galley); html += createRow('Aft Lavatory', cgData.aftLavatory); html += createRow('Crew Baggage', cgData.crewBaggage); html += createRow('Jump Seat', cgData.jumpSeat); html += createRow('Cabin Storage', cgData.cabinStorage); html += createRow('Basic Operating Weight (BOW)', bowTotal, true, true); html += `<tr><td class="pt-4 font-semibold">Passengers:</td></tr>`; paxItems.forEach(key => { if(cgData[key] && cgData[key].weight > 0) html += createRow(key.charAt(0).toUpperCase() + key.slice(1), cgData[key]); }); html += createRow('Baggage', cgData.baggage); html += createRow('Zero Fuel Weight (ZFW)', zfwTotal, true, true); html += createRow('Fuel', cgData.fuel); html += createRow('Take Off Weight (TOW)', towTotal, true, true); html += createRow('Landing Weight (LW)', lwTotal, true, true); outputs.cgTableBody.innerHTML = html; document.getElementById('emptyWeightArmInput').addEventListener('input', (e) => { ARMS.emptyWeight = parseFloat(e.target.value) || 0; calculateAll(); }); }
+        function updateSummariesAndFlightCalc(totalPayloadKg, totalPayloadLbs, zfwTotal, towTotal, lwTotal, maxZfwLimit, maxTowLimit, fuelConsumption, airspeed, headwind, fuelOnBoard, tripFuel) { outputs.totalPayloadKg.textContent = totalPayloadKg.toFixed(0); outputs.totalPayloadLbs.textContent = totalPayloadLbs.toFixed(0); outputs.zfwResult.textContent = zfwTotal.weight.toFixed(0); outputs.zfwMacResult.textContent = zfwTotal.mac.toFixed(2); updateStatus(outputs.zfwStatus, zfwTotal.weight, maxZfwLimit); outputs.towResult.textContent = towTotal.weight.toFixed(0); outputs.towMacResult.textContent = towTotal.mac.toFixed(2); updateStatus(outputs.towStatus, towTotal.weight, maxTowLimit); outputs.landingWeightResult.textContent = lwTotal.weight.toFixed(0); outputs.landingWeightMacResult.textContent = lwTotal.mac.toFixed(2); updateStatus(outputs.landingWeightStatus, lwTotal.weight, 66000); const availablePayloadLbs = maxTowLimit - towTotal.weight; const availablePayloadKg = availablePayloadLbs / KG_TO_LBS; const availablePassengers = availablePayloadKg > 0 ? Math.floor(availablePayloadKg / 80) : 0; outputs.availablePayloadLbs.textContent = availablePayloadLbs.toFixed(0); outputs.availablePayloadKg.textContent = availablePayloadKg.toFixed(0); outputs.availablePassengers.textContent = availablePassengers; const groundSpeed = airspeed - headwind; const maxRange = (fuelConsumption > 0 && groundSpeed > 0 && fuelOnBoard > 0) ? (fuelOnBoard / fuelConsumption) * groundSpeed : 0; outputs.maxRange.textContent = maxRange.toFixed(0); const fuelPerMinute = fuelConsumption > 0 ? fuelConsumption / 60 : 0; const totalAlternateTimeMinutes = (parseFloat(inputs.tripToAlternateHours.value) || 0) * 60 + (parseFloat(inputs.tripToAlternateMinutes.value) || 0); const calculatedAlternateFuel = totalAlternateTimeMinutes * fuelPerMinute; const calculatedReserveFuel = 30 * fuelPerMinute; const calculatedContingencyFuel = tripFuel * 0.10; const calculatedStartTaxiFuel = 400; const totalFuelRequired = tripFuel + calculatedAlternateFuel + calculatedReserveFuel + calculatedContingencyFuel + calculatedStartTaxiFuel; const extraFuel = fuelOnBoard - totalFuelRequired; outputs.extraFuelResult.textContent = extraFuel.toFixed(0); outputs.elevatorTrimResult.textContent = getElevatorTrimSetting(zfwTotal.mac, fuelOnBoard); outputs.fuelTripRequired.textContent = tripFuel.toFixed(1); outputs.alternateFuel.textContent = calculatedAlternateFuel.toFixed(1); outputs.reserveFuel.textContent = calculatedReserveFuel.toFixed(1); outputs.contingencyFuel.textContent = calculatedContingencyFuel.toFixed(1); outputs.startTaxiFuel.textContent = calculatedStartTaxiFuel.toFixed(1); outputs.totalFuelRequired.textContent = totalFuelRequired.toFixed(1); }
+        function updateStatus(element, value, limit) { element.classList.remove('text-green-500', 'text-red-500', 'text-yellow-400'); if (value <= 0) { element.textContent = 'Awaiting Input'; element.classList.add('text-yellow-400'); } else if (value > limit) { element.textContent = 'OVERWEIGHT'; element.classList.add('text-red-500'); } else { element.textContent = 'OK'; element.classList.add('text-green-500'); } }
+        function initializeCgEnvelope() { const ctx = document.getElementById('cgEnvelopeChart').getContext('2d'); const envelopeData = [ {x: 38, y: 39400}, {x: 36.4, y: 45000}, {x: 36.4, y: 46500}, {x: 41.3, y: 46500}, {x: 45, y: 44000}, {x: 45, y: 38000}, {x: 42, y: 38000}, {x: 38, y: 39400} ]; cgChart = new Chart(ctx, { type: 'line', data: { datasets: [ { label: 'CG Envelope', data: envelopeData, borderColor: '#fcd34d', backgroundColor: 'rgba(252, 211, 77, 0.2)', fill: true, borderWidth: 2, pointRadius: 0, order: 10 }, { label: 'ZFW', data: [], backgroundColor: '#34d399', pointRadius: 6, pointHoverRadius: 8, type: 'scatter', order: 0 }, { label: 'TOW', data: [], backgroundColor: '#60a5fa', pointRadius: 6, pointHoverRadius: 8, type: 'scatter', order: 0 }, { label: 'LW', data: [], backgroundColor: '#f87171', pointRadius: 6, pointHoverRadius: 8, type: 'scatter', order: 0 } ] }, options: { responsive: true, aspectRatio: 1, scales: { x: { type: 'linear', position: 'bottom', min: 25, max: 51, title: { display: true, text: '% MAC', color: '#9ca3af' }, ticks: { color: '#9ca3af', stepSize: 1 }, grid: { color: 'rgba(156, 163, 175, 0.2)' } }, y: { min: 36000, max: 77000, title: { display: true, text: 'GROSS WEIGHT – LBS', color: '#9ca3af' }, ticks: { color: '#9ca3af', stepSize: 1000, callback: (value) => (value % 1000 === 0) ? value : null }, grid: { color: 'rgba(156, 163, 175, 0.2)' } } }, plugins: { legend: { labels: { color: '#d1d5db' } }, annotation: { annotations: { maxRamp: { type: 'line', yMin: 75000, yMax: 75000, borderColor: 'rgb(239, 68, 68, 0.7)', borderWidth: 2, label: { content: 'Max Ramp', enabled: true, position: 'start', backgroundColor: 'rgba(239, 68, 68, 0.7)' } }, maxTakeoff: { type: 'line', yMin: 74600, yMax: 74600, borderColor: 'rgb(249, 115, 22, 0.7)', borderWidth: 2, label: { content: 'Max Takeoff', enabled: true, position: 'start', backgroundColor: 'rgba(249, 115, 22, 0.7)' } }, maxLanding: { type: 'line', yMin: 66000, yMax: 66000, borderColor: 'rgb(59, 130, 246, 0.7)', borderWidth: 2, label: { content: 'Max Landing Weight', enabled: true, position: 'start', yAdjust: -15, backgroundColor: 'rgba(59, 130, 246, 0.7)' } }, aftForwardLoading: { type: 'line', xMin: 36.4, xMax: 43.5, yMin: 45000, yMax: 45000, borderColor: 'rgb(16, 185, 129, 0.7)', borderWidth: 2, borderDash: [5, 5], label: { content: 'aft to forward loading', enabled: true, position: 'center', yAdjust: -10, backgroundColor: 'rgba(0,0,0,0)', color: 'rgb(16, 185, 129, 0.9)' } } } } } } }); }
+        function updateCgEnvelope(zfw, tow, lw) { if (!cgChart) return; cgChart.data.datasets[1].data = [{ x: zfw.mac, y: zfw.weight }]; cgChart.data.datasets[2].data = [{ x: tow.mac, y: tow.weight }]; cgChart.data.datasets[3].data = [{ x: lw.mac, y: lw.weight }]; cgChart.update(); }
+        async function generateProfessionalPDF() {
+            const pdfMessage = document.getElementById('pdf-message'); pdfMessage.classList.remove('hidden');
+            const { jsPDF } = window.jspdf; const doc = new jsPDF();
+            doc.setFontSize(14); doc.setFont(undefined, 'bold'); doc.text('PT. TRANSWISATA PRIMA AVIATION', 105, 15, null, null, 'center'); doc.setFontSize(18); doc.text('Load Sheet Gulfstream IV SP', 105, 22, null, null, 'center'); doc.setFontSize(12); doc.setFont(undefined, 'normal'); doc.text(`Aircraft Registration: PK-TWY`, 105, 28, null, null, 'center'); doc.setFontSize(10); doc.text(`Date: ${new Date().toLocaleDateString('en-GB')}`, 105, 34, null, null, 'center');
+            doc.autoTable({ startY: 40, head: [['Route Information', '']], body: [['From', inputs.routeFrom.value], ['Destination', inputs.routeTo.value],], theme: 'grid', headStyles: { fillColor: [45, 55, 72] }, });
+            doc.autoTable({ startY: doc.lastAutoTable.finalY + 10, head: [['Role', 'Name']], body: [['PIC', inputs.picName.value], ['Copilot', inputs.copilotName.value], ['Engineer', inputs.engineerName.value], ['Cabin Service', inputs.cabinServiceName.value], ['Total Person on Board (POB)', inputs.totalPob.value],], theme: 'grid', headStyles: { fillColor: [22, 163, 74] }, });
+            let finalY = doc.lastAutoTable.finalY;
+            const tripTime = `${inputs.tripTimeHours.value || 0} hr ${inputs.tripTimeMinutes.value || 0} min`; const alternateTime = `${inputs.tripToAlternateHours.value || 0} hr ${inputs.tripToAlternateMinutes.value || 0} min`;
+            doc.autoTable({ startY: finalY + 10, head: [['Flight Calculation', 'Value']], body: [['Trip Time', tripTime], ['Trip to Alternate', alternateTime], ['Altitude', `${inputs.altitude.value} ft`], ['Airspeed', `${inputs.airspeed.value} kts`], ['Headwind', `${inputs.headwind.value} kts`], ['Fuel on Board', `${inputs.fuelOnBoard.value} lbs`], ['Maximum Range', `${outputs.maxRange.textContent} nm`],], theme: 'grid', headStyles: { fillColor: [45, 55, 72] }, }); finalY = doc.lastAutoTable.finalY;
+            doc.autoTable({ startY: finalY + 10, head: [['Fuel Required', 'Value']], body: [['Fuel Consumption', `${inputs.fuelConsumption.value} lbs/hr`], ['Trip Fuel', `${outputs.fuelTripRequired.textContent} lbs`], ['Alternate Fuel', `${outputs.alternateFuel.textContent} lbs`], ['Final Reserve 30 min', `${outputs.reserveFuel.textContent} lbs`], ['Contingency (10%)', `${outputs.contingencyFuel.textContent} lbs`], ['Start & Taxi', `${outputs.startTaxiFuel.textContent} lbs`], ['TOTAL FUEL REQUIRED', `${outputs.totalFuelRequired.textContent} lbs`],], theme: 'grid', headStyles: { fillColor: [45, 55, 72] }, bodyStyles: { fontStyle: 'bold' }, didParseCell: function(data) { if (data.row.index === 6) { data.cell.styles.fillColor = '#1f2937'; data.cell.styles.textColor = '#fcd34d'; } } }); finalY = doc.lastAutoTable.finalY;
+            const table = document.getElementById('cg-table-body'); let bodyData = []; table.querySelectorAll('tr').forEach(row => { let rowData = []; row.querySelectorAll('td').forEach(cell => { let cellText = cell.querySelector('input') ? cell.querySelector('input').value : cell.innerText; rowData.push(cellText); }); bodyData.push(rowData); });
+            if (finalY + 20 > doc.internal.pageSize.getHeight() - 30) { doc.addPage(); finalY = 10; }
+            doc.autoTable({ startY: finalY + 10, head: [['Item', 'Weight (lbs)', 'Arm (in)', 'Moment', '%MAC']], body: bodyData, theme: 'striped', headStyles: { fillColor: [45, 55, 72] }, styles: { fontSize: 8 }, columnStyles: { 0: { cellWidth: 60 }, 1: { halign: 'right' }, 2: { halign: 'right' }, 3: { halign: 'right' }, 4: { halign: 'right' }, }, didParseCell: function(data) { const originalTable = document.getElementById('cg-table-body'); const originalRow = originalTable.querySelectorAll('tr')[data.row.index]; if (originalRow && originalRow.classList.contains('total-row')) { data.cell.styles.fillColor = '#1f2937'; data.cell.styles.textColor = '#fcd34d'; data.cell.styles.fontStyle = 'bold'; } } }); finalY = doc.lastAutoTable.finalY;
+            doc.setFontSize(11); doc.setFont(undefined, 'bold'); doc.text('Elevator Trim Tab Setting:', 14, finalY + 10); doc.setFont(undefined, 'normal'); doc.text(outputs.elevatorTrimResult.textContent, 65, finalY + 10);
+            const chartCanvas = document.getElementById('cgEnvelopeChart'); const chartImage = chartCanvas.toDataURL('image/png', 1.0); const chartWidth = 80; const chartHeight = 80; const chartX = (doc.internal.pageSize.getWidth() - chartWidth) / 2;
+            if (finalY + 20 + chartHeight > doc.internal.pageSize.getHeight() - 30) { doc.addPage(); finalY = 10; }
+            doc.addImage(chartImage, 'PNG', chartX, finalY + 20, chartWidth, chartHeight);
+            const pageCount = doc.internal.getNumberOfPages(); for (let i = 1; i <= pageCount; i++) { doc.setPage(i); const pageHeight = doc.internal.pageSize.getHeight(); const pageWidth = doc.internal.pageSize.getWidth(); if (i === pageCount) { const picName = inputs.picName.value || '_________________________'; doc.text(picName, 14, pageHeight - 30); doc.line(14, pageHeight - 25, 80, pageHeight - 25); doc.text('Pilot in Command Signature', 14, pageHeight - 20); } doc.setFontSize(10); doc.text(`Page ${i} of ${pageCount}`, pageWidth / 2, pageHeight - 10, { align: 'center' }); }
+            doc.save('G-IV_SP_PK-TWY_Weight_Balance.pdf'); pdfMessage.classList.add('hidden');
         }
 
-        function calculateFuelRequired() {
-            const flightData = calculateFlightData();
-            
-            // Fixed values
-            const reserveFuel = 20 * 65.56; // 20 minutes * 65.56 lbs/min
-            const fuelStarting = 10 * 65.56; // 10 minutes * 65.56 lbs/min
-            const fuelTaxi = 10 * 65.56; // 10 minutes * 65.56 lbs/min
-            
-            // Calculate contingency fuel (10% of fuel trip required)
-            const fuelContingency = flightData.fuelTripRequired * 0.1;
-            
-            // Update fuel required fields
-            document.getElementById('reserveFuel').value = Math.round(reserveFuel * 100) / 100;
-            document.getElementById('fuelContingency').value = Math.round(fuelContingency * 100) / 100;
-            document.getElementById('fuelStarting').value = Math.round(fuelStarting * 100) / 100;
-            document.getElementById('fuelTaxi').value = Math.round(fuelTaxi * 100) / 100;
-            
-            // Calculate total fuel required
-            const totalFuelRequired = flightData.fuelTripRequired + reserveFuel + fuelContingency + 
-                                    flightData.alternateFuel + fuelStarting + fuelTaxi;
-            
-            // Update summary
-            document.getElementById('summaryFuelTrip').textContent = formatNumber(Math.round(flightData.fuelTripRequired)) + ' lbs';
-            document.getElementById('summaryReserveFuel').textContent = formatNumber(Math.round(reserveFuel)) + ' lbs';
-            document.getElementById('summaryContingencyFuel').textContent = formatNumber(Math.round(fuelContingency)) + ' lbs';
-            document.getElementById('summaryAlternateFuel').textContent = formatNumber(Math.round(flightData.alternateFuel)) + ' lbs';
-            document.getElementById('summaryStartTaxiFuel').textContent = formatNumber(Math.round(fuelStarting + fuelTaxi)) + ' lbs';
-            document.getElementById('totalFuelRequired').textContent = formatNumber(Math.round(totalFuelRequired)) + ' lbs';
-        }
+        // --- EVENT LISTENERS ---
+        Object.values(inputs).forEach(input => { if (input) { input.addEventListener('input', calculateAll); input.addEventListener('focus', (e) => { if (e.target.value !== '0' && e.target.value !== '') { e.target.dataset.originalValue = e.target.value; e.target.value = ''; } else if (e.target.value === '0') { e.target.dataset.originalValue = '0'; e.target.value = ''; } }); input.addEventListener('blur', (e) => { if (e.target.value === '' && e.target.dataset.originalValue) { e.target.value = e.target.dataset.originalValue; } else if (e.target.value === '' && !e.target.dataset.originalValue) { if (e.target.placeholder === '0' || e.target.value === '') { e.target.value = '0'; } } calculateAll(); }); } });
+        loginForm.addEventListener('submit', handleLogin);
+        appLogoutBtn.addEventListener('click', handleLogout);
+        adminLogoutBtn.addEventListener('click', handleLogout);
+        saveExpiryBtn.addEventListener('click', handleSaveExpiry);
+        document.getElementById('downloadPdfBtn').addEventListener('click', generateProfessionalPDF);
 
-        // Add event listeners to all input fields
-        document.addEventListener('DOMContentLoaded', function() {
-            const inputs = document.querySelectorAll('.input-box');
-            inputs.forEach(input => {
-                // Add appropriate calculation listeners
-                if (input.id.includes('tripTime') || input.id.includes('alternateTime') || 
-                    input.id === 'fuelConsumption' || input.id === 'airspeed' || input.id === 'fuelOnboard') {
-                    input.addEventListener('input', calculateFuelRequired);
-                } else if (input.id.includes('seat') || input.id === 'fwdLavatory' || 
-                          input.id === 'galley' || input.id === 'aftLavatory') {
-                    input.addEventListener('input', function() {
-                        calculateWeights();
-                        calculateCGTable();
-                    });
-                } else {
-                    input.addEventListener('input', function() {
-                        calculateWeights();
-                        calculateCGTable();
-                    });
-                }
-                
-                // Clear placeholder when user starts typing
-                input.addEventListener('focus', function() {
-                    if (this.placeholder && !this.value) {
-                        this.dataset.placeholder = this.placeholder;
-                        this.placeholder = '';
-                    }
-                });
-                
-                input.addEventListener('blur', function() {
-                    if (!this.value && this.dataset.placeholder) {
-                        this.placeholder = this.dataset.placeholder;
-                    }
-                });
-            });
-            
-            // Load existing expiry date in admin panel
-            const savedExpiry = getExpiryDate();
-            if (savedExpiry) {
-                document.getElementById('expiryDate').value = savedExpiry;
-            }
-            
-            // Initial calculations
-            calculateWeights();
-            calculateFuelRequired();
-            calculateCGTable();
-        });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98919609e4189fda',t:'MTc1OTU0ODQ3NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
