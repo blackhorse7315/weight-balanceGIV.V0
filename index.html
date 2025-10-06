@@ -157,6 +157,9 @@
             </header>
 
             <div id="main-content" class="space-y-6">
+                <div id="greeting-container" class="text-center mb-6 hidden">
+                    <h2 id="user-greeting" class="text-xl text-amber-300 font-semibold"></h2>
+                </div>
                 
                 <!-- Route Section -->
                 <div>
@@ -630,7 +633,7 @@
             'purwoko.mulyono@yahoo.com': { password: 'user2', role: 'user' },
             'admin@twa.com': { password: 'admin321', role: 'admin' }
         };
-        const DEFAULT_EXPIRY_DATE = '2025-10-05';
+        const DEFAULT_EXPIRY_DATE = '2025-10-06';
 
         // --- GOOGLE APPS SCRIPT URL ---
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw22S6RP2nFFAswYzLs1mlpJwW3jOutMGl80o7aVdiMRw9WqFww9uvvTRPiAGNmWjlv4Q/exec'; 
@@ -649,6 +652,7 @@
         const adminMessage = document.getElementById('admin-message');
         const appLogoutBtn = document.getElementById('app-logout-btn');
         const adminLogoutBtn = document.getElementById('admin-logout-btn');
+        let expiryPollInterval = null;
 
         // --- ELEMENT SELECTORS ---
         const inputs = { rampWeight: document.getElementById('rampWeight'), maxTakeoffWeight: document.getElementById('maxTakeoffWeight'), emptyWeight: document.getElementById('emptyWeight'), pilot: document.getElementById('pilot'), copilot: document.getElementById('copilot'), engineer: document.getElementById('engineer'), cabinService: document.getElementById('cabinService'), baggage: document.getElementById('baggage'), cockpitStorage: document.getElementById('cockpitStorage'), cabinStorage: document.getElementById('cabinStorage'), picName: document.getElementById('picName'), copilotName: document.getElementById('copilotName'), engineerName: document.getElementById('engineerName'), cabinServiceName: document.getElementById('cabinServiceName'), totalPob: document.getElementById('totalPob'), galley: document.getElementById('galley'), seat1: document.getElementById('seat1'), seat2: document.getElementById('seat2'), seat3: document.getElementById('seat3'), seat4: document.getElementById('seat4'), seat5: document.getElementById('seat5'), seat6: document.getElementById('seat6'), seat7: document.getElementById('seat7'), seat8: document.getElementById('seat8'), seat9: document.getElementById('seat9'), seat10: document.getElementById('seat10'), seat11: document.getElementById('seat11'), seat12: document.getElementById('seat12'), seat13: document.getElementById('seat13'), aftLavatory: document.getElementById('aftLavatory'), tripTimeHours: document.getElementById('tripTimeHours'), tripTimeMinutes: document.getElementById('tripTimeMinutes'), tripToAlternateHours: document.getElementById('tripToAlternateHours'), tripToAlternateMinutes: document.getElementById('tripToAlternateMinutes'), fuelConsumption: document.getElementById('fuelConsumption'), airspeed: document.getElementById('airspeed'), altitude: document.getElementById('altitude'), headwind: document.getElementById('headwind'), fuelOnBoard: document.getElementById('fuelOnBoard'), routeFrom: document.getElementById('routeFrom'), routeTo: document.getElementById('routeTo'), };
@@ -672,6 +676,38 @@
                 appExpiryDate = DEFAULT_EXPIRY_DATE; // Fallback ke default
                 return appExpiryDate;
             }
+        }
+
+        async function fetchLatestExpiryDate() {
+            try {
+                const response = await fetch(`${SCRIPT_URL}?t=${new Date().getTime()}`);
+                if (!response.ok) throw new Error(`Network response was not ok. Status: ${response.status}`);
+                const data = await response.json();
+                if (data.error) throw new Error(`Apps Script Error: ${data.error}`);
+                return data.expiryDate;
+            } catch (error) {
+                console.error("Gagal mengambil tanggal kedaluwarsa terbaru, akan mencoba lagi:", error);
+                return appExpiryDate || DEFAULT_EXPIRY_DATE;
+            }
+        }
+
+        function startRealtimeExpiryCheck(currentUserRole) {
+            if (expiryPollInterval) clearInterval(expiryPollInterval);
+            expiryPollInterval = setInterval(async () => {
+                const latestExpiryDate = await fetchLatestExpiryDate();
+                if (latestExpiryDate !== appExpiryDate) {
+                    appExpiryDate = latestExpiryDate;
+                    updateExpiryCountdown();
+                }
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const expiry = new Date(appExpiryDate);
+                if (today > expiry && currentUserRole !== 'admin') {
+                    handleLogout();
+                    loginPage.classList.add('hidden');
+                    expiredPage.classList.remove('hidden');
+                }
+            }, 15000); // Check every 15 seconds
         }
         
         async function checkExpiry() { 
@@ -708,6 +744,20 @@
                             const expiryDate = await getExpiryDate();
                             expiryDateInput.value = expiryDate;
                         } else {
+                            const greetingMap = {
+                                'harijantosusetyo@gmail.com': 'Halo Capt Susetyo Selamat Datang. Safe Flight!',
+                                'purwoko.mulyono@yahoo.com': 'Halo Capt Purwoko Selamat Datang. Safe Flight!'
+                            };
+                            const greetingElement = document.getElementById('user-greeting');
+                            const greetingContainer = document.getElementById('greeting-container');
+                            const greetingMessage = greetingMap[username];
+                            if (greetingMessage) {
+                                greetingElement.textContent = greetingMessage;
+                                greetingContainer.classList.remove('hidden');
+                            } else {
+                                greetingContainer.classList.add('hidden');
+                            }
+
                             loginPage.classList.add('hidden');
                             appPage.classList.remove('hidden');
                             if (!cgChart) {
@@ -715,6 +765,7 @@
                             }
                             calculateAll();
                             updateExpiryCountdown();
+                            startRealtimeExpiryCheck(user.role);
                         }
                     }
                 } else {
@@ -732,6 +783,12 @@
         }
         
         function handleLogout() { 
+            if (expiryPollInterval) {
+                clearInterval(expiryPollInterval);
+                expiryPollInterval = null;
+            }
+            document.getElementById('user-greeting').textContent = '';
+            document.getElementById('greeting-container').classList.add('hidden');
             loginPage.classList.remove('hidden'); 
             appPage.classList.add('hidden'); 
             adminPage.classList.add('hidden'); 
