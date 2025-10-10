@@ -98,11 +98,7 @@
 <body class="bg-gray-900 text-gray-200">
 
     <div id="login-page" class="flex flex-col items-center justify-center min-h-screen px-4">
-        <h1 class="text-3xl font-bold text-white mb-2 text-center">
-            Weight & Balance Application
-            <span class="block text-2xl text-amber-400 mt-2">Gulfstream IV SP SN1381</span>
-            <span class="block text-xl text-amber-400">PK-TWY</span>
-        </h1>
+        <h1 class="text-3xl font-bold text-white mb-2 text-center">Welcome to<span class="block text-amber-400 mt-2">Gulfstream IV PK-TWY Apps</span></h1>
         <p class="text-sm text-gray-400 mb-8">by SkyOps Solutions</p>
         <div class="w-full max-w-sm p-6 bg-gray-800 rounded-lg shadow-md">
             <h2 class="text-2xl font-bold text-center text-white mb-6">Login</h2>
@@ -152,8 +148,7 @@
         <div class="container mx-auto max-w-lg p-4 sm:p-6 bg-gray-900 min-h-screen">
             <!-- Header -->
             <header class="text-center sticky top-0 bg-gray-900 z-10 py-4 mb-6 relative">
-                <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Weight & Balance Application</h1>
-                <p class="text-amber-400 font-semibold text-lg">Gulfstream IV SP SN1381</p>
+                <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">G-IV SP Weight & Balance</h1>
                 <p class="text-amber-400 font-semibold">PK-TWY</p>
                 <p class="text-xs text-gray-500 mt-1">by SkyOps Solutions</p>
                 <p id="expiry-date-display" class="text-xs text-red-400 mt-2"></p>
@@ -162,9 +157,6 @@
             </header>
 
             <div id="main-content" class="space-y-6">
-                <div id="greeting-container" class="text-center mb-6 hidden">
-                    <h2 id="user-greeting" class="text-xl text-amber-300 font-semibold"></h2>
-                </div>
                 
                 <!-- Route Section -->
                 <div>
@@ -217,7 +209,7 @@
                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M15.2 3.2a1 1 0 0 0-1.4 1.4L15.2 6l-2.3 2.3a1 1 0 1 0 1.4 1.4l2.3-2.3 1.4 1.4a1 1 0 0 0 1.4-1.4L18 6l1.4-1.4a1 1 0 0 0-1.4-1.4L16.6 4.8 15.2 3.2z"/><path d="m10.2 6.8 4 4"/><path d="m6.8 10.2 4 4"/><path d="m14 19.5 4.9-11.4L2.5 2.5 14 19.5z"/></svg>
                                 Empty Weight (lbs)
                             </label>
-                            <input type="number" id="emptyWeight" value="42765.80" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                            <input type="number" id="emptyWeight" value="43743" class="w-28 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
                         </div>
                         <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
                             <label for="picName" class="flex items-center text-sm font-medium">
@@ -638,7 +630,7 @@
             'purwoko.mulyono@yahoo.com': { password: 'user2', role: 'user' },
             'admin@twa.com': { password: 'admin321', role: 'admin' }
         };
-        const DEFAULT_EXPIRY_DATE = '2025-10-06';
+        const DEFAULT_EXPIRY_DATE = '2025-10-05';
 
         // --- GOOGLE APPS SCRIPT URL ---
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw22S6RP2nFFAswYzLs1mlpJwW3jOutMGl80o7aVdiMRw9WqFww9uvvTRPiAGNmWjlv4Q/exec'; 
@@ -657,7 +649,6 @@
         const adminMessage = document.getElementById('admin-message');
         const appLogoutBtn = document.getElementById('app-logout-btn');
         const adminLogoutBtn = document.getElementById('admin-logout-btn');
-        let expiryPollInterval = null;
 
         // --- ELEMENT SELECTORS ---
         const inputs = { rampWeight: document.getElementById('rampWeight'), maxTakeoffWeight: document.getElementById('maxTakeoffWeight'), emptyWeight: document.getElementById('emptyWeight'), pilot: document.getElementById('pilot'), copilot: document.getElementById('copilot'), engineer: document.getElementById('engineer'), cabinService: document.getElementById('cabinService'), baggage: document.getElementById('baggage'), cockpitStorage: document.getElementById('cockpitStorage'), cabinStorage: document.getElementById('cabinStorage'), picName: document.getElementById('picName'), copilotName: document.getElementById('copilotName'), engineerName: document.getElementById('engineerName'), cabinServiceName: document.getElementById('cabinServiceName'), totalPob: document.getElementById('totalPob'), galley: document.getElementById('galley'), seat1: document.getElementById('seat1'), seat2: document.getElementById('seat2'), seat3: document.getElementById('seat3'), seat4: document.getElementById('seat4'), seat5: document.getElementById('seat5'), seat6: document.getElementById('seat6'), seat7: document.getElementById('seat7'), seat8: document.getElementById('seat8'), seat9: document.getElementById('seat9'), seat10: document.getElementById('seat10'), seat11: document.getElementById('seat11'), seat12: document.getElementById('seat12'), seat13: document.getElementById('seat13'), aftLavatory: document.getElementById('aftLavatory'), tripTimeHours: document.getElementById('tripTimeHours'), tripTimeMinutes: document.getElementById('tripTimeMinutes'), tripToAlternateHours: document.getElementById('tripToAlternateHours'), tripToAlternateMinutes: document.getElementById('tripToAlternateMinutes'), fuelConsumption: document.getElementById('fuelConsumption'), airspeed: document.getElementById('airspeed'), altitude: document.getElementById('altitude'), headwind: document.getElementById('headwind'), fuelOnBoard: document.getElementById('fuelOnBoard'), routeFrom: document.getElementById('routeFrom'), routeTo: document.getElementById('routeTo'), };
@@ -681,41 +672,6 @@
                 appExpiryDate = DEFAULT_EXPIRY_DATE; // Fallback ke default
                 return appExpiryDate;
             }
-        }
-
-        async function fetchLatestExpiryDate() {
-            try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'GET',
-                    cache: 'no-store'
-                });
-                if (!response.ok) throw new Error(`Network response was not ok. Status: ${response.status}`);
-                const data = await response.json();
-                if (data.error) throw new Error(`Apps Script Error: ${data.error}`);
-                return data.expiryDate;
-            } catch (error) {
-                console.error("Gagal mengambil tanggal kedaluwarsa terbaru, akan mencoba lagi:", error);
-                return appExpiryDate || DEFAULT_EXPIRY_DATE;
-            }
-        }
-
-        function startRealtimeExpiryCheck(currentUserRole) {
-            if (expiryPollInterval) clearInterval(expiryPollInterval);
-            expiryPollInterval = setInterval(async () => {
-                const latestExpiryDate = await fetchLatestExpiryDate();
-                if (latestExpiryDate !== appExpiryDate) {
-                    appExpiryDate = latestExpiryDate;
-                    updateExpiryCountdown();
-                }
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                const expiry = new Date(appExpiryDate);
-                if (today > expiry && currentUserRole !== 'admin') {
-                    handleLogout();
-                    loginPage.classList.add('hidden');
-                    expiredPage.classList.remove('hidden');
-                }
-            }, 15000); // Check every 15 seconds
         }
         
         async function checkExpiry() { 
@@ -752,20 +708,6 @@
                             const expiryDate = await getExpiryDate();
                             expiryDateInput.value = expiryDate;
                         } else {
-                            const greetingMap = {
-                                'harijantosusetyo@gmail.com': 'Halo Capt Susetyo Selamat Datang. Safe Flight!',
-                                'purwoko.mulyono@yahoo.com': 'Halo Capt Purwoko Selamat Datang. Safe Flight!'
-                            };
-                            const greetingElement = document.getElementById('user-greeting');
-                            const greetingContainer = document.getElementById('greeting-container');
-                            const greetingMessage = greetingMap[username];
-                            if (greetingMessage) {
-                                greetingElement.textContent = greetingMessage;
-                                greetingContainer.classList.remove('hidden');
-                            } else {
-                                greetingContainer.classList.add('hidden');
-                            }
-
                             loginPage.classList.add('hidden');
                             appPage.classList.remove('hidden');
                             if (!cgChart) {
@@ -773,7 +715,6 @@
                             }
                             calculateAll();
                             updateExpiryCountdown();
-                            startRealtimeExpiryCheck(user.role);
                         }
                     }
                 } else {
@@ -791,12 +732,6 @@
         }
         
         function handleLogout() { 
-            if (expiryPollInterval) {
-                clearInterval(expiryPollInterval);
-                expiryPollInterval = null;
-            }
-            document.getElementById('user-greeting').textContent = '';
-            document.getElementById('greeting-container').classList.add('hidden');
             loginPage.classList.remove('hidden'); 
             appPage.classList.add('hidden'); 
             adminPage.classList.add('hidden'); 
@@ -879,23 +814,12 @@
         };
 
         // --- ARM VALUES ---
-        let ARMS = { emptyWeight: 457.99, crew: 123.0, cockpitStorage: 127.0, galley: 537.0, aftLavatory: 595.0, crewBaggage: 181.0,  jumpSeat: 140.0, cabinStorage: 415.0, seat1: 595.0, seat2: 237.0, seat3: 285.0, seat4: 285.0, seat5: 237.0, seat6: 331.0, seat7: 381.0, seat8: 331.0, seat9: 381.0, seat10: 439.0, seat11: 425.0, seat12: 425.0, seat13: 477.0, baggage: 637.0, fuel: 480.0 };
+        let ARMS = { emptyWeight: 463.9, crew: 123.0, cockpitStorage: 127.0, galley: 537.0, aftLavatory: 595.0, crewBaggage: 181.0,  jumpSeat: 140.0, cabinStorage: 415.0, seat1: 595.0, seat2: 237.0, seat3: 285.0, seat4: 285.0, seat5: 237.0, seat6: 331.0, seat7: 381.0, seat8: 331.0, seat9: 381.0, seat10: 439.0, seat11: 425.0, seat12: 425.0, seat13: 477.0, baggage: 637.0, fuel: 480.0 };
         
         // --- HELPER FUNCTIONS ---
         const kgToLbs = (kg) => (kg || 0) * KG_TO_LBS;
         const calculateMoment = (weight, arm) => (weight || 0) * (arm || 0);
-        const getMacFromTable = (arm) => {
-            if (!arm || arm < 430 || arm >= 471) return 0;
-            let armInt = Math.floor(arm);
-            let armDecIndex = Math.round((arm - armInt) * 10);
-            if (armDecIndex === 10) {
-                armInt += 1;
-                armDecIndex = 0;
-            }
-            const row = MAC_TABLE[armInt];
-            if (row && row[armDecIndex] !== undefined) return row[armDecIndex];
-            return 0;
-        };
+        const getMacFromTable = (arm) => { if (!arm || arm < 430 || arm >= 471) return 0; const armInt = Math.floor(arm); const armDecIndex = Math.round((arm - armInt) * 10); const row = MAC_TABLE[armInt]; if (row && row[armDecIndex] !== undefined) return row[armDecIndex]; return 0; };
         const getElevatorTrimSetting = (zfwMac, fuelOnBoard) => { const fuelKey = Math.max(1000, Math.min(29000, Math.round(fuelOnBoard / 1000) * 1000)); const macKey = Math.max(36, Math.min(45, Math.round(zfwMac))); const fuelRow = ELEVATOR_TRIM_TABLE[fuelKey]; if (fuelRow) { const trimSetting = fuelRow[macKey]; if (trimSetting !== undefined) return trimSetting; } return "N/A"; };
 
         // --- CORE CALCULATION FUNCTION ---
@@ -925,7 +849,7 @@
             updateCgEnvelope(zfwTotal, towTotal, lwTotal);
             outputs.pilotSeatWt.textContent = pilotKg.toFixed(0); outputs.copilotSeatWt.textContent = copilotKg.toFixed(0); outputs.jumpseatWt.textContent = engineerKg.toFixed(0); outputs.baggageLayoutWt.textContent = baggageKg.toFixed(0);
         }
-        function updateCgTable(cgData, bowTotal, paxItems, zfwTotal, towTotal, lwTotal) { const format = (val, dec = 0) => val.toFixed(dec); const formatMoment = (val) => (val / 1000).toFixed(2); let html = ''; const createRow = (label, data, isTotal = false, showMac = false) => { const weight = data.weight; const arm = data.arm; const moment = data.moment; let mac = 0; if (showMac) mac = isTotal ? data.mac : getMacFromTable(arm); const rowClass = isTotal ? 'total-row' : 'border-b border-gray-700'; return `<tr class="${rowClass}"><td>${label}</td><td>${format(weight, 1)}</td><td>${arm > 0 ? format(arm, 1) : '-'}</td><td>${formatMoment(moment)}</td><td>${mac > 0 ? format(mac, 2) : '-'}</td></tr>`; }; const createEditableEmptyWeightRow = (data) => { const weight = data.weight; const arm = data.arm; const moment = data.moment; let mac = getMacFromTable(arm); if (weight.toFixed(2) === '42765.80' && arm.toFixed(2) === '457.99') { mac = 42.29; } return `<tr class="border-b border-gray-700"><td>Empty Weight</td><td>${format(weight, 2)}</td><td><input id="emptyWeightArmInput" type="number" value="${arm.toFixed(2)}" class="editable-cell-input"></td><td id="emptyWeightMomentCell">${formatMoment(moment)}</td><td><input id="emptyWeightMacInput" type="number" value="${mac.toFixed(2)}" class="editable-cell-input" readonly></td></tr>`; }; html += createEditableEmptyWeightRow(cgData.emptyWeight); html += createRow('Crew', cgData.crew); html += createRow('Cockpit Storage', cgData.cockpitStorage); html += createRow('Galley', cgData.galley); html += createRow('Aft Lavatory', cgData.aftLavatory); html += createRow('Crew Baggage', cgData.crewBaggage); html += createRow('Jump Seat', cgData.jumpSeat); html += createRow('Cabin Storage', cgData.cabinStorage); html += createRow('Basic Operating Weight (BOW)', bowTotal, true, true); html += `<tr><td class="pt-4 font-semibold">Passengers:</td></tr>`; paxItems.forEach(key => { if(cgData[key] && cgData[key].weight > 0) html += createRow(key.charAt(0).toUpperCase() + key.slice(1), cgData[key]); }); html += createRow('Baggage', cgData.baggage); html += createRow('Zero Fuel Weight (ZFW)', zfwTotal, true, true); html += createRow('Fuel', cgData.fuel); html += createRow('Take Off Weight (TOW)', towTotal, true, true); html += createRow('Landing Weight (LW)', lwTotal, true, true); outputs.cgTableBody.innerHTML = html; document.getElementById('emptyWeightArmInput').addEventListener('input', (e) => { ARMS.emptyWeight = parseFloat(e.target.value) || 0; calculateAll(); }); }
+        function updateCgTable(cgData, bowTotal, paxItems, zfwTotal, towTotal, lwTotal) { const format = (val, dec = 0) => val.toFixed(dec); const formatMoment = (val) => (val / 1000).toFixed(2); let html = ''; const createRow = (label, data, isTotal = false, showMac = false) => { const weight = data.weight; const arm = data.arm; const moment = data.moment; let mac = 0; if (showMac) mac = isTotal ? data.mac : getMacFromTable(arm); const rowClass = isTotal ? 'total-row' : 'border-b border-gray-700'; return `<tr class="${rowClass}"><td>${label}</td><td>${format(weight, 1)}</td><td>${arm > 0 ? format(arm, 1) : '-'}</td><td>${formatMoment(moment)}</td><td>${mac > 0 ? format(mac, 2) : '-'}</td></tr>`; }; const createEditableEmptyWeightRow = (data) => { const weight = data.weight; const arm = data.arm; const moment = data.moment; const mac = getMacFromTable(arm); return `<tr class="border-b border-gray-700"><td>Empty Weight</td><td>${format(weight, 1)}</td><td><input id="emptyWeightArmInput" type="number" value="${arm.toFixed(1)}" class="editable-cell-input"></td><td id="emptyWeightMomentCell">${formatMoment(moment)}</td><td><input id="emptyWeightMacInput" type="number" value="${mac.toFixed(1)}" class="editable-cell-input" readonly></td></tr>`; }; html += createEditableEmptyWeightRow(cgData.emptyWeight); html += createRow('Crew', cgData.crew); html += createRow('Cockpit Storage', cgData.cockpitStorage); html += createRow('Galley', cgData.galley); html += createRow('Aft Lavatory', cgData.aftLavatory); html += createRow('Crew Baggage', cgData.crewBaggage); html += createRow('Jump Seat', cgData.jumpSeat); html += createRow('Cabin Storage', cgData.cabinStorage); html += createRow('Basic Operating Weight (BOW)', bowTotal, true, true); html += `<tr><td class="pt-4 font-semibold">Passengers:</td></tr>`; paxItems.forEach(key => { if(cgData[key] && cgData[key].weight > 0) html += createRow(key.charAt(0).toUpperCase() + key.slice(1), cgData[key]); }); html += createRow('Baggage', cgData.baggage); html += createRow('Zero Fuel Weight (ZFW)', zfwTotal, true, true); html += createRow('Fuel', cgData.fuel); html += createRow('Take Off Weight (TOW)', towTotal, true, true); html += createRow('Landing Weight (LW)', lwTotal, true, true); outputs.cgTableBody.innerHTML = html; document.getElementById('emptyWeightArmInput').addEventListener('input', (e) => { ARMS.emptyWeight = parseFloat(e.target.value) || 0; calculateAll(); }); }
         function updateSummariesAndFlightCalc(totalPayloadKg, totalPayloadLbs, zfwTotal, towTotal, lwTotal, maxZfwLimit, maxTowLimit, fuelConsumption, airspeed, headwind, fuelOnBoard, tripFuel) { outputs.totalPayloadKg.textContent = totalPayloadKg.toFixed(0); outputs.totalPayloadLbs.textContent = totalPayloadLbs.toFixed(0); outputs.zfwResult.textContent = zfwTotal.weight.toFixed(0); outputs.zfwMacResult.textContent = zfwTotal.mac.toFixed(2); updateStatus(outputs.zfwStatus, zfwTotal.weight, maxZfwLimit); outputs.towResult.textContent = towTotal.weight.toFixed(0); outputs.towMacResult.textContent = towTotal.mac.toFixed(2); updateStatus(outputs.towStatus, towTotal.weight, maxTowLimit); outputs.landingWeightResult.textContent = lwTotal.weight.toFixed(0); outputs.landingWeightMacResult.textContent = lwTotal.mac.toFixed(2); updateStatus(outputs.landingWeightStatus, lwTotal.weight, 66000); const availablePayloadLbs = maxTowLimit - towTotal.weight; const availablePayloadKg = availablePayloadLbs / KG_TO_LBS; const availablePassengers = availablePayloadKg > 0 ? Math.floor(availablePayloadKg / 80) : 0; outputs.availablePayloadLbs.textContent = availablePayloadLbs.toFixed(0); outputs.availablePayloadKg.textContent = availablePayloadKg.toFixed(0); outputs.availablePassengers.textContent = availablePassengers; const groundSpeed = airspeed - headwind; const maxRange = (fuelConsumption > 0 && groundSpeed > 0 && fuelOnBoard > 0) ? (fuelOnBoard / fuelConsumption) * groundSpeed : 0; outputs.maxRange.textContent = maxRange.toFixed(0); const fuelPerMinute = fuelConsumption > 0 ? fuelConsumption / 60 : 0; const totalAlternateTimeMinutes = (parseFloat(inputs.tripToAlternateHours.value) || 0) * 60 + (parseFloat(inputs.tripToAlternateMinutes.value) || 0); const calculatedAlternateFuel = totalAlternateTimeMinutes * fuelPerMinute; const calculatedReserveFuel = 30 * fuelPerMinute; const calculatedContingencyFuel = tripFuel * 0.10; const calculatedStartTaxiFuel = 400; const totalFuelRequired = tripFuel + calculatedAlternateFuel + calculatedReserveFuel + calculatedContingencyFuel + calculatedStartTaxiFuel; const extraFuel = fuelOnBoard - totalFuelRequired; outputs.extraFuelResult.textContent = extraFuel.toFixed(0); outputs.elevatorTrimResult.textContent = getElevatorTrimSetting(zfwTotal.mac, fuelOnBoard); outputs.fuelTripRequired.textContent = tripFuel.toFixed(1); outputs.alternateFuel.textContent = calculatedAlternateFuel.toFixed(1); outputs.reserveFuel.textContent = calculatedReserveFuel.toFixed(1); outputs.contingencyFuel.textContent = calculatedContingencyFuel.toFixed(1); outputs.startTaxiFuel.textContent = calculatedStartTaxiFuel.toFixed(1); outputs.totalFuelRequired.textContent = totalFuelRequired.toFixed(1); }
         function updateStatus(element, value, limit) { element.classList.remove('text-green-500', 'text-red-500', 'text-yellow-400'); if (value <= 0) { element.textContent = 'Awaiting Input'; element.classList.add('text-yellow-400'); } else if (value > limit) { element.textContent = 'OVERWEIGHT'; element.classList.add('text-red-500'); } else { element.textContent = 'OK'; element.classList.add('text-green-500'); } }
         function initializeCgEnvelope() { const ctx = document.getElementById('cgEnvelopeChart').getContext('2d'); const envelopeData = [ {x: 38, y: 39400}, {x: 36.4, y: 45000}, {x: 36.4, y: 46500}, {x: 41.3, y: 46500}, {x: 45, y: 44000}, {x: 45, y: 38000}, {x: 42, y: 38000}, {x: 38, y: 39400} ]; cgChart = new Chart(ctx, { type: 'line', data: { datasets: [ { label: 'CG Envelope', data: envelopeData, borderColor: '#fcd34d', backgroundColor: 'rgba(252, 211, 77, 0.2)', fill: true, borderWidth: 2, pointRadius: 0, order: 10 }, { label: 'ZFW', data: [], backgroundColor: '#34d399', pointRadius: 6, pointHoverRadius: 8, type: 'scatter', order: 0 }, { label: 'TOW', data: [], backgroundColor: '#60a5fa', pointRadius: 6, pointHoverRadius: 8, type: 'scatter', order: 0 }, { label: 'LW', data: [], backgroundColor: '#f87171', pointRadius: 6, pointHoverRadius: 8, type: 'scatter', order: 0 } ] }, options: { responsive: true, aspectRatio: 1, scales: { x: { type: 'linear', position: 'bottom', min: 25, max: 51, title: { display: true, text: '% MAC', color: '#9ca3af' }, ticks: { color: '#9ca3af', stepSize: 1 }, grid: { color: 'rgba(156, 163, 175, 0.2)' } }, y: { min: 36000, max: 77000, title: { display: true, text: 'GROSS WEIGHT – LBS', color: '#9ca3af' }, ticks: { color: '#9ca3af', stepSize: 1000, callback: (value) => (value % 1000 === 0) ? value : null }, grid: { color: 'rgba(156, 163, 175, 0.2)' } } }, plugins: { legend: { labels: { color: '#d1d5db' } }, annotation: { annotations: { maxRamp: { type: 'line', yMin: 75000, yMax: 75000, borderColor: 'rgb(239, 68, 68, 0.7)', borderWidth: 2, label: { content: 'Max Ramp', enabled: true, position: 'start', backgroundColor: 'rgba(239, 68, 68, 0.7)' } }, maxTakeoff: { type: 'line', yMin: 74600, yMax: 74600, borderColor: 'rgb(249, 115, 22, 0.7)', borderWidth: 2, label: { content: 'Max Takeoff', enabled: true, position: 'start', backgroundColor: 'rgba(249, 115, 22, 0.7)' } }, maxLanding: { type: 'line', yMin: 66000, yMax: 66000, borderColor: 'rgb(59, 130, 246, 0.7)', borderWidth: 2, label: { content: 'Max Landing Weight', enabled: true, position: 'start', yAdjust: -15, backgroundColor: 'rgba(59, 130, 246, 0.7)' } }, aftForwardLoading: { type: 'line', xMin: 36.4, xMax: 43.5, yMin: 45000, yMax: 45000, borderColor: 'rgb(16, 185, 129, 0.7)', borderWidth: 2, borderDash: [5, 5], label: { content: 'aft to forward loading', enabled: true, position: 'center', yAdjust: -10, backgroundColor: 'rgba(0,0,0,0)', color: 'rgb(16, 185, 129, 0.9)' } } } } } } }); }
@@ -933,7 +857,7 @@
         async function generateProfessionalPDF() {
             const pdfMessage = document.getElementById('pdf-message'); pdfMessage.classList.remove('hidden');
             const { jsPDF } = window.jspdf; const doc = new jsPDF();
-            doc.setFontSize(14); doc.setFont(undefined, 'bold'); doc.text('PT. TRANSWISATA PRIMA AVIATION', 105, 15, null, null, 'center'); doc.setFontSize(18); doc.text('Load Sheet Gulfstream IV SP SN1381', 105, 22, null, null, 'center'); doc.setFontSize(12); doc.setFont(undefined, 'normal'); doc.text(`Aircraft Registration: PK-TWY`, 105, 28, null, null, 'center'); doc.setFontSize(10); doc.text(`Date: ${new Date().toLocaleDateString('en-GB')}`, 105, 34, null, null, 'center');
+            doc.setFontSize(14); doc.setFont(undefined, 'bold'); doc.text('PT. TRANSWISATA PRIMA AVIATION', 105, 15, null, null, 'center'); doc.setFontSize(18); doc.text('Load Sheet Gulfstream IV SP', 105, 22, null, null, 'center'); doc.setFontSize(12); doc.setFont(undefined, 'normal'); doc.text(`Aircraft Registration: PK-TWY`, 105, 28, null, null, 'center'); doc.setFontSize(10); doc.text(`Date: ${new Date().toLocaleDateString('en-GB')}`, 105, 34, null, null, 'center');
             doc.autoTable({ startY: 40, head: [['Route Information', '']], body: [['From', inputs.routeFrom.value], ['Destination', inputs.routeTo.value],], theme: 'grid', headStyles: { fillColor: [45, 55, 72] }, });
             doc.autoTable({ startY: doc.lastAutoTable.finalY + 10, head: [['Role', 'Name']], body: [['PIC', inputs.picName.value], ['Copilot', inputs.copilotName.value], ['Engineer', inputs.engineerName.value], ['Cabin Service', inputs.cabinServiceName.value], ['Total Person on Board (POB)', inputs.totalPob.value],], theme: 'grid', headStyles: { fillColor: [22, 163, 74] }, });
             let finalY = doc.lastAutoTable.finalY;
@@ -948,7 +872,7 @@
             if (finalY + 20 + chartHeight > doc.internal.pageSize.getHeight() - 30) { doc.addPage(); finalY = 10; }
             doc.addImage(chartImage, 'PNG', chartX, finalY + 20, chartWidth, chartHeight);
             const pageCount = doc.internal.getNumberOfPages(); for (let i = 1; i <= pageCount; i++) { doc.setPage(i); const pageHeight = doc.internal.pageSize.getHeight(); const pageWidth = doc.internal.pageSize.getWidth(); if (i === pageCount) { const picName = inputs.picName.value || '_________________________'; doc.text(picName, 14, pageHeight - 30); doc.line(14, pageHeight - 25, 80, pageHeight - 25); doc.text('Pilot in Command Signature', 14, pageHeight - 20); } doc.setFontSize(10); doc.text(`Page ${i} of ${pageCount}`, pageWidth / 2, pageHeight - 10, { align: 'center' }); }
-            doc.save('G-IV_SP_SN1381_PK-TWY_Weight_Balance.pdf'); pdfMessage.classList.add('hidden');
+            doc.save('G-IV_SP_PK-TWY_Weight_Balance.pdf'); pdfMessage.classList.add('hidden');
         }
 
         // --- EVENT LISTENERS ---
