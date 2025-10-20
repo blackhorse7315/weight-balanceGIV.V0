@@ -150,8 +150,7 @@
 
     <div id="app-page" class="hidden">
         <div class="container mx-auto max-w-lg p-4 sm:p-6 bg-gray-900 min-h-screen">
-            <!-- Header -->
-            <header class="text-center sticky top-0 bg-gray-900 z-10 py-4 mb-6 relative">
+            <!-- Header --><header class="text-center sticky top-0 bg-gray-900 z-10 py-4 mb-6 relative">
                 <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Weight & Balance Application</h1>
                 <p class="text-amber-400 font-semibold text-lg">Gulfstream IV SP SN1381</p>
                 <p class="text-amber-400 font-semibold">PK-TWY</p>
@@ -164,8 +163,7 @@
 
             <div id="main-content" class="space-y-6">
                 
-                <!-- Route Section -->
-                <div>
+                <!-- Route Section --><div>
                     <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Route</h2>
                     <div class="space-y-3">
                         <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
@@ -185,8 +183,7 @@
                     </div>
                 </div>
 
-                <!-- Aircraft Limits Section -->
-                <div>
+                <!-- Aircraft Limits Section --><div>
                     <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Aircraft Limits (lbs)</h2>
                     <div class="space-y-3">
                         <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
@@ -206,8 +203,7 @@
                     </div>
                 </div>
 
-                <!-- Payload Section -->
-                <div>
+                <!-- Payload Section --><div>
                     <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Aircraft & Payload Data</h2>
                     <div class="space-y-3">
                         <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
@@ -304,8 +300,7 @@
                     </div>
                 </div>
 
-                <!-- Flight Calculation Section -->
-                <div>
+                <!-- Flight Calculation Section --><div>
                     <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Flight Calculation</h2>
                     <div class="space-y-3">
                         <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
@@ -366,8 +361,7 @@
                     </div>
                 </div>
 
-                <!-- Fuel Required Section -->
-                <div>
+                <!-- Fuel Required Section --><div>
                     <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Fuel Required (lbs)</h2>
                     <div class="space-y-4 bg-gray-800 p-4 rounded-lg">
                          <div class="flex items-center justify-between">
@@ -425,12 +419,10 @@
                     </div>
                 </div>
 
-                <!-- Seat Layout Configuration -->
-                <div>
+                <!-- Seat Layout Configuration --><div>
                     <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Seat Layout Configuration (kg)</h2>
-                    <div class="bg-gray-800 p-4 rounded-lg space-y-4">
-                        <!-- Cockpit -->
-                        <div class="text-center text-xs text-gray-400 mb-2">-- COCKPIT --</div>
+                    <div id="seat-layout-container" class="bg-gray-800 p-4 rounded-lg space-y-4">
+                        <!-- Cockpit --><div class="text-center text-xs text-gray-400 mb-2">-- COCKPIT --</div>
                         <div class="flex justify-around items-center">
                             <div class="seat">Pilot<br><span id="pilotSeatWt" class="font-bold text-amber-400">0</span> kg</div>
                             <div class="seat">Copilot<br><span id="copilotSeatWt" class="font-bold text-amber-400">0</span> kg</div>
@@ -439,11 +431,9 @@
                             <div class="seat">Jumpseat<br><span id="jumpseatWt" class="font-bold text-amber-400">0</span> kg</div>
                         </div>
 
-                        <!-- Cabin -->
-                        <div class="text-center text-xs text-gray-400 mt-4 mb-2">-- CABIN --</div>
+                        <!-- Cabin --><div class="text-center text-xs text-gray-400 mt-4 mb-2">-- CABIN --</div>
                         <div class="grid grid-cols-2 gap-4">
-                            <!-- Left Column -->
-                            <div class="space-y-3 flex flex-col items-center">
+                            <!-- Left Column --><div class="space-y-3 flex flex-col items-center">
                                  <div class="seat invisible">&nbsp;</div>
                                  <div class="seat invisible">&nbsp;</div>
                                  <div class="seat">S3<br><input type="number" id="seat3" placeholder="0" class="seat-input"></div>
@@ -457,8 +447,7 @@
                                  <div class="seat invisible">&nbsp;</div>
                                  <div class="component invisible w-full mt-3">&nbsp;</div>
                             </div>
-                            <!-- Right Column -->
-                            <div class="space-y-3 flex flex-col items-center">
+                            <!-- Right Column --><div class="space-y-3 flex flex-col items-center">
                                 <div class="seat">Galley<br><input type="number" id="galley" value="34" class="seat-input mt-1"></div>
                                 <div class="seat">S1<br><input type="number" id="seat1" value="23" class="seat-input mt-1"></div>
                                 <div class="seat">S2<br><input type="number" id="seat2" placeholder="0" class="seat-input"></div>
@@ -479,19 +468,16 @@
                                 <div class="seat">S13<br><input type="number" id="seat13" placeholder="0" class="seat-input"></div>
                             </div>
                              <div class="flex flex-col items-center">
-                                <!-- This is an empty column for alignment -->
-                             </div>
+                                <!-- This is an empty column for alignment --></div>
                         </div>
-                         <!-- Baggage Area -->
-                        <div class="text-center text-xs text-gray-400 mt-4 mb-2">-- BAGGAGE --</div>
+                         <!-- Baggage Area --><div class="text-center text-xs text-gray-400 mt-4 mb-2">-- BAGGAGE --</div>
                         <div class="component w-full bg-green-800 border-green-600">
                             Baggage: <span id="baggageLayoutWt" class="font-bold text-white">0</span> kg
                         </div>
                     </div>
                 </div>
 
-                <!-- Weight & CG Calculation -->
-                <div>
+                <!-- Weight & CG Calculation --><div>
                     <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Weight & CG Calculation</h2>
                     <div class="bg-gray-800 p-2 sm:p-4 rounded-lg overflow-x-auto">
                         <table class="w-full cg-table">
@@ -505,14 +491,12 @@
                                 </tr>
                             </thead>
                             <tbody id="cg-table-body">
-                                <!-- Rows will be dynamically inserted here by JavaScript -->
-                            </tbody>
+                                <!-- Rows will be dynamically inserted here by JavaScript --></tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- Weight & CG Envelope -->
-                <div>
+                <!-- Weight & CG Envelope --><div>
                     <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Weight & CG Envelope</h2>
                     <div class="bg-gray-800 p-4 rounded-lg">
                         <canvas id="cgEnvelopeChart"></canvas>
@@ -520,8 +504,7 @@
                 </div>
 
 
-                <!-- Weight Summary Section -->
-                <div>
+                <!-- Weight Summary Section --><div>
                     <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Weight Summary</h2>
                     <div class="space-y-4 bg-gray-800 p-4 rounded-lg">
                         <div class="flex justify-between items-baseline">
@@ -597,8 +580,7 @@
 
             </div>
 
-            <!-- Footer with PDF Button -->
-            <footer class="text-center mt-8 pb-4">
+            <!-- Footer with PDF Button --><footer class="text-center mt-8 pb-4">
                 <button id="downloadPdfBtn" class="bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold py-2 px-4 rounded-lg mb-4">
                     Download as PDF
                 </button>
@@ -913,21 +895,49 @@
         async function generateProfessionalPDF() {
             const pdfMessage = document.getElementById('pdf-message'); pdfMessage.classList.remove('hidden');
             const { jsPDF } = window.jspdf; const doc = new jsPDF();
-            doc.setFontSize(14); doc.setFont(undefined, 'bold'); doc.text('PT. TRANSWISATA PRIMA AVIATION', 105, 15, null, null, 'center'); doc.setFontSize(18); doc.text('Load Sheet Gulfstream IV SP SN1381', 105, 22, null, null, 'center'); doc.setFontSize(12); doc.setFont(undefined, 'normal'); doc.text(`Aircraft Registration: PK-TWY`, 105, 28, null, null, 'center'); doc.setFontSize(10); doc.text(`Date: ${new Date().toLocaleDateString('en-GB')}`, 105, 34, null, null, 'center');
-            doc.autoTable({ startY: 40, head: [['Route Information', '']], body: [['From', inputs.routeFrom.value], ['Destination', inputs.routeTo.value],], theme: 'grid', headStyles: { fillColor: [45, 55, 72] }, });
+            doc.setFontSize(14); doc.setFont(undefined, 'bold'); doc.text('PT. TRANSWISATA PRIMA AVIATION', 105, 15, null, null, 'center'); 
+            doc.setFontSize(18); doc.text('Load Sheet Gulfstream IV SP SN1381', 105, 22, null, null, 'center'); 
+            doc.setFontSize(12); doc.setFont(undefined, 'normal'); doc.text(`Aircraft Registration: PK-TWY`, 105, 28, null, null, 'center'); 
+            doc.setFontSize(10); doc.text(`Date: ${new Date().toLocaleDateString('en-GB')}`, 105, 34, null, null, 'center');
+            
+            // Add Doc No and Effective Date
+            doc.setFont(undefined, 'bold');
+            doc.text('Doc. No: F/TWA-OPS/002-01', 14, 40);
+            doc.text('Effective Date: 01 October 2025', 210 - 14, 40, { align: 'right' });
+            doc.setFont(undefined, 'normal');
+
+            doc.autoTable({ 
+                startY: 45, 
+                head: [['Route Information', '']], 
+                body: [['From', inputs.routeFrom.value], ['Destination', inputs.routeTo.value],], 
+                theme: 'grid', 
+                headStyles: { fillColor: [45, 55, 72] }, 
+            });
             doc.autoTable({ startY: doc.lastAutoTable.finalY + 10, head: [['Role', 'Name']], body: [['PIC', inputs.picName.value], ['Copilot', inputs.copilotName.value], ['Engineer', inputs.engineerName.value], ['Cabin Service', inputs.cabinServiceName.value], ['Total Person on Board (POB)', inputs.totalPob.value],], theme: 'grid', headStyles: { fillColor: [22, 163, 74] }, });
             let finalY = doc.lastAutoTable.finalY;
             const tripTime = `${inputs.tripTimeHours.value || 0} hr ${inputs.tripTimeMinutes.value || 0} min`; const alternateTime = `${inputs.tripToAlternateHours.value || 0} hr ${inputs.tripToAlternateMinutes.value || 0} min`;
             doc.autoTable({ startY: finalY + 10, head: [['Flight Calculation', 'Value']], body: [['Trip Time', tripTime], ['Trip to Alternate', alternateTime], ['Altitude', `${inputs.altitude.value} ft`], ['Airspeed', `${inputs.airspeed.value} kts`], ['Headwind', `${inputs.headwind.value} kts`], ['Fuel on Board', `${inputs.fuelOnBoard.value} lbs`], ['Maximum Range', `${outputs.maxRange.textContent} nm`],], theme: 'grid', headStyles: { fillColor: [45, 55, 72] }, }); finalY = doc.lastAutoTable.finalY;
             doc.autoTable({ startY: finalY + 10, head: [['Fuel Required', 'Value']], body: [['Fuel Consumption', `${inputs.fuelConsumption.value} lbs/hr`], ['Trip Fuel', `${outputs.fuelTripRequired.textContent} lbs`], ['Alternate Fuel', `${outputs.alternateFuel.textContent} lbs`], ['Final Reserve 30 min', `${outputs.reserveFuel.textContent} lbs`], ['Contingency (10%)', `${outputs.contingencyFuel.textContent} lbs`], ['Start & Taxi', `${outputs.startTaxiFuel.textContent} lbs`], ['TOTAL FUEL REQUIRED', `${outputs.totalFuelRequired.textContent} lbs`],], theme: 'grid', headStyles: { fillColor: [45, 55, 72] }, bodyStyles: { fontStyle: 'bold' }, didParseCell: function(data) { if (data.row.index === 6) { data.cell.styles.fillColor = '#1f2937'; data.cell.styles.textColor = '#fcd34d'; } } }); finalY = doc.lastAutoTable.finalY;
+            
             const table = document.getElementById('cg-table-body'); let bodyData = []; table.querySelectorAll('tr').forEach(row => { let rowData = []; row.querySelectorAll('td').forEach(cell => { let cellText = cell.querySelector('input') ? cell.querySelector('input').value : cell.innerText; rowData.push(cellText); }); bodyData.push(rowData); });
+            
             if (finalY + 20 > doc.internal.pageSize.getHeight() - 30) { doc.addPage(); finalY = 10; }
-            doc.autoTable({ startY: finalY + 10, head: [['Item', 'Weight (lbs)', 'Arm (in)', 'Moment', '%MAC']], body: bodyData, theme: 'striped', headStyles: { fillColor: [45, 55, 72] }, styles: { fontSize: 8 }, columnStyles: { 0: { cellWidth: 60 }, 1: { halign: 'right' }, 2: { halign: 'right' }, 3: { halign: 'right' }, 4: { halign: 'right' }, }, didParseCell: function(data) { const originalTable = document.getElementById('cg-table-body'); const originalRow = originalTable.querySelectorAll('tr')[data.row.index]; if (originalRow && originalRow.classList.contains('total-row')) { data.cell.styles.fillColor = '#1f2937'; data.cell.styles.textColor = '#fcd34d'; data.cell.styles.fontStyle = 'bold'; } } }); finalY = doc.lastAutoTable.finalY;
+            doc.autoTable({ startY: finalY + 10, head: [['Item', 'Weight (lbs)', 'Arm (in)', 'Moment', '%MAC']], body: bodyData, theme: 'striped', headStyles: { fillColor: [45, 55, 72] }, styles: { fontSize: 8 }, columnStyles: { 0: { cellWidth: 60 }, 1: { halign: 'right' }, 2: { halign: 'right' }, 3: { halign: 'right' }, 4: { halign: 'right' }, }, didParseCell: function(data) { const originalTable = document.getElementById('cg-table-body'); const originalRow = originalTable.querySelectorAll('tr')[data.row.index]; if (originalRow && originalRow.classList.contains('total-row')) { data.cell.styles.fillColor = '#1f2937'; data.cell.styles.textColor = '#fcd34d'; data.cell.styles.fontStyle = 'bold'; } } }); 
+            finalY = doc.lastAutoTable.finalY;
+
+
             doc.setFontSize(11); doc.setFont(undefined, 'bold'); doc.text('Elevator Trim Tab Setting:', 14, finalY + 10); doc.setFont(undefined, 'normal'); doc.text(outputs.elevatorTrimResult.textContent, 65, finalY + 10);
             const chartCanvas = document.getElementById('cgEnvelopeChart'); const chartImage = chartCanvas.toDataURL('image/png', 1.0); const chartWidth = 80; const chartHeight = 80; const chartX = (doc.internal.pageSize.getWidth() - chartWidth) / 2;
             if (finalY + 20 + chartHeight > doc.internal.pageSize.getHeight() - 30) { doc.addPage(); finalY = 10; }
             doc.addImage(chartImage, 'PNG', chartX, finalY + 20, chartWidth, chartHeight);
-            const pageCount = doc.internal.getNumberOfPages(); for (let i = 1; i <= pageCount; i++) { doc.setPage(i); const pageHeight = doc.internal.pageSize.getHeight(); const pageWidth = doc.internal.pageSize.getWidth(); if (i === pageCount) { const picName = inputs.picName.value || '_________________________'; doc.text(picName, 14, pageHeight - 30); doc.line(14, pageHeight - 25, 80, pageHeight - 25); doc.text('Pilot in Command Signature', 14, pageHeight - 20); } doc.setFontSize(10); doc.text(`Page ${i} of ${pageCount}`, pageWidth / 2, pageHeight - 10, { align: 'center' }); }
+            const pageCount = doc.internal.getNumberOfPages(); for (let i = 1; i <= pageCount; i++) { doc.setPage(i); const pageHeight = doc.internal.pageSize.getHeight(); const pageWidth = doc.internal.pageSize.getWidth(); if (i === pageCount) { const picName = inputs.picName.value || '_________________________'; doc.text(picName, 14, pageHeight - 30); doc.line(14, pageHeight - 25, 80, pageHeight - 25); doc.text('Pilot in Command Signature', 14, pageHeight - 20); 
+                doc.setTextColor(255, 0, 0); 
+                const certificationText = "I Certify That I Have Satisfied My Self That All Factors From The Basic Of Flight Preparation Laid Down By The Indonesia Civil Aviation As Covered In The Operation Manual of PT.Transwisata Prima Aviation";
+                const textLines = doc.splitTextToSize(certificationText, 95);
+                doc.setFontSize(8);
+                doc.text(textLines, pageWidth - 105, pageHeight - 45);
+                doc.setTextColor(0, 0, 0);
+            } doc.setFontSize(10); doc.text(`Page ${i} of ${pageCount}`, pageWidth / 2, pageHeight - 10, { align: 'center' }); }
             doc.save('G-IV_SP_SN1381_PK-TWY_Weight_Balance.pdf'); pdfMessage.classList.add('hidden');
         }
 
