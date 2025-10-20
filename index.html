@@ -900,7 +900,6 @@
             doc.setFontSize(12); doc.setFont(undefined, 'normal'); doc.text(`Aircraft Registration: PK-TWY`, 105, 28, null, null, 'center'); 
             doc.setFontSize(10); doc.text(`Date: ${new Date().toLocaleDateString('en-GB')}`, 105, 34, null, null, 'center');
             
-            // Add Doc No and Effective Date
             doc.setFont(undefined, 'bold');
             doc.text('Doc. No: F/TWA-OPS/002-01', 14, 40);
             doc.text('Effective Date: 01 October 2025', 210 - 14, 40, { align: 'right' });
@@ -925,20 +924,62 @@
             doc.autoTable({ startY: finalY + 10, head: [['Item', 'Weight (lbs)', 'Arm (in)', 'Moment', '%MAC']], body: bodyData, theme: 'striped', headStyles: { fillColor: [45, 55, 72] }, styles: { fontSize: 8 }, columnStyles: { 0: { cellWidth: 60 }, 1: { halign: 'right' }, 2: { halign: 'right' }, 3: { halign: 'right' }, 4: { halign: 'right' }, }, didParseCell: function(data) { const originalTable = document.getElementById('cg-table-body'); const originalRow = originalTable.querySelectorAll('tr')[data.row.index]; if (originalRow && originalRow.classList.contains('total-row')) { data.cell.styles.fillColor = '#1f2937'; data.cell.styles.textColor = '#fcd34d'; data.cell.styles.fontStyle = 'bold'; } } }); 
             finalY = doc.lastAutoTable.finalY;
 
+            // Elevator Trim
+            doc.setFontSize(11);
+            doc.setFont(undefined, 'bold');
+            doc.text('Elevator Trim Tab Setting:', 14, finalY + 10);
+            doc.setFont(undefined, 'normal');
+            doc.text(outputs.elevatorTrimResult.textContent, 65, finalY + 10);
+            finalY += 15;
 
-            doc.setFontSize(11); doc.setFont(undefined, 'bold'); doc.text('Elevator Trim Tab Setting:', 14, finalY + 10); doc.setFont(undefined, 'normal'); doc.text(outputs.elevatorTrimResult.textContent, 65, finalY + 10);
-            const chartCanvas = document.getElementById('cgEnvelopeChart'); const chartImage = chartCanvas.toDataURL('image/png', 1.0); const chartWidth = 80; const chartHeight = 80; const chartX = (doc.internal.pageSize.getWidth() - chartWidth) / 2;
-            if (finalY + 20 + chartHeight > doc.internal.pageSize.getHeight() - 30) { doc.addPage(); finalY = 10; }
-            doc.addImage(chartImage, 'PNG', chartX, finalY + 20, chartWidth, chartHeight);
-            const pageCount = doc.internal.getNumberOfPages(); for (let i = 1; i <= pageCount; i++) { doc.setPage(i); const pageHeight = doc.internal.pageSize.getHeight(); const pageWidth = doc.internal.pageSize.getWidth(); if (i === pageCount) { const picName = inputs.picName.value || '_________________________'; doc.text(picName, 14, pageHeight - 30); doc.line(14, pageHeight - 25, 80, pageHeight - 25); doc.text('Pilot in Command Signature', 14, pageHeight - 20); 
-                doc.setTextColor(255, 0, 0); 
-                const certificationText = "I Certify That I Have Satisfied My Self That All Factors From The Basic Of Flight Preparation Laid Down By The Indonesia Civil Aviation As Covered In The Operation Manual of PT.Transwisata Prima Aviation";
-                const textLines = doc.splitTextToSize(certificationText, 95);
-                doc.setFontSize(8);
-                doc.text(textLines, pageWidth - 105, pageHeight - 45);
-                doc.setTextColor(0, 0, 0);
-            } doc.setFontSize(10); doc.text(`Page ${i} of ${pageCount}`, pageWidth / 2, pageHeight - 10, { align: 'center' }); }
-            doc.save('G-IV_SP_SN1381_PK-TWY_Weight_Balance.pdf'); pdfMessage.classList.add('hidden');
+            // CG Chart
+            const chartCanvas = document.getElementById('cgEnvelopeChart');
+            const chartImage = chartCanvas.toDataURL('image/png', 1.0);
+            const chartWidth = 90;
+            const chartHeight = 90;
+            const chartX = (doc.internal.pageSize.getWidth() - chartWidth) / 2;
+            
+            if (finalY + chartHeight + 10 > doc.internal.pageSize.getHeight() - 20) {
+                doc.addPage();
+                finalY = 10;
+            }
+            doc.addImage(chartImage, 'PNG', chartX, finalY + 10, chartWidth, chartHeight);
+            finalY += chartHeight + 20; // Update Y position to be below the chart
+
+            // Signature and Certification Text
+            const neededHeight = 50; // Height needed for signature and certification
+            if (finalY + neededHeight > doc.internal.pageSize.getHeight() - 20) {
+                doc.addPage();
+                finalY = 20;
+            }
+
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const picName = inputs.picName.value || '_________________________';
+            doc.setFontSize(10);
+            doc.setFont(undefined, 'normal');
+            doc.text(picName, 14, finalY + 20);
+            doc.line(14, finalY + 21, 80, finalY + 21);
+            doc.text('Pilot in Command Signature', 14, finalY + 26);
+
+            doc.setTextColor(255, 0, 0); // Red color
+            const certificationText = "I Certify That I Have Satisfied My Self That All Factors From The Basic Of Flight Preparation Laid Down By The Indonesia Civil Aviation As Covered In The Operation Manual of PT.Transwisata Prima Aviation";
+            const textLines = doc.splitTextToSize(certificationText, 95);
+            doc.setFontSize(8);
+            doc.text(textLines, pageWidth - 105, finalY + 15);
+            doc.setTextColor(0, 0, 0); // Reset color to black
+
+            // Add page numbers to all pages
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                const pageHeight = doc.internal.pageSize.getHeight();
+                doc.text(`Page ${i} of ${pageCount}`, pageWidth / 2, pageHeight - 10, {
+                    align: 'center'
+                });
+            }
+
+            doc.save('G-IV_SP_SN1381_PK-TWY_Weight_Balance.pdf');
+            pdfMessage.classList.add('hidden');
         }
 
         // --- EVENT LISTENERS ---
