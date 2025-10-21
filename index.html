@@ -932,6 +932,30 @@
             doc.text(outputs.elevatorTrimResult.textContent, 65, finalY + 10);
             finalY += 15;
 
+            // Weight Summary Table
+            if (finalY + 80 > doc.internal.pageSize.getHeight() - 20) {
+                doc.addPage();
+                finalY = 10;
+            }
+             const summaryBody = [
+                ['Total Payload', `${outputs.totalPayloadLbs.textContent} lbs / ${outputs.totalPayloadKg.textContent} kg`],
+                ['Zero Fuel Weight (ZFW)', `${outputs.zfwResult.textContent} lbs / ${outputs.zfwMacResult.textContent} %MAC (${outputs.zfwStatus.textContent})`],
+                ['Takeoff Weight (TOW)', `${outputs.towResult.textContent} lbs / ${outputs.towMacResult.textContent} %MAC (${outputs.towStatus.textContent})`],
+                ['Landing Weight (LW)', `${outputs.landingWeightResult.textContent} lbs / ${outputs.landingWeightMacResult.textContent} %MAC (${outputs.landingWeightStatus.textContent})`],
+                ['Extra Fuel', `${outputs.extraFuelResult.textContent} lbs`],
+                ['Available Payload', `${outputs.availablePayloadLbs.textContent} lbs / ${outputs.availablePayloadKg.textContent} kg`],
+                ['Available Passengers (@80kg)', `${outputs.availablePassengers.textContent} pax`],
+            ];
+            doc.autoTable({
+                startY: finalY,
+                head: [['Weight Summary', 'Value']],
+                body: summaryBody,
+                theme: 'grid',
+                headStyles: { fillColor: [45, 55, 72] },
+            });
+            finalY = doc.lastAutoTable.finalY;
+
+
             // CG Chart
             const chartCanvas = document.getElementById('cgEnvelopeChart');
             const chartImage = chartCanvas.toDataURL('image/png', 1.0);
