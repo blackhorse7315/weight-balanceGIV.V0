@@ -599,11 +599,13 @@
         <option value="Capt. Purwoko">
     </datalist>
     <datalist id="engineer-names">
+        <option value="-">
         <option value="Diki Hariadi">
         <option value="Lazarus Rio">
         <option value="Prayit Susonko">
     </datalist>
     <datalist id="cabin-service-names">
+        <option value="-">
         <option value="Qorry Maulidya">
         <option value="Tiffany Prisilia H">
         <option value="Agustin Zulfani">
@@ -944,7 +946,6 @@
                 ['Landing Weight (LW)', `${outputs.landingWeightResult.textContent} lbs / ${outputs.landingWeightMacResult.textContent} %MAC (${outputs.landingWeightStatus.textContent})`],
                 ['Extra Fuel', `${outputs.extraFuelResult.textContent} lbs`],
                 ['Available Payload', `${outputs.availablePayloadLbs.textContent} lbs / ${outputs.availablePayloadKg.textContent} kg`],
-                ['Available Passengers (@80kg)', `${outputs.availablePassengers.textContent} pax`],
             ];
             doc.autoTable({
                 startY: finalY,
@@ -952,6 +953,28 @@
                 body: summaryBody,
                 theme: 'grid',
                 headStyles: { fillColor: [45, 55, 72] },
+                didParseCell: function(data) {
+                    if (data.column.index === 1) { // Only for the 'Value' column
+                        const cellText = data.cell.text[0];
+                        // ZFW, TOW, LW rows
+                        if (data.row.index >= 1 && data.row.index <= 3) { 
+                            if (cellText.includes('OK')) {
+                                data.cell.styles.textColor = [0, 150, 0]; // Green
+                            } else if (cellText.includes('OVERWEIGHT')) {
+                                data.cell.styles.textColor = [255, 0, 0]; // Red
+                            }
+                        }
+                        // Extra Fuel, Available Payload rows
+                        else if (data.row.index === 4 || data.row.index === 5) { 
+                             const numericValue = parseFloat(cellText.split(' ')[0]);
+                             if (numericValue >= 0) {
+                                 data.cell.styles.textColor = [0, 150, 0]; // Green
+                             } else {
+                                 data.cell.styles.textColor = [255, 0, 0]; // Red for negative values
+                             }
+                        }
+                    }
+                }
             });
             finalY = doc.lastAutoTable.finalY;
 
@@ -1008,6 +1031,21 @@
 
         // --- EVENT LISTENERS ---
         Object.values(inputs).forEach(input => { if (input) { input.addEventListener('input', calculateAll); input.addEventListener('focus', (e) => { if (e.target.value !== '0' && e.target.value !== '') { e.target.dataset.originalValue = e.target.value; e.target.value = ''; } else if (e.target.value === '0') { e.target.dataset.originalValue = '0'; e.target.value = ''; } }); input.addEventListener('blur', (e) => { if (e.target.value === '' && e.target.dataset.originalValue) { e.target.value = e.target.dataset.originalValue; } else if (e.target.value === '' && !e.target.dataset.originalValue) { if (e.target.placeholder === '0' || e.target.value === '') { e.target.value = '0'; } } calculateAll(); }); } });
+        
+        inputs.engineerName.addEventListener('input', (e) => {
+            if (e.target.value === '-') {
+                inputs.engineer.value = 0;
+                calculateAll();
+            }
+        });
+
+        inputs.cabinServiceName.addEventListener('input', (e) => {
+            if (e.target.value === '-') {
+                inputs.cabinService.value = 0;
+                calculateAll();
+            }
+        });
+
         loginForm.addEventListener('submit', handleLogin);
         appLogoutBtn.addEventListener('click', () => handleLogout(false));
         adminLogoutBtn.addEventListener('click', () => handleLogout(false));
