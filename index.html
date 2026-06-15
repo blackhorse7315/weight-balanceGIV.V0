@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>G-IV SP Weight & Balance Calculator</title>
+    <link rel="icon" href="https://lh3.googleusercontent.com/d/1ZMVq7MkeFyVW_K3qkyzu3a8dhTuqF8lT">
+    <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1ZMVq7MkeFyVW_K3qkyzu3a8dhTuqF8lT">
+    <meta name="theme-color" content="#111827">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
@@ -98,6 +101,7 @@
 <body class="bg-gray-900 text-gray-200">
 
     <div id="login-page" class="flex flex-col items-center justify-center min-h-screen px-4">
+        <img src="https://lh3.googleusercontent.com/d/1ZMVq7MkeFyVW_K3qkyzu3a8dhTuqF8lT" alt="Logo" class="w-24 h-24 mb-4 object-contain drop-shadow-lg rounded-xl" />
         <h1 class="text-3xl font-bold text-white mb-2 text-center">
             Weight & Balance Application
             <span class="block text-2xl text-amber-400 mt-2">Gulfstream IV SP SN1381</span>
@@ -230,18 +234,21 @@
 
     <div id="app-page" class="hidden">
         <div class="container mx-auto max-w-lg p-4 sm:p-6 bg-gray-900 min-h-screen">
-            <!-- Header -->
-            <header class="text-center sticky top-0 bg-gray-900 z-10 py-4 mb-6 relative border-b border-gray-800">
-                <!-- Top Navigation Bar -->
-                <div class="flex justify-between items-center w-full mb-4">
+            
+            <!-- Sticky Top Navigation Bar (Glass Effect) -->
+            <div class="sticky top-0 z-50 backdrop-blur-md bg-gray-900/80 -mx-4 px-4 sm:-mx-6 sm:px-6 py-3 mb-6 border-b border-gray-700/50 shadow-sm">
+                <div class="flex justify-between items-center w-full">
                     <button id="view-history-btn" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-1.5 px-3 rounded-lg text-sm transition-colors shadow">History</button>
                     <div class="flex gap-2">
                         <button id="app-sync-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1.5 px-3 rounded-lg text-sm transition-colors shadow">Sync</button>
                         <button id="app-logout-btn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1.5 px-3 rounded-lg text-sm transition-colors shadow">Logout</button>
                     </div>
                 </div>
+            </div>
 
-                <!-- Main Titles -->
+            <!-- Main Titles (Not Sticky) -->
+            <header class="text-center mb-8 relative">
+                <img src="https://lh3.googleusercontent.com/d/1ZMVq7MkeFyVW_K3qkyzu3a8dhTuqF8lT" alt="Logo" class="w-20 h-20 mx-auto mb-3 object-contain drop-shadow-lg rounded-xl" />
                 <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Weight & Balance Application</h1>
                 <p class="text-amber-400 font-semibold text-lg mt-1">Gulfstream IV SP SN1381</p>
                 <p class="text-amber-400 font-semibold">PK-TWY</p>
@@ -1887,6 +1894,59 @@
                 }
             });
         }
+
+        // --- PWA INSTALLATION SETUP (Dynamic Manifest & Service Worker) ---
+        function setupPWA() {
+            // 1. Generate & Inject Manifest
+            const manifest = {
+                name: "G-IV SP Weight & Balance",
+                short_name: "G-IV W&B",
+                start_url: window.location.href.split('?')[0],
+                display: "standalone",
+                background_color: "#111827",
+                theme_color: "#111827",
+                icons: [{
+                    src: "https://lh3.googleusercontent.com/d/1ZMVq7MkeFyVW_K3qkyzu3a8dhTuqF8lT",
+                    sizes: "512x512",
+                    type: "image/png",
+                    purpose: "any maskable"
+                }]
+            };
+            const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+            const manifestUrl = URL.createObjectURL(manifestBlob);
+            const link = document.createElement('link');
+            link.rel = 'manifest';
+            link.href = manifestUrl;
+            document.head.appendChild(link);
+
+            // 2. Register Service Worker untuk mengizinkan Prompt "Add to Home Screen"
+            if ('serviceWorker' in navigator) {
+                if (window.location.protocol === 'blob:') {
+                    console.warn('PWA Service Worker tidak dapat didaftarkan pada environment Preview (blob:). Manifest PWA tetap dimuat.');
+                } else {
+                    try {
+                        const swContent = `
+                            self.addEventListener('install', (e) => { self.skipWaiting(); });
+                            self.addEventListener('activate', (e) => { self.clients.claim(); });
+                            self.addEventListener('fetch', (e) => { });
+                        `;
+                        const swBlob = new Blob([swContent], {type: 'application/javascript'});
+                        const swUrl = URL.createObjectURL(swBlob);
+                        navigator.serviceWorker.register(swUrl).then(() => {
+                            console.log('PWA Ready: App is installable');
+                        }).catch((err) => {
+                            console.warn('Service Worker registration error:', err);
+                        });
+                    } catch (error) {
+                        console.warn('PWA SW Catch:', error);
+                    }
+                }
+            }
+        }
+        
+        // Inisialisasi PWA
+        setupPWA();
+
     </script>
 </body>
 </html>
