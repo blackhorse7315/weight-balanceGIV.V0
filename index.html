@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>G-IV SP Weight & Balance Calculator</title>
-    <link rel="icon" href="https://lh3.googleusercontent.com/d/1ZMVq7MkeFyVW_K3qkyzu3a8dhTuqF8lT">
-    <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1ZMVq7MkeFyVW_K3qkyzu3a8dhTuqF8lT">
+    <link rel="icon" href="https://lh3.googleusercontent.com/d/1C0snR7IN-kpYMnxzqzpcc-7SRjIbEalE">
+    <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1C0snR7IN-kpYMnxzqzpcc-7SRjIbEalE">
     <meta name="theme-color" content="#111827">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -101,7 +101,7 @@
 <body class="bg-gray-900 text-gray-200">
 
     <div id="login-page" class="flex flex-col items-center justify-center min-h-screen px-4">
-        <img src="https://lh3.googleusercontent.com/d/1ZMVq7MkeFyVW_K3qkyzu3a8dhTuqF8lT" alt="Logo" class="w-24 h-24 mb-4 object-contain drop-shadow-lg rounded-xl" />
+        <img src="https://lh3.googleusercontent.com/d/1C0snR7IN-kpYMnxzqzpcc-7SRjIbEalE" alt="Logo" class="w-24 h-24 mb-4 object-contain drop-shadow-lg rounded-xl" />
         <h1 class="text-3xl font-bold text-white mb-2 text-center">
             Weight & Balance Application
             <span class="block text-2xl text-amber-400 mt-2">Gulfstream IV SP SN1381</span>
@@ -248,7 +248,7 @@
 
             <!-- Main Titles (Not Sticky) -->
             <header class="text-center mb-8 relative">
-                <img src="https://lh3.googleusercontent.com/d/1ZMVq7MkeFyVW_K3qkyzu3a8dhTuqF8lT" alt="Logo" class="w-20 h-20 mx-auto mb-3 object-contain drop-shadow-lg rounded-xl" />
+                <img src="https://lh3.googleusercontent.com/d/1C0snR7IN-kpYMnxzqzpcc-7SRjIbEalE" alt="Logo" class="w-20 h-20 mx-auto mb-3 object-contain drop-shadow-lg rounded-xl" />
                 <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Weight & Balance Application</h1>
                 <p class="text-amber-400 font-semibold text-lg mt-1">Gulfstream IV SP SN1381</p>
                 <p class="text-amber-400 font-semibold">PK-TWY</p>
@@ -269,14 +269,14 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
                                 From (Example: WIHH)
                             </label>
-                            <input type="text" id="routeFrom" class="w-48 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                            <input type="text" id="routeFrom" oninput="this.value = this.value.toUpperCase()" class="w-48 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
                         </div>
                         <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
                             <label for="routeTo" class="flex items-center text-sm font-medium">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M2 12h20"/><path d="m18 8-4 4 4 4"/><path d="m6 8 4 4-4 4"/></svg>
                                 Destination (Example: WARR)
                             </label>
-                            <input type="text" id="routeTo" class="w-48 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                            <input type="text" id="routeTo" oninput="this.value = this.value.toUpperCase()" class="w-48 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
                         </div>
                     </div>
                 </div>
@@ -733,8 +733,8 @@
             <input type="hidden" id="edit-flight-row">
             <div class="space-y-3">
                 <div class="flex gap-2">
-                    <div class="w-1/2"><label class="block text-sm text-gray-300 mb-1">Route From</label><input type="text" id="edit-route-from" class="w-full bg-gray-700 text-white p-2 rounded border border-gray-600"></div>
-                    <div class="w-1/2"><label class="block text-sm text-gray-300 mb-1">Route To</label><input type="text" id="edit-route-to" class="w-full bg-gray-700 text-white p-2 rounded border border-gray-600"></div>
+                    <div class="w-1/2"><label class="block text-sm text-gray-300 mb-1">Route From</label><input type="text" id="edit-route-from" oninput="this.value = this.value.toUpperCase()" class="w-full bg-gray-700 text-white p-2 rounded border border-gray-600"></div>
+                    <div class="w-1/2"><label class="block text-sm text-gray-300 mb-1">Route To</label><input type="text" id="edit-route-to" oninput="this.value = this.value.toUpperCase()" class="w-full bg-gray-700 text-white p-2 rounded border border-gray-600"></div>
                 </div>
                 <div><label class="block text-sm text-gray-300 mb-1">PIC</label><input type="text" id="edit-pic" class="w-full bg-gray-700 text-white p-2 rounded border border-gray-600"></div>
                 <div><label class="block text-sm text-gray-300 mb-1">Copilot</label><input type="text" id="edit-copilot" class="w-full bg-gray-700 text-white p-2 rounded border border-gray-600"></div>
@@ -931,7 +931,7 @@
         const DEFAULT_EXPIRY_DATE = '2025-10-25';
 
         // --- GOOGLE APPS SCRIPT URL ---
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxCDQrP13qnUiowtNA6C521VTzG41Em5kE_QFJoIC5n_VsUf8bmtyI3FDHcIgdiRmuAsQ/exec'; 
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzOlurizhRUDeR_jZD8NZ9EzFPUNq-XMJCm-kNQ4Owoz0vftwiqFyKFsvftEWfMWuI-BQ/exec'; 
 
         // --- PAGE ELEMENTS ---
         const loginPage = document.getElementById('login-page');
@@ -1014,37 +1014,53 @@
             const loginButton = loginForm.querySelector('button');
             
             loginButton.disabled = true;
-            loginButton.textContent = 'Syncing & Verifying...';
+            loginButton.textContent = 'Verifying...';
             loginError.classList.add('hidden'); 
 
             const username = usernameInput.value;
             const password = passwordInput.value;
 
             try {
-                // 1. Tarik data terbaru dari Database sebelum verifikasi login
+                // Optimasi: Membatasi waktu sync maksimal 3 detik agar tidak menunggu terlalu lama
+                const fetchPromise = fetch(`${SCRIPT_URL}?action=fetchMaster`);
+                const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 3000));
+
                 try {
-                    const masterRes = await fetch(`${SCRIPT_URL}?action=fetchMaster`);
+                    const masterRes = await Promise.race([fetchPromise, timeoutPromise]);
                     const masterData = await masterRes.json();
+                    
                     if (masterData.status === 'success') {
                         pilotsData = masterData.pilots || [];
                         engineersData = masterData.engineers || ["-"];
                         cabinServicesData = masterData.cabinServices || ["-"];
+                        
+                        // Menarik Expiry Date sekalian dalam satu request (Lebih Cepat!)
+                        if (masterData.expiryDate) {
+                            appExpiryDate = masterData.expiryDate;
+                        }
 
                         renderAdminPilotList();
                         renderAdminOtherLists();
                         updatePilotDatalists();
                         updateOtherDatalists();
-                        syncUsersFromPilots(); // Perbarui daftar akses akun login
+                        syncUsersFromPilots(); 
                     }
                 } catch (syncError) {
-                    console.warn("Gagal menarik data master saat login, menggunakan data lokal:", syncError);
+                    console.warn("Sync background lambat/gagal, menggunakan data lokal:", syncError);
                 }
 
-                // 2. Cek kredensial setelah sinkronisasi selesai
+                // 2. Cek kredensial (Local Check - Instant)
                 const user = users[username];
 
                 if (user && user.password === password) {
-                    const isExpired = await initialExpiryCheck();
+                    // Hanya fetch expiry jika masih kosong (jika fetch master tadi gagal/timeout)
+                    if (!appExpiryDate) {
+                        await fetchLatestExpiryDate();
+                        if (!appExpiryDate) appExpiryDate = DEFAULT_EXPIRY_DATE;
+                    }
+                    
+                    const isExpired = checkIsExpiredNow();
+
                     if (isExpired && user.role !== 'admin') {
                         loginPage.classList.add('hidden');
                         expiredPage.classList.remove('hidden');
@@ -1266,7 +1282,7 @@
         // --- HELPER FUNCTIONS ---
         const kgToLbs = (kg) => (kg || 0) * KG_TO_LBS;
         const calculateMoment = (weight, arm) => (weight || 0) * (arm || 0);
-        const getMacFromTable = (arm) => { if (!arm || arm < 430 || arm >= 471) return 0; const armInt = Math.floor(arm); const armDecIndex = Math.round((arm - armInt) * 10); if (armDecIndex > 9) { armInt += 1; armDecIndex = 0; } const row = MAC_TABLE[armInt]; if (row && row[armDecIndex] !== undefined) return row[armDecIndex]; return 0; };
+        const getMacFromTable = (arm) => { if (!arm || arm < 430 || arm >= 471) return 0; let armInt = Math.floor(arm); let armDecIndex = Math.round((arm - armInt) * 10); if (armDecIndex > 9) { armInt += 1; armDecIndex = 0; } const row = MAC_TABLE[armInt]; if (row && row[armDecIndex] !== undefined) return row[armDecIndex]; return 0; };
         const getElevatorTrimSetting = (zfwMac, fuelOnBoard) => { const fuelKey = Math.max(1000, Math.min(29000, Math.round(fuelOnBoard / 1000) * 1000)); const macKey = Math.max(36, Math.min(45, Math.round(zfwMac))); const fuelRow = ELEVATOR_TRIM_TABLE[fuelKey]; if (fuelRow) { const trimSetting = fuelRow[macKey]; if (trimSetting !== undefined) return trimSetting; } return "N/A"; };
 
         // Fetches an image from URL and converts it to Base64 (untuk PDF jsPDF)
@@ -1321,45 +1337,102 @@
         async function generateProfessionalPDF() {
             const pdfMessage = document.getElementById('pdf-message'); pdfMessage.classList.remove('hidden');
             const { jsPDF } = window.jspdf; const doc = new jsPDF();
-            doc.setFontSize(14); doc.setFont(undefined, 'bold'); doc.text('PT. TRANSWISATA PRIMA AVIATION', 105, 15, null, null, 'center'); 
-            doc.setFontSize(18); doc.text('Load Sheet Gulfstream IV SP SN1381', 105, 22, null, null, 'center'); 
-            doc.setFontSize(12); doc.setFont(undefined, 'normal'); doc.text(`Aircraft Registration: PK-TWY`, 105, 28, null, null, 'center'); 
-            doc.setFontSize(10); doc.text(`Date: ${new Date().toLocaleDateString('en-GB')}`, 105, 34, null, null, 'center');
+
+            // --- TAMBAHKAN LOGO DI SINI ---
+            try {
+                const logoUrl = "https://lh3.googleusercontent.com/d/1WNcGjsZ9_Fp54xzOl01EYRqM6-wY5Zh7";
+                const logoBase64 = await getBase64FromUrl(logoUrl);
+                // Ukuran logo disetel 15x15 mm, ditengah. Posisi Y digeser naik ke 5
+                doc.addImage(logoBase64, 'PNG', 97.5, 5, 15, 15);
+            } catch (err) {
+                console.warn("Gagal memuat logo utama untuk PDF.", err);
+            }
+
+            // Koordinat Y digeser lebih ke atas agar seluruh tabel muat di halaman 1
+            doc.setFontSize(14); doc.setFont(undefined, 'bold'); doc.text('PT. TRANSWISATA PRIMA AVIATION', 105, 26, null, null, 'center'); 
+            doc.setFontSize(16); doc.text('Load Sheet Gulfstream IV SP SN1381', 105, 33, null, null, 'center'); 
+            doc.setFontSize(11); doc.setFont(undefined, 'normal'); doc.text(`Aircraft Registration: PK-TWY`, 105, 39, null, null, 'center'); 
+            doc.setFontSize(10); doc.text(`Date: ${new Date().toLocaleDateString('en-GB')}`, 105, 44, null, null, 'center');
             
             doc.setFont(undefined, 'bold');
-            doc.text('Doc. No: F/TWA-OPS/002-01', 14, 40);
-            doc.text('Effective Date: 01 October 2025', 210 - 14, 40, { align: 'right' });
+            doc.text('Doc. No: F/TWA-OPS/002-01', 14, 50);
+            doc.text('Effective Date: 01 October 2025', 210 - 14, 50, { align: 'right' });
             doc.setFont(undefined, 'normal');
 
+            // Tabel 1: Route Information (Diperpadat)
             doc.autoTable({ 
-                startY: 45, 
+                startY: 53, 
                 head: [['Route Information', '']], 
                 body: [['From', inputs.routeFrom.value], ['Destination', inputs.routeTo.value],], 
                 theme: 'grid', 
-                headStyles: { fillColor: [45, 55, 72] }, 
+                headStyles: { fillColor: [45, 55, 72] },
+                styles: { cellPadding: 1.5 }
             });
-            doc.autoTable({ startY: doc.lastAutoTable.finalY + 10, head: [['Role', 'Name']], body: [['PIC', inputs.picName.value], ['Copilot', inputs.copilotName.value], ['Engineer', inputs.engineerName.value], ['Cabin Service', inputs.cabinServiceName.value], ['Total Person on Board (POB)', inputs.totalPob.value],], theme: 'grid', headStyles: { fillColor: [22, 163, 74] }, });
+            
+            // Tabel 2: Role (Jarak antar tabel dikurangi jadi + 4)
+            doc.autoTable({ 
+                startY: doc.lastAutoTable.finalY + 4, 
+                head: [['Role', 'Name']], 
+                body: [['PIC', inputs.picName.value], ['Copilot', inputs.copilotName.value], ['Engineer', inputs.engineerName.value], ['Cabin Service', inputs.cabinServiceName.value], ['Total Person on Board (POB)', inputs.totalPob.value],], 
+                theme: 'grid', 
+                headStyles: { fillColor: [22, 163, 74] },
+                styles: { cellPadding: 1.5 }
+            });
             let finalY = doc.lastAutoTable.finalY;
             const tripTime = `${inputs.tripTimeHours.value || 0} hr ${inputs.tripTimeMinutes.value || 0} min`; const alternateTime = `${inputs.tripToAlternateHours.value || 0} hr ${inputs.tripToAlternateMinutes.value || 0} min`;
-            doc.autoTable({ startY: finalY + 10, head: [['Flight Calculation', 'Value']], body: [['Trip Time', tripTime], ['Trip to Alternate', alternateTime], ['Altitude', `${inputs.altitude.value} ft`], ['Airspeed', `${inputs.airspeed.value} kts`], ['Headwind', `${inputs.headwind.value} kts`], ['Fuel on Board', `${inputs.fuelOnBoard.value} lbs`], ['Maximum Range', `${outputs.maxRange.textContent} nm`],], theme: 'grid', headStyles: { fillColor: [45, 55, 72] }, }); finalY = doc.lastAutoTable.finalY;
-            doc.autoTable({ startY: finalY + 10, head: [['Fuel Required', 'Value']], body: [['Fuel Consumption', `${inputs.fuelConsumption.value} lbs/hr`], ['Trip Fuel', `${outputs.fuelTripRequired.textContent} lbs`], ['Alternate Fuel', `${outputs.alternateFuel.textContent} lbs`], ['Final Reserve 30 min', `${outputs.reserveFuel.textContent} lbs`], ['Contingency (10%)', `${outputs.contingencyFuel.textContent} lbs`], ['Start & Taxi', `${outputs.startTaxiFuel.textContent} lbs`], ['TOTAL FUEL REQUIRED', `${outputs.totalFuelRequired.textContent} lbs`],], theme: 'grid', headStyles: { fillColor: [45, 55, 72] }, bodyStyles: { fontStyle: 'bold' }, didParseCell: function(data) { if (data.row.index === 6) { data.cell.styles.fillColor = '#1f2937'; data.cell.styles.textColor = '#fcd34d'; } } }); finalY = doc.lastAutoTable.finalY;
+            
+            // Tabel 3: Flight Calculation
+            doc.autoTable({ 
+                startY: finalY + 4, 
+                head: [['Flight Calculation', 'Value']], 
+                body: [['Trip Time', tripTime], ['Trip to Alternate', alternateTime], ['Altitude', `${inputs.altitude.value} ft`], ['Airspeed', `${inputs.airspeed.value} kts`], ['Headwind', `${inputs.headwind.value} kts`], ['Fuel on Board', `${inputs.fuelOnBoard.value} lbs`], ['Maximum Range', `${outputs.maxRange.textContent} nm`],], 
+                theme: 'grid', 
+                headStyles: { fillColor: [45, 55, 72] },
+                styles: { cellPadding: 1.5 }
+            }); 
+            finalY = doc.lastAutoTable.finalY;
+            
+            // Tabel 4: Fuel Required (Pasti masuk halaman 1 sekarang)
+            doc.autoTable({ 
+                startY: finalY + 4, 
+                head: [['Fuel Required', 'Value']], 
+                body: [['Fuel Consumption', `${inputs.fuelConsumption.value} lbs/hr`], ['Trip Fuel', `${outputs.fuelTripRequired.textContent} lbs`], ['Alternate Fuel', `${outputs.alternateFuel.textContent} lbs`], ['Final Reserve 30 min', `${outputs.reserveFuel.textContent} lbs`], ['Contingency (10%)', `${outputs.contingencyFuel.textContent} lbs`], ['Start & Taxi', `${outputs.startTaxiFuel.textContent} lbs`], ['TOTAL FUEL REQUIRED', `${outputs.totalFuelRequired.textContent} lbs`],], 
+                theme: 'grid', 
+                headStyles: { fillColor: [45, 55, 72] }, 
+                styles: { cellPadding: 1.5 },
+                bodyStyles: { fontStyle: 'bold' }, 
+                didParseCell: function(data) { if (data.row.index === 6) { data.cell.styles.fillColor = '#1f2937'; data.cell.styles.textColor = '#fcd34d'; } } 
+            }); 
+            finalY = doc.lastAutoTable.finalY;
             
             const table = document.getElementById('cg-table-body'); let bodyData = []; table.querySelectorAll('tr').forEach(row => { let rowData = []; row.querySelectorAll('td').forEach(cell => { let cellText = cell.querySelector('input') ? cell.querySelector('input').value : cell.innerText; rowData.push(cellText); }); bodyData.push(rowData); });
             
-            if (finalY + 20 > doc.internal.pageSize.getHeight() - 30) { doc.addPage(); finalY = 10; }
-            doc.autoTable({ startY: finalY + 10, head: [['Item', 'Weight (lbs)', 'Arm (in)', 'Moment', '%MAC']], body: bodyData, theme: 'striped', headStyles: { fillColor: [45, 55, 72] }, styles: { fontSize: 8 }, columnStyles: { 0: { cellWidth: 60 }, 1: { halign: 'right' }, 2: { halign: 'right' }, 3: { halign: 'right' }, 4: { halign: 'right' }, }, didParseCell: function(data) { const originalTable = document.getElementById('cg-table-body'); const originalRow = originalTable.querySelectorAll('tr')[data.row.index]; if (originalRow && originalRow.classList.contains('total-row')) { data.cell.styles.fillColor = '#1f2937'; data.cell.styles.textColor = '#fcd34d'; data.cell.styles.fontStyle = 'bold'; } } }); 
+            // Paksa pindah ke halaman 2 untuk tabel Weight & CG Calculation
+            doc.addPage(); 
+            finalY = 10; 
+
+            doc.autoTable({ 
+                startY: finalY + 8, 
+                head: [['Item', 'Weight (lbs)', 'Arm (in)', 'Moment', '%MAC']], 
+                body: bodyData, 
+                theme: 'striped', 
+                headStyles: { fillColor: [45, 55, 72] }, 
+                styles: { fontSize: 8, cellPadding: 1.5 }, 
+                columnStyles: { 0: { cellWidth: 60 }, 1: { halign: 'right' }, 2: { halign: 'right' }, 3: { halign: 'right' }, 4: { halign: 'right' }, }, 
+                didParseCell: function(data) { const originalTable = document.getElementById('cg-table-body'); const originalRow = originalTable.querySelectorAll('tr')[data.row.index]; if (originalRow && originalRow.classList.contains('total-row')) { data.cell.styles.fillColor = '#1f2937'; data.cell.styles.textColor = '#fcd34d'; data.cell.styles.fontStyle = 'bold'; } } 
+            }); 
             finalY = doc.lastAutoTable.finalY;
 
             // Elevator Trim
             doc.setFontSize(11);
             doc.setFont(undefined, 'bold');
-            doc.text('Elevator Trim Tab Setting:', 14, finalY + 10);
+            doc.text('Elevator Trim Tab Setting:', 14, finalY + 8);
             doc.setFont(undefined, 'normal');
-            doc.text(outputs.elevatorTrimResult.textContent, 65, finalY + 10);
-            finalY += 15;
+            doc.text(outputs.elevatorTrimResult.textContent, 65, finalY + 8);
+            finalY += 12;
 
             // Weight Summary Table
-            if (finalY + 80 > doc.internal.pageSize.getHeight() - 20) {
+            if (finalY + 70 > doc.internal.pageSize.getHeight() - 20) {
                 doc.addPage();
                 finalY = 10;
             }
@@ -1377,6 +1450,7 @@
                 body: summaryBody,
                 theme: 'grid',
                 headStyles: { fillColor: [45, 55, 72] },
+                styles: { cellPadding: 1.5 },
                 didParseCell: function(data) {
                     if (data.column.index === 1) { 
                         const cellText = data.cell.text[0];
@@ -1400,7 +1474,6 @@
             });
             finalY = doc.lastAutoTable.finalY;
 
-
             // CG Chart
             const chartCanvas = document.getElementById('cgEnvelopeChart');
             const chartImage = chartCanvas.toDataURL('image/png', 1.0);
@@ -1412,8 +1485,8 @@
                 doc.addPage();
                 finalY = 10;
             }
-            doc.addImage(chartImage, 'PNG', chartX, finalY + 10, chartWidth, chartHeight);
-            finalY += chartHeight + 20; 
+            doc.addImage(chartImage, 'PNG', chartX, finalY + 5, chartWidth, chartHeight);
+            finalY += chartHeight + 10; 
 
             // Signature and Certification Text
             const neededHeight = 60; 
@@ -1613,6 +1686,9 @@
                     container.innerHTML += `<div class="ml-4 mt-3 mb-3"><span class="bg-gray-700 text-gray-200 px-3 py-1 rounded text-sm font-medium shadow-sm border border-gray-600">${dt}</span></div>`;
                 }
 
+                // Fungsi pembantu untuk formatting isi data
+                const val = (idx, unit='') => (d[idx] !== undefined && d[idx] !== '') ? `${d[idx]} ${unit}`.trim() : '-';
+
                 container.innerHTML += `
                     <div class="bg-gray-800 p-4 rounded-lg ml-4 sm:ml-8 mb-3 border border-gray-700 shadow-sm relative hover:border-gray-500 transition-colors">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
@@ -1633,6 +1709,8 @@
                                 <button onclick="deleteHistory(${item.row})" class="bg-red-500 hover:bg-red-600 text-white text-xs py-1 px-3 rounded transition-colors shadow">Hapus</button>
                             </div>
                         </div>
+                        
+                        <!-- Quick Summary -->
                         <div class="grid grid-cols-2 sm:grid-cols-3 text-xs sm:text-sm text-gray-300 gap-y-2 gap-x-4 bg-gray-900 p-3 rounded">
                             <div><span class="text-gray-500 block text-[10px] uppercase">PIC</span> ${picName}</div>
                             <div><span class="text-gray-500 block text-[10px] uppercase">TOW</span> ${towLbs} lbs</div>
@@ -1641,10 +1719,87 @@
                             <div><span class="text-gray-500 block text-[10px] uppercase">ZFW</span> ${zfwLbs} lbs</div>
                             <div><span class="text-gray-500 block text-[10px] uppercase">Fuel Req</span> ${totalFuelRequired} lbs</div>
                         </div>
+
+                        <button onclick="toggleDetails(${item.row})" class="text-indigo-400 hover:text-indigo-300 text-xs mt-3 font-medium flex items-center gap-1 w-full justify-center border-t border-gray-700 pt-2 transition-colors">
+                            <span id="toggle-text-${item.row}">Lihat Seluruh Data</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                        </button>
+
+                        <!-- Expanded Full Data -->
+                        <div id="details-${item.row}" class="hidden mt-2 pt-2 border-t border-gray-700">
+                            <h5 class="text-amber-400 font-semibold mb-2 text-sm">General & Crew</h5>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mb-4 bg-gray-900/50 p-2 rounded">
+                                <div><span class="text-gray-500 block">Engineer:</span> ${val(5)}</div>
+                                <div><span class="text-gray-500 block">Cabin Svc:</span> ${val(6)}</div>
+                                <div><span class="text-gray-500 block">POB:</span> ${val(14)}</div>
+                                <div><span class="text-gray-500 block">Max Range:</span> ${val(26, 'nm')}</div>
+                            </div>
+
+                            <h5 class="text-amber-400 font-semibold mb-2 text-sm">Weights Limit & Result</h5>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mb-4 bg-gray-900/50 p-2 rounded">
+                                <div><span class="text-gray-500 block">Ramp Wt:</span> ${val(7, 'lbs')}</div>
+                                <div><span class="text-gray-500 block">Max TOW:</span> ${val(8, 'lbs')}</div>
+                                <div><span class="text-gray-500 block">Empty Wt:</span> ${val(9, 'lbs')}</div>
+                                <div><span class="text-gray-500 block">Payload:</span> ${val(49, 'lbs')} / ${val(50, 'kg')}</div>
+                                <div><span class="text-gray-500 block">ZFW:</span> ${val(51, 'lbs')} (${val(52, '%MAC')})</div>
+                                <div><span class="text-gray-500 block">TOW:</span> ${val(53, 'lbs')} (${val(54, '%MAC')})</div>
+                                <div><span class="text-gray-500 block">LW:</span> ${val(55, 'lbs')} (${val(56, '%MAC')})</div>
+                            </div>
+
+                            <h5 class="text-amber-400 font-semibold mb-2 text-sm">Flight & Fuel Details</h5>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mb-4 bg-gray-900/50 p-2 rounded">
+                                <div><span class="text-gray-500 block">Trip Time:</span> ${val(18)}h ${val(19)}m</div>
+                                <div><span class="text-gray-500 block">Alt Time:</span> ${val(20)}h ${val(21)}m</div>
+                                <div><span class="text-gray-500 block">Altitude:</span> ${val(22, 'ft')}</div>
+                                <div><span class="text-gray-500 block">Airspeed:</span> ${val(23, 'kts')}</div>
+                                <div><span class="text-gray-500 block">Headwind:</span> ${val(24, 'kts')}</div>
+                                <div><span class="text-gray-500 block">FOB:</span> ${val(25, 'lbs')}</div>
+                                <div><span class="text-gray-500 block">Fuel Cons:</span> ${val(27, 'lbs/hr')}</div>
+                                <div><span class="text-gray-500 block">Trip Fuel:</span> ${val(28, 'lbs')}</div>
+                                <div><span class="text-gray-500 block">Alt Fuel:</span> ${val(29, 'lbs')}</div>
+                                <div><span class="text-gray-500 block">Res Fuel:</span> ${val(30, 'lbs')}</div>
+                                <div><span class="text-gray-500 block">Cont Fuel:</span> ${val(31, 'lbs')}</div>
+                                <div><span class="text-gray-500 block">Taxi Fuel:</span> ${val(32, 'lbs')}</div>
+                            </div>
+
+                            <h5 class="text-amber-400 font-semibold mb-2 text-sm">Payload Layout (kg)</h5>
+                            <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 text-xs bg-gray-900/50 p-2 rounded">
+                                <div><span class="text-gray-500 block">Baggage:</span> ${val(15)}</div>
+                                <div><span class="text-gray-500 block">Ckpt Sto:</span> ${val(16)}</div>
+                                <div><span class="text-gray-500 block">Cab Sto:</span> ${val(17)}</div>
+                                <div><span class="text-gray-500 block">Galley:</span> ${val(34)}</div>
+                                <div><span class="text-gray-500 block">Aft Lav:</span> ${val(48)}</div>
+                                <div><span class="text-gray-500 block">Seat 1:</span> ${val(35)}</div>
+                                <div><span class="text-gray-500 block">Seat 2:</span> ${val(36)}</div>
+                                <div><span class="text-gray-500 block">Seat 3:</span> ${val(37)}</div>
+                                <div><span class="text-gray-500 block">Seat 4:</span> ${val(38)}</div>
+                                <div><span class="text-gray-500 block">Seat 5:</span> ${val(39)}</div>
+                                <div><span class="text-gray-500 block">Seat 6:</span> ${val(40)}</div>
+                                <div><span class="text-gray-500 block">Seat 7:</span> ${val(41)}</div>
+                                <div><span class="text-gray-500 block">Seat 8:</span> ${val(42)}</div>
+                                <div><span class="text-gray-500 block">Seat 9:</span> ${val(43)}</div>
+                                <div><span class="text-gray-500 block">Seat 10:</span> ${val(44)}</div>
+                                <div><span class="text-gray-500 block">Seat 11:</span> ${val(45)}</div>
+                                <div><span class="text-gray-500 block">Seat 12:</span> ${val(46)}</div>
+                                <div><span class="text-gray-500 block">Seat 13:</span> ${val(47)}</div>
+                            </div>
+                        </div>
                     </div>
                 `;
             });
         }
+
+        window.toggleDetails = function(rowId) {
+            const detailsEl = document.getElementById(`details-${rowId}`);
+            const toggleText = document.getElementById(`toggle-text-${rowId}`);
+            if (detailsEl.classList.contains('hidden')) {
+                detailsEl.classList.remove('hidden');
+                toggleText.textContent = 'Sembunyikan Data';
+            } else {
+                detailsEl.classList.add('hidden');
+                toggleText.textContent = 'Lihat Seluruh Data';
+            }
+        };
 
         window.loadFlightData = function(rowId) {
             const item = currentHistoryData.find(i => i.row === rowId);
@@ -1906,7 +2061,7 @@
                 background_color: "#111827",
                 theme_color: "#111827",
                 icons: [{
-                    src: "https://lh3.googleusercontent.com/d/1ZMVq7MkeFyVW_K3qkyzu3a8dhTuqF8lT",
+                    src: "https://lh3.googleusercontent.com/d/1C0snR7IN-kpYMnxzqzpcc-7SRjIbEalE",
                     sizes: "512x512",
                     type: "image/png",
                     purpose: "any maskable"
