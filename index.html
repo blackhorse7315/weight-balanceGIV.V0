@@ -231,21 +231,24 @@
     <div id="app-page" class="hidden">
         <div class="container mx-auto max-w-lg p-4 sm:p-6 bg-gray-900 min-h-screen">
             <!-- Header -->
-            <header class="text-center sticky top-0 bg-gray-900 z-10 py-4 mb-6 relative">
-                <div class="absolute top-4 left-4 flex flex-col sm:flex-row gap-2">
-                    <button id="view-history-btn" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-1 px-3 rounded-lg text-sm transition-colors">History</button>
+            <header class="text-center sticky top-0 bg-gray-900 z-10 py-4 mb-6 relative border-b border-gray-800">
+                <!-- Top Navigation Bar -->
+                <div class="flex justify-between items-center w-full mb-4">
+                    <button id="view-history-btn" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-1.5 px-3 rounded-lg text-sm transition-colors shadow">History</button>
+                    <div class="flex gap-2">
+                        <button id="app-sync-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1.5 px-3 rounded-lg text-sm transition-colors shadow">Sync</button>
+                        <button id="app-logout-btn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1.5 px-3 rounded-lg text-sm transition-colors shadow">Logout</button>
+                    </div>
                 </div>
+
+                <!-- Main Titles -->
                 <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Weight & Balance Application</h1>
-                <p class="text-amber-400 font-semibold text-lg">Gulfstream IV SP SN1381</p>
+                <p class="text-amber-400 font-semibold text-lg mt-1">Gulfstream IV SP SN1381</p>
                 <p class="text-amber-400 font-semibold">PK-TWY</p>
                 <p class="text-xs text-gray-500 mt-1">by SkyOps Solutions</p>
                 <p id="expiry-date-display" class="text-xs text-red-400 mt-2"></p>
                 <p id="expiry-countdown" class="text-xs text-amber-400 mt-1"></p>
-                <div class="absolute top-4 right-4 flex flex-col sm:flex-row gap-2">
-                    <button id="app-sync-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded-lg text-sm transition-colors">Sync</button>
-                    <button id="app-logout-btn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded-lg text-sm transition-colors">Logout</button>
-                </div>
-                <p id="welcome-message" class="text-lg font-semibold text-green-400 mt-4"></p>
+                <p id="welcome-message" class="text-sm font-semibold text-green-400 mt-4"></p>
             </header>
 
             <div id="main-content" class="space-y-6">
@@ -921,7 +924,7 @@
         const DEFAULT_EXPIRY_DATE = '2025-10-25';
 
         // --- GOOGLE APPS SCRIPT URL ---
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyfFb1o6UZuhtIW8JQiBXmkSjjp-Uo1pFLB0qhBYApykp-GVydk8Dd3UiJCw1Wtdj39PA/exec'; 
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxCDQrP13qnUiowtNA6C521VTzG41Em5kE_QFJoIC5n_VsUf8bmtyI3FDHcIgdiRmuAsQ/exec'; 
 
         // --- PAGE ELEMENTS ---
         const loginPage = document.getElementById('login-page');
@@ -1572,12 +1575,23 @@
             let currentDate = '';
 
             currentHistoryData.forEach(item => {
-                let d = parseGBDate(item.timestamp);
-                if (isNaN(d.getTime())) d = new Date();
+                const d = item.rowData || [];
+                const ts = d[0] || '';
+                const routeFrom = d[1] || '-';
+                const routeTo = d[2] || '-';
+                const picName = d[3] || '-';
+                const copilotName = d[4] || '-';
+                const towLbs = d[53] || 0;
+                const zfwLbs = d[51] || 0;
+                const totalFuelRequired = d[33] || 0;
+                const elevatorTrim = d[57] || '-';
+
+                let dateObj = parseGBDate(ts);
+                if (isNaN(dateObj.getTime())) dateObj = new Date();
                 
-                const y = d.getFullYear().toString();
-                const m = d.toLocaleString('en-US', { month: 'long' });
-                const dt = d.toLocaleDateString('en-GB');
+                const y = dateObj.getFullYear().toString();
+                const m = dateObj.toLocaleString('en-US', { month: 'long' });
+                const dt = dateObj.toLocaleDateString('en-GB');
 
                 if (y !== currentYear) {
                     currentYear = y;
@@ -1597,28 +1611,101 @@
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
                             <div>
                                 <p class="text-white font-bold text-lg flex items-center gap-2">
-                                    <span class="bg-blue-600 text-white text-xs px-2 py-0.5 rounded">${item.routeFrom}</span> 
+                                    <span class="bg-blue-600 text-white text-xs px-2 py-0.5 rounded">${routeFrom}</span> 
                                     &rarr; 
-                                    <span class="bg-green-600 text-white text-xs px-2 py-0.5 rounded">${item.routeTo}</span>
+                                    <span class="bg-green-600 text-white text-xs px-2 py-0.5 rounded">${routeTo}</span>
                                 </p>
-                                <p class="text-xs text-gray-400 mt-1">${item.timestamp}</p>
+                                <p class="text-xs text-gray-400 mt-1">${ts}</p>
                             </div>
-                            <div class="flex gap-2">
-                                <button onclick="openEditHistory(${item.row})" class="bg-blue-500 hover:bg-blue-600 text-white text-xs py-1 px-3 rounded transition-colors shadow">Edit</button>
+                            <div class="flex flex-wrap gap-2">
+                                <button onclick="loadFlightData(${item.row})" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs py-1 px-3 rounded transition-colors shadow flex items-center gap-1 border border-emerald-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                    Buka Detail & PDF
+                                </button>
+                                <button onclick="openEditHistory(${item.row})" class="bg-blue-500 hover:bg-blue-600 text-white text-xs py-1 px-3 rounded transition-colors shadow">Edit Info</button>
                                 <button onclick="deleteHistory(${item.row})" class="bg-red-500 hover:bg-red-600 text-white text-xs py-1 px-3 rounded transition-colors shadow">Hapus</button>
                             </div>
                         </div>
                         <div class="grid grid-cols-2 sm:grid-cols-3 text-xs sm:text-sm text-gray-300 gap-y-2 gap-x-4 bg-gray-900 p-3 rounded">
-                            <div><span class="text-gray-500 block text-[10px] uppercase">PIC</span> ${item.picName || '-'}</div>
-                            <div><span class="text-gray-500 block text-[10px] uppercase">TOW</span> ${item.towLbs} lbs</div>
-                            <div><span class="text-gray-500 block text-[10px] uppercase">Trim</span> ${item.elevatorTrim}</div>
-                            <div><span class="text-gray-500 block text-[10px] uppercase">Copilot</span> ${item.copilotName || '-'}</div>
-                            <div><span class="text-gray-500 block text-[10px] uppercase">ZFW</span> ${item.zfwLbs} lbs</div>
-                            <div><span class="text-gray-500 block text-[10px] uppercase">Fuel Req</span> ${item.totalFuelRequired} lbs</div>
+                            <div><span class="text-gray-500 block text-[10px] uppercase">PIC</span> ${picName}</div>
+                            <div><span class="text-gray-500 block text-[10px] uppercase">TOW</span> ${towLbs} lbs</div>
+                            <div><span class="text-gray-500 block text-[10px] uppercase">Trim</span> ${elevatorTrim}</div>
+                            <div><span class="text-gray-500 block text-[10px] uppercase">Copilot</span> ${copilotName}</div>
+                            <div><span class="text-gray-500 block text-[10px] uppercase">ZFW</span> ${zfwLbs} lbs</div>
+                            <div><span class="text-gray-500 block text-[10px] uppercase">Fuel Req</span> ${totalFuelRequired} lbs</div>
                         </div>
                     </div>
                 `;
             });
+        }
+
+        window.loadFlightData = function(rowId) {
+            const item = currentHistoryData.find(i => i.row === rowId);
+            if(!item) return;
+
+            if(!confirm("Memuat data ini akan mengganti isian form di layar Anda saat ini. Lanjutkan?")) return;
+
+            const d = item.rowData;
+            
+            // Map 58 kolom kembali ke Inputs form utama
+            inputs.routeFrom.value = d[1] || '';
+            inputs.routeTo.value = d[2] || '';
+            inputs.picName.value = d[3] || '';
+            inputs.copilotName.value = d[4] || '';
+            inputs.engineerName.value = d[5] || '';
+            inputs.cabinServiceName.value = d[6] || '';
+            
+            inputs.rampWeight.value = d[7] || 0;
+            inputs.maxTakeoffWeight.value = d[8] || 0;
+            
+            inputs.emptyWeight.value = d[9] || 0;
+            inputs.pilot.value = d[10] || 0;
+            inputs.copilot.value = d[11] || 0;
+            inputs.engineer.value = d[12] || 0;
+            inputs.cabinService.value = d[13] || 0;
+            inputs.totalPob.value = d[14] || 0;
+            inputs.baggage.value = d[15] || 0;
+            inputs.cockpitStorage.value = d[16] || 0;
+            inputs.cabinStorage.value = d[17] || 0;
+            
+            inputs.tripTimeHours.value = d[18] || 0;
+            inputs.tripTimeMinutes.value = d[19] || 0;
+            inputs.tripToAlternateHours.value = d[20] || 0;
+            inputs.tripToAlternateMinutes.value = d[21] || 0;
+            inputs.altitude.value = d[22] || 0;
+            inputs.airspeed.value = d[23] || 0;
+            inputs.headwind.value = d[24] || 0;
+            inputs.fuelOnBoard.value = d[25] || 0;
+
+            inputs.galley.value = d[34] || 0;
+            inputs.seat1.value = d[35] || 0;
+            inputs.seat2.value = d[36] || 0;
+            inputs.seat3.value = d[37] || 0;
+            inputs.seat4.value = d[38] || 0;
+            inputs.seat5.value = d[39] || 0;
+            inputs.seat6.value = d[40] || 0;
+            inputs.seat7.value = d[41] || 0;
+            inputs.seat8.value = d[42] || 0;
+            inputs.seat9.value = d[43] || 0;
+            inputs.seat10.value = d[44] || 0;
+            inputs.seat11.value = d[45] || 0;
+            inputs.seat12.value = d[46] || 0;
+            inputs.seat13.value = d[47] || 0;
+            inputs.aftLavatory.value = d[48] || 0;
+
+            // Trigger kalkulasi untuk memuat Chart dan CG
+            calculateAll();
+            
+            document.getElementById('history-modal').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            const welcome = document.getElementById('welcome-message');
+            welcome.textContent = `Riwayat penerbangan dari ${d[1]} ke ${d[2]} berhasil dimuat! Anda dapat melihat Chart atau tekan Download as PDF di bawah.`;
+            welcome.classList.replace('text-green-400', 'text-amber-400');
+            setTimeout(() => {
+                welcome.textContent = "";
+                welcome.classList.replace('text-amber-400', 'text-green-400');
+            }, 8000);
         }
 
         document.getElementById('view-history-btn').addEventListener('click', () => {
@@ -1646,11 +1733,12 @@
         window.openEditHistory = function(rowId) {
             const item = currentHistoryData.find(i => i.row === rowId);
             if (!item) return;
+            const d = item.rowData;
             document.getElementById('edit-flight-row').value = rowId;
-            document.getElementById('edit-route-from').value = item.routeFrom;
-            document.getElementById('edit-route-to').value = item.routeTo;
-            document.getElementById('edit-pic').value = item.picName;
-            document.getElementById('edit-copilot').value = item.copilotName;
+            document.getElementById('edit-route-from').value = d[1] || '';
+            document.getElementById('edit-route-to').value = d[2] || '';
+            document.getElementById('edit-pic').value = d[3] || '';
+            document.getElementById('edit-copilot').value = d[4] || '';
             document.getElementById('edit-flight-msg').classList.add('hidden');
             document.getElementById('edit-flight-modal').classList.remove('hidden');
         };
