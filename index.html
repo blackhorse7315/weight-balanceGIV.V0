@@ -757,55 +757,105 @@
 
     <script>
         // --- DATA PILOT & SIGNATURE (In-Memory untuk Sesi Aktif) ---
-        let pilotsData = [
-            { name: "Capt. Susetyo Harijanto", signatureUrl: "https://lh3.googleusercontent.com/d/1V5sPvHdGN1jP1rv1CIRIRP9JWMT15uxa", username: "harijantosusetyo@gmail.com", password: "user1" },
-            { name: "Capt. Purwoko", signatureUrl: "https://lh3.googleusercontent.com/d/18boYdBPuNG0nQpnd_rlptJuMf-4kD-G3", username: "purwoko.mulyono@yahoo.com", password: "user2" },
-            { name: "Capt. Rico Febdiandana", signatureUrl: "https://lh3.googleusercontent.com/d/1IVF2eIuDD48SjbuJ3GzyPOEr0zoLLiwh", username: "", password: "" }
-        ];
+        let pilotsData = [];
+        let engineersData = [];
+        let cabinServicesData = [];
 
-        let engineersData = ["-", "Diki Hariadi", "Lazarus Rio", "Prayit Susonko"];
-        let cabinServicesData = ["-", "Qorry Maulidya", "Tiffany Prisilia H", "Agustin Zulfani", "Nadya Casey Ivanka"];
+        // --- HELPER FUNCTIONS FOR DATALIST & SYNC ---
+        function populateDropdowns() {
+            const picDatalist = document.getElementById('pic-names');
+            if (picDatalist) picDatalist.innerHTML = pics.map(name => `<option value="${name}">`).join('');
+            const copilotDatalist = document.getElementById('copilot-names');
+            if (copilotDatalist) copilotDatalist.innerHTML = copilots.map(name => `<option value="${name}">`).join('');
+            const engDatalist = document.getElementById('engineer-names');
+            if (engDatalist) engDatalist.innerHTML = engineers.map(name => `<option value="${name}">`).join('');
+            const cabDatalist = document.getElementById('cabin-service-names');
+            if (cabDatalist) cabDatalist.innerHTML = cabinServices.map(name => `<option value="${name}">`).join('');
+        }
 
         function updatePilotDatalists() {
             const picDatalist = document.getElementById('pic-names');
+            if (picDatalist) picDatalist.innerHTML = pilotsData.map(p => `<option value="${p.name}">`).join('');
             const copilotDatalist = document.getElementById('copilot-names');
-            let optionsHtml = '';
-            pilotsData.forEach(pilot => {
-                optionsHtml += `<option value="${pilot.name}">\n`;
-            });
-            if (picDatalist) picDatalist.innerHTML = optionsHtml;
-            if (copilotDatalist) copilotDatalist.innerHTML = optionsHtml;
+            if (copilotDatalist) copilotDatalist.innerHTML = pilotsData.map(p => `<option value="${p.name}">`).join('');
         }
 
         function updateOtherDatalists() {
             const engDatalist = document.getElementById('engineer-names');
+            if (engDatalist) engDatalist.innerHTML = engineersData.map(name => `<option value="${name}">`).join('');
             const cabDatalist = document.getElementById('cabin-service-names');
-            
-            if (engDatalist) {
-                engDatalist.innerHTML = engineersData.map(name => `<option value="${name}">`).join('\n');
-            }
-            if (cabDatalist) {
-                cabDatalist.innerHTML = cabinServicesData.map(name => `<option value="${name}">`).join('\n');
-            }
+            if (cabDatalist) cabDatalist.innerHTML = cabinServicesData.map(name => `<option value="${name}">`).join('');
         }
 
-        async function syncMasterData() {
-            const payload = {
-                action: 'syncMaster',
-                pilots: pilotsData,
-                engineers: engineersData,
-                cabinServices: cabinServicesData
-            };
+        function syncMasterData() {
+            console.log("Menyinkronkan data master...");
+        }
+        
+        window.deleteAdminData = function(type, index) {
+            if (type === 'pics') pics.splice(index, 1);
+            if (type === 'copilots') copilots.splice(index, 1);
+            if (type === 'engineers') engineers.splice(index, 1);
+            if (type === 'cabinServices') cabinServices.splice(index, 1);
+            renderAdminData();
+            populateDropdowns();
+        };
+
+        // --- FETCH DATA LOGIC ---
+        // Variabel global untuk menampung data dari Sheet (pastikan tidak ada array dummy statis)
+        let pics = [];
+        let copilots = [];
+        let engineers = [];
+        let cabinServices = [];
+
+        async function fetchDropdownData() {
             try {
-                fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'text/plain' },
-                    body: JSON.stringify(payload)
-                });
-                console.log('Master data sync requested.');
-            } catch (e) {
-                console.error('Sync failed', e);
+                // Asumsi scriptURL sudah dideklarasikan sebelumnya
+                const response = await fetch(scriptURL + "?action=getData");
+                const data = await response.json();
+                
+                if (data.pics) pics = data.pics;
+                if (data.copilots) copilots = data.copilots;
+                
+                // Menyimpan data Engineer dan Cabin Service yang ditarik dari Google Sheet
+                if (data.engineers) engineers = data.engineers;
+                if (data.cabinServices) cabinServices = data.cabinServices;
+
+                // Render ke form utama
+                populateDropdowns();
+                
+                // Render ke halaman Admin (menimpa list dummy sebelumnya)
+                renderAdminData();
+                
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+        // --- ADMIN PANEL LOGIC ---
+        
+        // Fungsi untuk me-render data asli ke halaman admin
+        function renderAdminData() {
+            // Render PIC
+            const picContainer = document.getElementById('admin-pic-list');
+            if (picContainer) {
+                picContainer.innerHTML = pics.map((item, index) => `<div class="flex justify-between items-center p-2 bg-gray-700 rounded mb-2 text-sm"><span>${item}</span><button onclick="deleteAdminData('pics', ${index})" class="text-red-400 hover:text-red-300">Hapus</button></div>`).join('');
+            }
+            
+            // Render Copilot
+            const copilotContainer = document.getElementById('admin-copilot-list');
+            if (copilotContainer) {
+                copilotContainer.innerHTML = copilots.map((item, index) => `<div class="flex justify-between items-center p-2 bg-gray-700 rounded mb-2 text-sm"><span>${item}</span><button onclick="deleteAdminData('copilots', ${index})" class="text-red-400 hover:text-red-300">Hapus</button></div>`).join('');
+            }
+
+            // Render Engineer (Diambil murni dari Google Sheet, bukan dummy)
+            const engineerContainer = document.getElementById('admin-engineer-list');
+            if (engineerContainer) {
+                engineerContainer.innerHTML = engineers.map((item, index) => `<div class="flex justify-between items-center p-2 bg-gray-700 rounded mb-2 text-sm"><span>${item}</span><button onclick="deleteAdminData('engineers', ${index})" class="text-red-400 hover:text-red-300">Hapus</button></div>`).join('');
+            }
+
+            // Render Cabin Service (Diambil murni dari Google Sheet, bukan dummy)
+            const cabinContainer = document.getElementById('admin-cabin-list');
+            if (cabinContainer) {
+                cabinContainer.innerHTML = cabinServices.map((item, index) => `<div class="flex justify-between items-center p-2 bg-gray-700 rounded mb-2 text-sm"><span>${item}</span><button onclick="deleteAdminData('cabinServices', ${index})" class="text-red-400 hover:text-red-300">Hapus</button></div>`).join('');
             }
         }
 
