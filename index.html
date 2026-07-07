@@ -102,12 +102,13 @@
 
     <div id="login-page" class="flex flex-col items-center justify-center min-h-screen px-4">
         <img src="https://lh3.googleusercontent.com/d/1C0snR7IN-kpYMnxzqzpcc-7SRjIbEalE" alt="Logo" class="w-24 h-24 mb-4 object-contain drop-shadow-lg rounded-xl" />
-        <h1 class="text-3xl font-bold text-white mb-2 text-center">
-            Weight & Balance Application
-            <span class="block text-2xl text-amber-400 mt-2">Gulfstream IV SP SN1381</span>
-            <span class="block text-xl text-amber-400">PK-TWY</span>
+        <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2 text-center whitespace-nowrap">
+            ECrew - Transwisata
+            <span class="block text-xl sm:text-2xl text-gray-300 mt-2 font-semibold">Weight & Balance Application</span>
+            <span class="block text-lg sm:text-xl text-amber-400 mt-2">Gulfstream IV SP SN1381</span>
+            <span class="block text-base sm:text-lg text-amber-400">PK-TWY</span>
         </h1>
-        <p class="text-sm text-gray-400 mb-8">by SkyOps Solutions</p>
+        <p class="text-sm text-gray-400 mb-8 text-center whitespace-nowrap">powered by SkyOps Solution</p>
         <div class="w-full max-w-sm p-6 bg-gray-800 rounded-lg shadow-md">
             <h2 class="text-2xl font-bold text-center text-white mb-6">Login</h2>
             <form id="login-form">
@@ -1239,21 +1240,32 @@
             try {
                 if (!appExpiryDate) throw new Error("Could not get expiry date");
 
-                document.getElementById('expiry-date-display').textContent = `This Application is valid until ${new Date(appExpiryDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })}`;
+                const displayElement = document.getElementById('expiry-date-display');
+                displayElement.textContent = `This Application is valid until ${new Date(appExpiryDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })}`;
+                
                 const expiryDate = new Date(appExpiryDate);
                 expiryDate.setDate(expiryDate.getDate() + 1);
                 const currentDate = new Date();
                 const timeDiff = expiryDate.getTime() - currentDate.getTime();
                 const daysLeft = Math.floor(timeDiff / (1000 * 3600 * 24));
                 const countdownElement = document.getElementById('expiry-countdown');
-                if (daysLeft >= 0) {
-                    countdownElement.textContent = `Remaining validity: ${daysLeft} days`;
-                    countdownElement.classList.remove('text-red-400');
-                    countdownElement.classList.add('text-amber-400');
-                } else {
+                
+                // Clear old color classes
+                displayElement.classList.remove('text-red-400', 'text-amber-400', 'text-green-500', 'text-orange-500', 'text-red-500', 'font-bold');
+                countdownElement.classList.remove('text-red-400', 'text-amber-400', 'text-green-500', 'text-orange-500', 'text-red-500', 'font-bold');
+
+                if (daysLeft <= 0) {
                     countdownElement.textContent = 'Application Expired';
-                    countdownElement.classList.remove('text-amber-400');
-                    countdownElement.classList.add('text-red-400');
+                    displayElement.classList.add('text-red-500', 'font-bold');
+                    countdownElement.classList.add('text-red-500', 'font-bold');
+                } else if (daysLeft <= 20) {
+                    countdownElement.textContent = `Remaining validity: ${daysLeft} days`;
+                    displayElement.classList.add('text-orange-500', 'font-bold');
+                    countdownElement.classList.add('text-orange-500', 'font-bold');
+                } else {
+                    countdownElement.textContent = `Remaining validity: ${daysLeft} days`;
+                    displayElement.classList.add('text-green-500', 'font-bold');
+                    countdownElement.classList.add('text-green-500', 'font-bold');
                 }
             } catch (error) {
                  document.getElementById('expiry-date-display').textContent = 'Could not retrieve expiry date.';
@@ -1615,8 +1627,25 @@
 
         function parseGBDate(str) {
             if (!str) return new Date();
-            const parts = str.split(',')[0].split('/');
-            if (parts.length === 3) return new Date(parts[2], parts[1] - 1, parts[0]);
+            if (str.includes('T')) return new Date(str);
+            
+            const parts = str.split(',');
+            const dateParts = parts[0].trim().split('/');
+            
+            if (dateParts.length === 3) {
+                const year = parseInt(dateParts[2], 10);
+                const month = parseInt(dateParts[1], 10) - 1;
+                const day = parseInt(dateParts[0], 10);
+                
+                let h = 0, m = 0, s = 0;
+                if (parts[1]) {
+                    const timeParts = parts[1].trim().split(':');
+                    h = parseInt(timeParts[0], 10) || 0;
+                    m = parseInt(timeParts[1], 10) || 0;
+                    s = parseInt(timeParts[2], 10) || 0;
+                }
+                return new Date(year, month, day, h, m, s);
+            }
             return new Date(str);
         }
 
@@ -1648,8 +1677,15 @@
                 return;
             }
 
-            // Urutkan dari yang terbaru
-            currentHistoryData.sort((a, b) => b.row - a.row);
+            // Urutkan berdasarkan tanggal & waktu paling baru (descending)
+            currentHistoryData.sort((a, b) => {
+                const dateA = parseGBDate(a.rowData[0]);
+                const dateB = parseGBDate(b.rowData[0]);
+                if (dateB.getTime() === dateA.getTime()) {
+                    return b.row - a.row; // Fallback ke row terbaru jika waktu sama
+                }
+                return dateB.getTime() - dateA.getTime();
+            });
 
             let currentYear = '';
             let currentMonth = '';
