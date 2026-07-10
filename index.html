@@ -239,7 +239,13 @@
             <!-- Sticky Top Navigation Bar (Glass Effect) -->
             <div class="sticky top-0 z-50 backdrop-blur-md bg-gray-900/80 -mx-4 px-4 sm:-mx-6 sm:px-6 py-3 mb-6 border-b border-gray-700/50 shadow-sm">
                 <div class="flex justify-between items-center w-full">
-                    <button id="view-history-btn" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-1.5 px-3 rounded-lg text-sm transition-colors shadow">History</button>
+                    <div class="flex gap-2">
+                        <button id="new-data-btn" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-1.5 px-3 rounded-lg text-sm transition-colors shadow flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                            New Data
+                        </button>
+                        <button id="view-history-btn" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-1.5 px-3 rounded-lg text-sm transition-colors shadow">History</button>
+                    </div>
                     <div class="flex gap-2">
                         <button id="app-sync-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1.5 px-3 rounded-lg text-sm transition-colors shadow">Sync</button>
                         <button id="app-logout-btn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1.5 px-3 rounded-lg text-sm transition-colors shadow">Logout</button>
@@ -265,6 +271,13 @@
                 <div>
                     <h2 class="text-lg font-semibold text-white mb-3 border-b border-gray-700 pb-2">Route</h2>
                     <div class="space-y-3">
+                        <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                            <label for="flightDate" class="flex items-center text-sm font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                                Date
+                            </label>
+                            <input type="date" id="flightDate" class="w-48 bg-gray-700 text-white text-right font-semibold rounded-md p-1 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                        </div>
                         <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
                             <label for="routeFrom" class="flex items-center text-sm font-medium">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-gray-400"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
@@ -760,7 +773,7 @@
         let pilotsData = [
             { name: "Capt. Susetyo Harijanto", signatureUrl: "https://lh3.googleusercontent.com/d/1V5sPvHdGN1jP1rv1CIRIRP9JWMT15uxa", username: "harijantosusetyo@gmail.com", password: "user1" },
             { name: "Capt. Purwoko", signatureUrl: "https://lh3.googleusercontent.com/d/18boYdBPuNG0nQpnd_rlptJuMf-4kD-G3", username: "purwoko.mulyono@yahoo.com", password: "user2" },
-            { name: "Capt. Rico Febdiandana", signatureUrl: "https://lh3.googleusercontent.com/d/1IVF2eIuDD48SjbuJ3GzyPOEr0zoLLiwh", username: "", password: "" }
+            { name: "Capt. Rico Febdiandana", signatureUrl: "https://lh3.googleusercontent.com/d/1IVF2eIuDD48SjbuJ3GzyPOEr0zoLLiwh", username: "ricofebdi@gmail.com", password: "user3" }
         ];
 
         let engineersData = ["-", "Diki Hariadi", "Lazarus Rio", "Prayit Susonko"];
@@ -932,7 +945,7 @@
         const DEFAULT_EXPIRY_DATE = '2025-10-25';
 
         // --- GOOGLE APPS SCRIPT URL ---
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzOlurizhRUDeR_jZD8NZ9EzFPUNq-XMJCm-kNQ4Owoz0vftwiqFyKFsvftEWfMWuI-BQ/exec'; 
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwAs6cE1sfU4wUxV97CvpRtKo5d9XQ77BWftBy2QEjAE-ikUYGXerYsiNg0oFLIdSWdzg/exec'; 
 
         // --- PAGE ELEMENTS ---
         const loginPage = document.getElementById('login-page');
@@ -950,7 +963,7 @@
         const adminLogoutBtn = document.getElementById('admin-logout-btn');
 
         // --- ELEMENT SELECTORS ---
-        const inputs = { rampWeight: document.getElementById('rampWeight'), maxTakeoffWeight: document.getElementById('maxTakeoffWeight'), emptyWeight: document.getElementById('emptyWeight'), pilot: document.getElementById('pilot'), copilot: document.getElementById('copilot'), engineer: document.getElementById('engineer'), cabinService: document.getElementById('cabinService'), baggage: document.getElementById('baggage'), cockpitStorage: document.getElementById('cockpitStorage'), cabinStorage: document.getElementById('cabinStorage'), picName: document.getElementById('picName'), copilotName: document.getElementById('copilotName'), engineerName: document.getElementById('engineerName'), cabinServiceName: document.getElementById('cabinServiceName'), totalPob: document.getElementById('totalPob'), galley: document.getElementById('galley'), seat1: document.getElementById('seat1'), seat2: document.getElementById('seat2'), seat3: document.getElementById('seat3'), seat4: document.getElementById('seat4'), seat5: document.getElementById('seat5'), seat6: document.getElementById('seat6'), seat7: document.getElementById('seat7'), seat8: document.getElementById('seat8'), seat9: document.getElementById('seat9'), seat10: document.getElementById('seat10'), seat11: document.getElementById('seat11'), seat12: document.getElementById('seat12'), seat13: document.getElementById('seat13'), aftLavatory: document.getElementById('aftLavatory'), tripTimeHours: document.getElementById('tripTimeHours'), tripTimeMinutes: document.getElementById('tripTimeMinutes'), tripToAlternateHours: document.getElementById('tripToAlternateHours'), tripToAlternateMinutes: document.getElementById('tripToAlternateMinutes'), fuelConsumption: document.getElementById('fuelConsumption'), airspeed: document.getElementById('airspeed'), altitude: document.getElementById('altitude'), headwind: document.getElementById('headwind'), fuelOnBoard: document.getElementById('fuelOnBoard'), routeFrom: document.getElementById('routeFrom'), routeTo: document.getElementById('routeTo'), };
+        const inputs = { flightDate: document.getElementById('flightDate'), rampWeight: document.getElementById('rampWeight'), maxTakeoffWeight: document.getElementById('maxTakeoffWeight'), emptyWeight: document.getElementById('emptyWeight'), pilot: document.getElementById('pilot'), copilot: document.getElementById('copilot'), engineer: document.getElementById('engineer'), cabinService: document.getElementById('cabinService'), baggage: document.getElementById('baggage'), cockpitStorage: document.getElementById('cockpitStorage'), cabinStorage: document.getElementById('cabinStorage'), picName: document.getElementById('picName'), copilotName: document.getElementById('copilotName'), engineerName: document.getElementById('engineerName'), cabinServiceName: document.getElementById('cabinServiceName'), totalPob: document.getElementById('totalPob'), galley: document.getElementById('galley'), seat1: document.getElementById('seat1'), seat2: document.getElementById('seat2'), seat3: document.getElementById('seat3'), seat4: document.getElementById('seat4'), seat5: document.getElementById('seat5'), seat6: document.getElementById('seat6'), seat7: document.getElementById('seat7'), seat8: document.getElementById('seat8'), seat9: document.getElementById('seat9'), seat10: document.getElementById('seat10'), seat11: document.getElementById('seat11'), seat12: document.getElementById('seat12'), seat13: document.getElementById('seat13'), aftLavatory: document.getElementById('aftLavatory'), tripTimeHours: document.getElementById('tripTimeHours'), tripTimeMinutes: document.getElementById('tripTimeMinutes'), tripToAlternateHours: document.getElementById('tripToAlternateHours'), tripToAlternateMinutes: document.getElementById('tripToAlternateMinutes'), fuelConsumption: document.getElementById('fuelConsumption'), airspeed: document.getElementById('airspeed'), altitude: document.getElementById('altitude'), headwind: document.getElementById('headwind'), fuelOnBoard: document.getElementById('fuelOnBoard'), routeFrom: document.getElementById('routeFrom'), routeTo: document.getElementById('routeTo'), };
         const outputs = { pilotSeatWt: document.getElementById('pilotSeatWt'), copilotSeatWt: document.getElementById('copilotSeatWt'), jumpseatWt: document.getElementById('jumpseatWt'), baggageLayoutWt: document.getElementById('baggageLayoutWt'), cgTableBody: document.getElementById('cg-table-body'), totalPayloadLbs: document.getElementById('totalPayloadLbs'), totalPayloadKg: document.getElementById('totalPayloadKg'), zfwResult: document.getElementById('zfwResult'), towResult: document.getElementById('towResult'), zfwStatus: document.getElementById('zfwStatus'), towStatus: document.getElementById('towStatus'), landingWeightResult: document.getElementById('landingWeightResult'), landingWeightStatus: document.getElementById('landingWeightStatus'), extraFuelResult: document.getElementById('extraFuelResult'), availablePayloadLbs: document.getElementById('availablePayloadLbs'), availablePayloadKg: document.getElementById('availablePayloadKg'), availablePassengers: document.getElementById('availablePassengers'), zfwMacResult: document.getElementById('zfwMacResult'), towMacResult: document.getElementById('towMacResult'), landingWeightMacResult: document.getElementById('landingWeightMacResult'), elevatorTrimResult: document.getElementById('elevatorTrimResult'), maxRange: document.getElementById('maxRange'), fuelTripRequired: document.getElementById('fuelTripRequired'), alternateFuel: document.getElementById('alternateFuel'), reserveFuel: document.getElementById('reserveFuel'), contingencyFuel: document.getElementById('contingencyFuel'), startTaxiFuel: document.getElementById('startTaxiFuel'), totalFuelRequired: document.getElementById('totalFuelRequired'), welcomeMessage: document.getElementById('welcome-message') };
         let cgChart;
         
@@ -1365,7 +1378,13 @@
             doc.setFontSize(14); doc.setFont(undefined, 'bold'); doc.text('PT. TRANSWISATA PRIMA AVIATION', 105, 26, null, null, 'center'); 
             doc.setFontSize(16); doc.text('Load Sheet Gulfstream IV SP SN1381', 105, 33, null, null, 'center'); 
             doc.setFontSize(11); doc.setFont(undefined, 'normal'); doc.text(`Aircraft Registration: PK-TWY`, 105, 39, null, null, 'center'); 
-            doc.setFontSize(10); doc.text(`Date: ${new Date().toLocaleDateString('en-GB')}`, 105, 44, null, null, 'center');
+            
+            let displayDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+            if (inputs.flightDate.value) {
+                const fd = new Date(inputs.flightDate.value);
+                if (!isNaN(fd)) displayDate = fd.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+            }
+            doc.setFontSize(10); doc.text(`Date: ${displayDate}`, 105, 44, null, null, 'center');
             
             doc.setFont(undefined, 'bold');
             doc.text('Doc. No: F/TWA-OPS/002-01', 14, 50);
@@ -1573,6 +1592,75 @@
         adminLogoutBtn.addEventListener('click', () => handleLogout(false));
         saveExpiryBtn.addEventListener('click', handleSaveExpiry);
 
+        document.getElementById('new-data-btn')?.addEventListener('click', () => {
+            if(!confirm("Apakah Anda yakin ingin mengosongkan form untuk data baru?")) return;
+            
+            // Reset to default values
+            if(inputs.flightDate) inputs.flightDate.valueAsDate = new Date();
+            inputs.routeFrom.value = '';
+            inputs.routeTo.value = '';
+            inputs.picName.value = '';
+            inputs.copilotName.value = '';
+            inputs.engineerName.value = '';
+            inputs.cabinServiceName.value = '';
+            
+            // Reset aircraft limits and basic weights
+            inputs.rampWeight.value = 75000;
+            inputs.maxTakeoffWeight.value = 74600;
+            inputs.emptyWeight.value = 42765.80;
+            
+            // Reset crew standard weight
+            inputs.pilot.value = 90;
+            inputs.copilot.value = 90;
+            inputs.engineer.value = 90;
+            inputs.cabinService.value = 90;
+            
+            // Clear payloads
+            inputs.totalPob.value = '';
+            inputs.baggage.value = 90; // Default baggage
+            inputs.cockpitStorage.value = '';
+            inputs.cabinStorage.value = '';
+            
+            // Flight calc reset
+            inputs.tripTimeHours.value = '';
+            inputs.tripTimeMinutes.value = '';
+            inputs.tripToAlternateHours.value = '';
+            inputs.tripToAlternateMinutes.value = '';
+            inputs.altitude.value = '';
+            inputs.airspeed.value = 450;
+            inputs.headwind.value = '';
+            inputs.fuelOnBoard.value = '';
+
+            // Seat layout reset (Galley, AftLav, Seat1 defaults to standard catering values)
+            inputs.galley.value = 34;
+            inputs.seat1.value = 23;
+            inputs.seat2.value = '';
+            inputs.seat3.value = '';
+            inputs.seat4.value = '';
+            inputs.seat5.value = '';
+            inputs.seat6.value = '';
+            inputs.seat7.value = '';
+            inputs.seat8.value = '';
+            inputs.seat9.value = '';
+            inputs.seat10.value = '';
+            inputs.seat11.value = '';
+            inputs.seat12.value = '';
+            inputs.seat13.value = '';
+            inputs.aftLavatory.value = 23;
+
+            // Recalculate with empty values & hide PDF
+            calculateAll();
+            document.getElementById('downloadPdfBtn').classList.add('hidden');
+            
+            // Show feedback
+            const welcome = document.getElementById('welcome-message');
+            welcome.textContent = "Form telah dikosongkan untuk data penerbangan baru.";
+            welcome.classList.replace('text-amber-400', 'text-green-400');
+            setTimeout(() => { welcome.textContent = ""; }, 4000);
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
         async function fetchAndSyncDatabase(btnId) {
             const btn = document.getElementById(btnId);
             if (!btn) return;
@@ -1651,38 +1739,67 @@
 
         async function loadHistory() {
             const container = document.getElementById('history-content');
-            container.innerHTML = '<p class="text-center text-gray-400 mt-10">Menarik data dari database...</p>';
-            
+            container.innerHTML = '<p class="text-center text-gray-400 mt-10">Memuat data...</p>';
             try {
-                const response = await fetch(`${SCRIPT_URL}?action=fetchHistory`);
-                const result = await response.json();
-
-                if (result.status === 'success') {
+                // Tambahkan redirect: 'follow' karena respon Google Apps Script sering berupa pengalihan
+                const res = await fetch(SCRIPT_URL + '?action=fetchHistory', {
+                    method: 'GET',
+                    redirect: 'follow'
+                });
+                
+                if(!res.ok) throw new Error(`HTTP Error: ${res.status}`);
+                
+                const result = await res.json();
+                if(result.status === 'success') {
                     currentHistoryData = result.data || [];
                     renderHistoryGrouped();
                 } else {
-                    container.innerHTML = `<p class="text-center text-red-400 mt-10">Gagal menarik data: ${result.message}</p>`;
+                    throw new Error(result.message || 'Gagal memuat dari server Google');
                 }
             } catch (err) {
-                container.innerHTML = '<p class="text-center text-red-400 mt-10">Terjadi kesalahan koneksi.</p>';
+                console.error('Detail Error Load History:', err);
+                container.innerHTML = `
+                    <div class="text-center mt-10 px-4">
+                        <p class="text-red-400 font-semibold">Terjadi kesalahan koneksi.</p>
+                        <p class="text-xs text-red-300 mt-2">Detail: ${err.message}</p>
+                        <div class="mt-4 text-xs text-gray-400 text-left bg-gray-800 p-3 rounded-lg">
+                            <b>Cara Perbaikan:</b><br>
+                            1. Buka Google Sheet > Ekstensi > Apps Script.<br>
+                            2. Klik <b>Deploy</b> > <b>Manage Deployments</b> (Kelola Deployment).<br>
+                            3. Edit (ikon pensil) deployment yang aktif.<br>
+                            4. Pada dropdown <b>Version</b>, pilih <b>New version</b> (Versi Baru).<br>
+                            5. Klik <b>Deploy</b>, lalu refresh kembali aplikasi ini.
+                        </div>
+                    </div>
+                `;
             }
         }
 
         function renderHistoryGrouped() {
             const container = document.getElementById('history-content');
-            container.innerHTML = '';
             
             if (currentHistoryData.length === 0) {
                 container.innerHTML = '<p class="text-center text-gray-400 mt-10">Belum ada data penerbangan tersimpan.</p>';
                 return;
             }
 
-            // Urutkan berdasarkan tanggal & waktu paling baru (descending)
+            // Fungsi pembantu untuk mendapatkan tanggal dari 'Flight Date' (d[1]).
+            // Jika untuk data lama kosong, baru gunakan 'Timestamp' (d[0]) sebagai cadangan.
+            const getValidDate = (d) => {
+                const flightDateStr = d[1];
+                if (flightDateStr && flightDateStr !== '-') {
+                    const fd = new Date(flightDateStr);
+                    if (!isNaN(fd.getTime())) return fd;
+                }
+                return parseGBDate(d[0]); 
+            };
+
+            // Urutkan murni berdasarkan 'Flight Date' paling baru (descending)
             currentHistoryData.sort((a, b) => {
-                const dateA = parseGBDate(a.rowData[0]);
-                const dateB = parseGBDate(b.rowData[0]);
+                const dateA = getValidDate(a.rowData);
+                const dateB = getValidDate(b.rowData);
                 if (dateB.getTime() === dateA.getTime()) {
-                    return b.row - a.row; // Fallback ke row terbaru jika waktu sama
+                    return b.row - a.row; // Fallback ke baris terbaru jika waktu sama
                 }
                 return dateB.getTime() - dateA.getTime();
             });
@@ -1690,139 +1807,153 @@
             let currentYear = '';
             let currentMonth = '';
             let currentDate = '';
+            let htmlContent = '';
 
             currentHistoryData.forEach(item => {
                 const d = item.rowData || [];
                 const ts = d[0] || '';
-                const routeFrom = d[1] || '-';
-                const routeTo = d[2] || '-';
-                const picName = d[3] || '-';
-                const copilotName = d[4] || '-';
-                const towLbs = d[53] || 0;
-                const zfwLbs = d[51] || 0;
-                const totalFuelRequired = d[33] || 0;
-                const elevatorTrim = d[57] || '-';
+                const flightDateStr = d[1] || '-';
+                const routeFrom = d[2] || '-';
+                const routeTo = d[3] || '-';
+                const picName = d[4] || '-';
+                const copilotName = d[5] || '-';
+                const towLbs = d[54] || 0;
+                const zfwLbs = d[52] || 0;
+                const totalFuelRequired = d[34] || 0;
+                const elevatorTrim = d[58] || '-';
 
-                let dateObj = parseGBDate(ts);
-                if (isNaN(dateObj.getTime())) dateObj = new Date();
+                // Mengambil objek tanggal yang tepat (berdasarkan Flight Date)
+                let dateObj = getValidDate(d);
                 
-                const y = dateObj.getFullYear().toString();
-                const m = dateObj.toLocaleString('en-US', { month: 'long' });
-                const dt = dateObj.toLocaleDateString('en-GB');
+                // Mencegah masalah timezone (UTC) dan mengubah ISO text menjadi format lokal yang mudah dibaca
+                let displayFlightDate = flightDateStr;
+                if (flightDateStr && flightDateStr !== '-') {
+                    const fd = new Date(flightDateStr);
+                    if (!isNaN(fd.getTime())) {
+                        displayFlightDate = fd.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+                    }
+                }
 
-                if (y !== currentYear) {
-                    currentYear = y;
-                    container.innerHTML += `<h3 class="text-2xl font-bold text-amber-400 mt-6 mb-2 border-b border-gray-700 pb-1">${y}</h3>`;
+                const year = dateObj.getFullYear();
+                const monthName = dateObj.toLocaleString('en-US', { month: 'long' });
+                const dateStrForSort = dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+                if (year !== currentYear) {
+                    currentYear = year;
+                    htmlContent += `<h3 class="text-xl font-bold text-amber-400 mt-6 mb-2 border-b-2 border-gray-700 pb-1">${currentYear}</h3>`;
                 }
-                if (m !== currentMonth) {
-                    currentMonth = m;
-                    container.innerHTML += `<h4 class="text-xl font-semibold text-indigo-300 ml-2 mt-4 mb-2">${m}</h4>`;
+
+                if (monthName !== currentMonth) {
+                    currentMonth = monthName;
+                    htmlContent += `<h4 class="text-lg font-semibold text-gray-200 mt-4 mb-2">${currentMonth}</h4>`;
                 }
-                if (dt !== currentDate) {
-                    currentDate = dt;
-                    container.innerHTML += `<div class="ml-4 mt-3 mb-3"><span class="bg-gray-700 text-gray-200 px-3 py-1 rounded text-sm font-medium shadow-sm border border-gray-600">${dt}</span></div>`;
+
+                if (dateStrForSort !== currentDate) {
+                    currentDate = dateStrForSort;
+                    htmlContent += `<div class="ml-4 mt-3 mb-3"><span class="bg-gray-700 text-gray-200 px-3 py-1 rounded text-sm font-medium shadow-sm border border-gray-600">${displayFlightDate}</span></div>`;
                 }
 
                 // Fungsi pembantu untuk formatting isi data
                 const val = (idx, unit='') => (d[idx] !== undefined && d[idx] !== '') ? `${d[idx]} ${unit}`.trim() : '-';
 
-                container.innerHTML += `
+                htmlContent += `
                     <div class="bg-gray-800 p-4 rounded-lg ml-4 sm:ml-8 mb-3 border border-gray-700 shadow-sm relative hover:border-gray-500 transition-colors">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
-                            <div>
-                                <p class="text-white font-bold text-lg flex items-center gap-2">
-                                    <span class="bg-blue-600 text-white text-xs px-2 py-0.5 rounded">${routeFrom}</span> 
-                                    &rarr; 
-                                    <span class="bg-green-600 text-white text-xs px-2 py-0.5 rounded">${routeTo}</span>
-                                </p>
-                                <p class="text-xs text-gray-400 mt-1">${ts}</p>
-                            </div>
-                            <div class="flex flex-wrap gap-2">
-                                <button onclick="loadFlightData(${item.row})" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs py-1 px-3 rounded transition-colors shadow flex items-center gap-1 border border-emerald-400">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                                    Buka Detail & PDF
-                                </button>
-                                <button onclick="deleteHistory(${item.row})" class="bg-red-500 hover:bg-red-600 text-white text-xs py-1 px-3 rounded transition-colors shadow">Hapus</button>
+                            <div class="flex items-center text-gray-300 font-mono text-sm border border-gray-700 rounded px-2 py-1 bg-gray-800">
+                                <span class="font-bold text-amber-400 w-12 text-center">${routeFrom}</span>
+                                <span class="mx-2 text-gray-500">→</span>
+                                <span class="font-bold text-amber-400 w-12 text-center">${routeTo}</span>
                             </div>
                         </div>
-                        
-                        <!-- Quick Summary -->
-                        <div class="grid grid-cols-2 sm:grid-cols-3 text-xs sm:text-sm text-gray-300 gap-y-2 gap-x-4 bg-gray-900 p-3 rounded">
-                            <div><span class="text-gray-500 block text-[10px] uppercase">PIC</span> ${picName}</div>
-                            <div><span class="text-gray-500 block text-[10px] uppercase">TOW</span> ${towLbs} lbs</div>
-                            <div><span class="text-gray-500 block text-[10px] uppercase">Trim</span> ${elevatorTrim}</div>
-                            <div><span class="text-gray-500 block text-[10px] uppercase">Copilot</span> ${copilotName}</div>
-                            <div><span class="text-gray-500 block text-[10px] uppercase">ZFW</span> ${zfwLbs} lbs</div>
-                            <div><span class="text-gray-500 block text-[10px] uppercase">Fuel Req</span> ${totalFuelRequired} lbs</div>
-                        </div>
 
-                        <button onclick="toggleDetails(${item.row})" class="text-indigo-400 hover:text-indigo-300 text-xs mt-3 font-medium flex items-center gap-1 w-full justify-center border-t border-gray-700 pt-2 transition-colors">
-                            <span id="toggle-text-${item.row}">Lihat Seluruh Data</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                        </button>
-
-                        <!-- Expanded Full Data -->
-                        <div id="details-${item.row}" class="hidden mt-2 pt-2 border-t border-gray-700">
-                            <h5 class="text-amber-400 font-semibold mb-2 text-sm">General & Crew</h5>
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mb-4 bg-gray-900/50 p-2 rounded">
-                                <div><span class="text-gray-500 block">Engineer:</span> ${val(5)}</div>
-                                <div><span class="text-gray-500 block">Cabin Svc:</span> ${val(6)}</div>
-                                <div><span class="text-gray-500 block">POB:</span> ${val(14)}</div>
-                                <div><span class="text-gray-500 block">Max Range:</span> ${val(26, 'nm')}</div>
+                        <div class="mt-3 relative">
+                            <!-- Action Buttons -->
+                            <div class="flex justify-end gap-2 mb-2">
+                                <button onclick="loadFlightData(${item.row})" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-2 py-1 rounded shadow transition-colors">Buka Detail & PDF</button>
+                                <button onclick="deleteHistory(${item.row})" class="bg-red-600 hover:bg-red-500 text-white text-xs px-2 py-1 rounded shadow transition-colors">Hapus</button>
+                            </div>
+                            
+                            <!-- Quick Summary -->
+                            <div class="grid grid-cols-2 sm:grid-cols-4 text-xs sm:text-sm text-gray-300 gap-y-2 gap-x-4 bg-gray-900 p-3 rounded">
+                                <div><span class="text-gray-500 block text-[10px] uppercase">DATE</span> ${displayFlightDate}</div>
+                                <div><span class="text-gray-500 block text-[10px] uppercase">PIC</span> ${picName}</div>
+                                <div><span class="text-gray-500 block text-[10px] uppercase">TOW</span> ${towLbs} lbs</div>
+                                <div><span class="text-gray-500 block text-[10px] uppercase">TRIM</span> ${elevatorTrim}</div>
+                                <div><span class="text-gray-500 block text-[10px] uppercase">COPILOT</span> ${copilotName}</div>
+                                <div><span class="text-gray-500 block text-[10px] uppercase">ZFW</span> ${zfwLbs} lbs</div>
+                                <div><span class="text-gray-500 block text-[10px] uppercase">FUEL REQ</span> ${totalFuelRequired} lbs</div>
                             </div>
 
-                            <h5 class="text-amber-400 font-semibold mb-2 text-sm">Weights Limit & Result</h5>
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mb-4 bg-gray-900/50 p-2 rounded">
-                                <div><span class="text-gray-500 block">Ramp Wt:</span> ${val(7, 'lbs')}</div>
-                                <div><span class="text-gray-500 block">Max TOW:</span> ${val(8, 'lbs')}</div>
-                                <div><span class="text-gray-500 block">Empty Wt:</span> ${val(9, 'lbs')}</div>
-                                <div><span class="text-gray-500 block">Payload:</span> ${val(49, 'lbs')} / ${val(50, 'kg')}</div>
-                                <div><span class="text-gray-500 block">ZFW:</span> ${val(51, 'lbs')} (${val(52, '%MAC')})</div>
-                                <div><span class="text-gray-500 block">TOW:</span> ${val(53, 'lbs')} (${val(54, '%MAC')})</div>
-                                <div><span class="text-gray-500 block">LW:</span> ${val(55, 'lbs')} (${val(56, '%MAC')})</div>
-                            </div>
+                            <button onclick="toggleDetails(${item.row})" class="text-indigo-400 hover:text-indigo-300 text-xs mt-3 font-medium flex items-center gap-1 w-full justify-center border-t border-gray-700 pt-2 transition-colors">
+                                <span id="toggle-text-${item.row}">Lihat Seluruh Data</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                            </button>
 
-                            <h5 class="text-amber-400 font-semibold mb-2 text-sm">Flight & Fuel Details</h5>
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mb-4 bg-gray-900/50 p-2 rounded">
-                                <div><span class="text-gray-500 block">Trip Time:</span> ${val(18)}h ${val(19)}m</div>
-                                <div><span class="text-gray-500 block">Alt Time:</span> ${val(20)}h ${val(21)}m</div>
-                                <div><span class="text-gray-500 block">Altitude:</span> ${val(22, 'ft')}</div>
-                                <div><span class="text-gray-500 block">Airspeed:</span> ${val(23, 'kts')}</div>
-                                <div><span class="text-gray-500 block">Headwind:</span> ${val(24, 'kts')}</div>
-                                <div><span class="text-gray-500 block">FOB:</span> ${val(25, 'lbs')}</div>
-                                <div><span class="text-gray-500 block">Fuel Cons:</span> ${val(27, 'lbs/hr')}</div>
-                                <div><span class="text-gray-500 block">Trip Fuel:</span> ${val(28, 'lbs')}</div>
-                                <div><span class="text-gray-500 block">Alt Fuel:</span> ${val(29, 'lbs')}</div>
-                                <div><span class="text-gray-500 block">Res Fuel:</span> ${val(30, 'lbs')}</div>
-                                <div><span class="text-gray-500 block">Cont Fuel:</span> ${val(31, 'lbs')}</div>
-                                <div><span class="text-gray-500 block">Taxi Fuel:</span> ${val(32, 'lbs')}</div>
-                            </div>
+                            <!-- Expanded Full Data -->
+                            <div id="details-${item.row}" class="hidden mt-2 pt-2 border-t border-gray-700">
+                                <h5 class="text-amber-400 font-semibold mb-2 text-sm">General & Crew</h5>
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mb-4 bg-gray-900/50 p-2 rounded">
+                                    <div><span class="text-gray-500 block">Engineer:</span> ${val(6)}</div>
+                                    <div><span class="text-gray-500 block">Cabin Svc:</span> ${val(7)}</div>
+                                    <div><span class="text-gray-500 block">POB:</span> ${val(15)}</div>
+                                    <div><span class="text-gray-500 block">Max Range:</span> ${val(27, 'nm')}</div>
+                                </div>
 
-                            <h5 class="text-amber-400 font-semibold mb-2 text-sm">Payload Layout (kg)</h5>
-                            <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 text-xs bg-gray-900/50 p-2 rounded">
-                                <div><span class="text-gray-500 block">Baggage:</span> ${val(15)}</div>
-                                <div><span class="text-gray-500 block">Ckpt Sto:</span> ${val(16)}</div>
-                                <div><span class="text-gray-500 block">Cab Sto:</span> ${val(17)}</div>
-                                <div><span class="text-gray-500 block">Galley:</span> ${val(34)}</div>
-                                <div><span class="text-gray-500 block">Aft Lav:</span> ${val(48)}</div>
-                                <div><span class="text-gray-500 block">Seat 1:</span> ${val(35)}</div>
-                                <div><span class="text-gray-500 block">Seat 2:</span> ${val(36)}</div>
-                                <div><span class="text-gray-500 block">Seat 3:</span> ${val(37)}</div>
-                                <div><span class="text-gray-500 block">Seat 4:</span> ${val(38)}</div>
-                                <div><span class="text-gray-500 block">Seat 5:</span> ${val(39)}</div>
-                                <div><span class="text-gray-500 block">Seat 6:</span> ${val(40)}</div>
-                                <div><span class="text-gray-500 block">Seat 7:</span> ${val(41)}</div>
-                                <div><span class="text-gray-500 block">Seat 8:</span> ${val(42)}</div>
-                                <div><span class="text-gray-500 block">Seat 9:</span> ${val(43)}</div>
-                                <div><span class="text-gray-500 block">Seat 10:</span> ${val(44)}</div>
-                                <div><span class="text-gray-500 block">Seat 11:</span> ${val(45)}</div>
-                                <div><span class="text-gray-500 block">Seat 12:</span> ${val(46)}</div>
-                                <div><span class="text-gray-500 block">Seat 13:</span> ${val(47)}</div>
+                                <h5 class="text-amber-400 font-semibold mb-2 text-sm">Weights Limit & Result</h5>
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mb-4 bg-gray-900/50 p-2 rounded">
+                                    <div><span class="text-gray-500 block">Ramp Wt:</span> ${val(8, 'lbs')}</div>
+                                    <div><span class="text-gray-500 block">Max TOW:</span> ${val(9, 'lbs')}</div>
+                                    <div><span class="text-gray-500 block">Empty Wt:</span> ${val(10, 'lbs')}</div>
+                                    <div><span class="text-gray-500 block">Payload:</span> ${val(50, 'lbs')} / ${val(51, 'kg')}</div>
+                                    <div><span class="text-gray-500 block">ZFW:</span> ${val(52, 'lbs')} (${val(53, '%MAC')})</div>
+                                    <div><span class="text-gray-500 block">TOW:</span> ${val(54, 'lbs')} (${val(55, '%MAC')})</div>
+                                    <div><span class="text-gray-500 block">LW:</span> ${val(56, 'lbs')} (${val(57, '%MAC')})</div>
+                                </div>
+
+                                <h5 class="text-amber-400 font-semibold mb-2 text-sm">Flight & Fuel Details</h5>
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mb-4 bg-gray-900/50 p-2 rounded">
+                                    <div><span class="text-gray-500 block">Trip Time:</span> ${val(19)}h ${val(20)}m</div>
+                                    <div><span class="text-gray-500 block">Alt Time:</span> ${val(21)}h ${val(22)}m</div>
+                                    <div><span class="text-gray-500 block">Altitude:</span> ${val(23, 'ft')}</div>
+                                    <div><span class="text-gray-500 block">Airspeed:</span> ${val(24, 'kts')}</div>
+                                    <div><span class="text-gray-500 block">Headwind:</span> ${val(25, 'kts')}</div>
+                                    <div><span class="text-gray-500 block">FOB:</span> ${val(26, 'lbs')}</div>
+                                    <div><span class="text-gray-500 block">Fuel Cons:</span> ${val(28, 'lbs/hr')}</div>
+                                    <div><span class="text-gray-500 block">Trip Fuel:</span> ${val(29, 'lbs')}</div>
+                                    <div><span class="text-gray-500 block">Alt Fuel:</span> ${val(30, 'lbs')}</div>
+                                    <div><span class="text-gray-500 block">Res Fuel:</span> ${val(31, 'lbs')}</div>
+                                    <div><span class="text-gray-500 block">Cont Fuel:</span> ${val(32, 'lbs')}</div>
+                                    <div><span class="text-gray-500 block">Taxi Fuel:</span> ${val(33, 'lbs')}</div>
+                                </div>
+
+                                <h5 class="text-amber-400 font-semibold mb-2 text-sm">Payload Layout (kg)</h5>
+                                <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 text-xs bg-gray-900/50 p-2 rounded">
+                                    <div><span class="text-gray-500 block">Baggage:</span> ${val(16)}</div>
+                                    <div><span class="text-gray-500 block">Ckpt Sto:</span> ${val(17)}</div>
+                                    <div><span class="text-gray-500 block">Cab Sto:</span> ${val(18)}</div>
+                                    <div><span class="text-gray-500 block">Galley:</span> ${val(35)}</div>
+                                    <div><span class="text-gray-500 block">Aft Lav:</span> ${val(49)}</div>
+                                    <div><span class="text-gray-500 block">Seat 1:</span> ${val(36)}</div>
+                                    <div><span class="text-gray-500 block">Seat 2:</span> ${val(37)}</div>
+                                    <div><span class="text-gray-500 block">Seat 3:</span> ${val(38)}</div>
+                                    <div><span class="text-gray-500 block">Seat 4:</span> ${val(39)}</div>
+                                    <div><span class="text-gray-500 block">Seat 5:</span> ${val(40)}</div>
+                                    <div><span class="text-gray-500 block">Seat 6:</span> ${val(41)}</div>
+                                    <div><span class="text-gray-500 block">Seat 7:</span> ${val(42)}</div>
+                                    <div><span class="text-gray-500 block">Seat 8:</span> ${val(43)}</div>
+                                    <div><span class="text-gray-500 block">Seat 9:</span> ${val(44)}</div>
+                                    <div><span class="text-gray-500 block">Seat 10:</span> ${val(45)}</div>
+                                    <div><span class="text-gray-500 block">Seat 11:</span> ${val(46)}</div>
+                                    <div><span class="text-gray-500 block">Seat 12:</span> ${val(47)}</div>
+                                    <div><span class="text-gray-500 block">Seat 13:</span> ${val(48)}</div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 `;
             });
+            
+            container.innerHTML = htmlContent;
         }
 
         window.toggleDetails = function(rowId) {
@@ -1845,51 +1976,66 @@
 
             const d = item.rowData;
             
-            // Map 58 kolom kembali ke Inputs form utama
-            inputs.routeFrom.value = d[1] || '';
-            inputs.routeTo.value = d[2] || '';
-            inputs.picName.value = d[3] || '';
-            inputs.copilotName.value = d[4] || '';
-            inputs.engineerName.value = d[5] || '';
-            inputs.cabinServiceName.value = d[6] || '';
-            
-            inputs.rampWeight.value = d[7] || 0;
-            inputs.maxTakeoffWeight.value = d[8] || 0;
-            
-            inputs.emptyWeight.value = d[9] || 0;
-            inputs.pilot.value = d[10] || 0;
-            inputs.copilot.value = d[11] || 0;
-            inputs.engineer.value = d[12] || 0;
-            inputs.cabinService.value = d[13] || 0;
-            inputs.totalPob.value = d[14] || 0;
-            inputs.baggage.value = d[15] || 0;
-            inputs.cockpitStorage.value = d[16] || 0;
-            inputs.cabinStorage.value = d[17] || 0;
-            
-            inputs.tripTimeHours.value = d[18] || 0;
-            inputs.tripTimeMinutes.value = d[19] || 0;
-            inputs.tripToAlternateHours.value = d[20] || 0;
-            inputs.tripToAlternateMinutes.value = d[21] || 0;
-            inputs.altitude.value = d[22] || 0;
-            inputs.airspeed.value = d[23] || 0;
-            inputs.headwind.value = d[24] || 0;
-            inputs.fuelOnBoard.value = d[25] || 0;
+            // Konversi tanggal untuk input HTML type="date" dengan mengatasi bug timezone
+            function parseToInputDate(dateStr) {
+                if(!dateStr || dateStr === '-') return '';
+                const dateObj = new Date(dateStr);
+                if(isNaN(dateObj.getTime())) return '';
+                
+                // Mencegah .toISOString() menurunkan tanggal karena konversi ke UTC
+                const yyyy = dateObj.getFullYear();
+                const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+                const dd = String(dateObj.getDate()).padStart(2, '0');
+                
+                return `${yyyy}-${mm}-${dd}`;
+            }
 
-            inputs.galley.value = d[34] || 0;
-            inputs.seat1.value = d[35] || 0;
-            inputs.seat2.value = d[36] || 0;
-            inputs.seat3.value = d[37] || 0;
-            inputs.seat4.value = d[38] || 0;
-            inputs.seat5.value = d[39] || 0;
-            inputs.seat6.value = d[40] || 0;
-            inputs.seat7.value = d[41] || 0;
-            inputs.seat8.value = d[42] || 0;
-            inputs.seat9.value = d[43] || 0;
-            inputs.seat10.value = d[44] || 0;
-            inputs.seat11.value = d[45] || 0;
-            inputs.seat12.value = d[46] || 0;
-            inputs.seat13.value = d[47] || 0;
-            inputs.aftLavatory.value = d[48] || 0;
+            // Map kolom yang sudah bergeser +1 kembali ke Inputs form utama
+            inputs.flightDate.value = parseToInputDate(d[1]);
+            inputs.routeFrom.value = d[2] || '';
+            inputs.routeTo.value = d[3] || '';
+            inputs.picName.value = d[4] || '';
+            inputs.copilotName.value = d[5] || '';
+            inputs.engineerName.value = d[6] || '';
+            inputs.cabinServiceName.value = d[7] || '';
+            
+            inputs.rampWeight.value = d[8] || 0;
+            inputs.maxTakeoffWeight.value = d[9] || 0;
+            
+            inputs.emptyWeight.value = d[10] || 0;
+            inputs.pilot.value = d[11] || 0;
+            inputs.copilot.value = d[12] || 0;
+            inputs.engineer.value = d[13] || 0;
+            inputs.cabinService.value = d[14] || 0;
+            inputs.totalPob.value = d[15] || 0;
+            inputs.baggage.value = d[16] || 0;
+            inputs.cockpitStorage.value = d[17] || 0;
+            inputs.cabinStorage.value = d[18] || 0;
+            
+            inputs.tripTimeHours.value = d[19] || 0;
+            inputs.tripTimeMinutes.value = d[20] || 0;
+            inputs.tripToAlternateHours.value = d[21] || 0;
+            inputs.tripToAlternateMinutes.value = d[22] || 0;
+            inputs.altitude.value = d[23] || 0;
+            inputs.airspeed.value = d[24] || 0;
+            inputs.headwind.value = d[25] || 0;
+            inputs.fuelOnBoard.value = d[26] || 0;
+
+            inputs.galley.value = d[35] || 0;
+            inputs.seat1.value = d[36] || 0;
+            inputs.seat2.value = d[37] || 0;
+            inputs.seat3.value = d[38] || 0;
+            inputs.seat4.value = d[39] || 0;
+            inputs.seat5.value = d[40] || 0;
+            inputs.seat6.value = d[41] || 0;
+            inputs.seat7.value = d[42] || 0;
+            inputs.seat8.value = d[43] || 0;
+            inputs.seat9.value = d[44] || 0;
+            inputs.seat10.value = d[45] || 0;
+            inputs.seat11.value = d[46] || 0;
+            inputs.seat12.value = d[47] || 0;
+            inputs.seat13.value = d[48] || 0;
+            inputs.aftLavatory.value = d[49] || 0;
 
             // Trigger kalkulasi untuk memuat Chart dan CG
             calculateAll();
@@ -1936,10 +2082,10 @@
             if (!item) return;
             const d = item.rowData;
             document.getElementById('edit-flight-row').value = rowId;
-            document.getElementById('edit-route-from').value = d[1] || '';
-            document.getElementById('edit-route-to').value = d[2] || '';
-            document.getElementById('edit-pic').value = d[3] || '';
-            document.getElementById('edit-copilot').value = d[4] || '';
+            document.getElementById('edit-route-from').value = d[2] || '';
+            document.getElementById('edit-route-to').value = d[3] || '';
+            document.getElementById('edit-pic').value = d[4] || '';
+            document.getElementById('edit-copilot').value = d[5] || '';
             document.getElementById('edit-flight-msg').classList.add('hidden');
             document.getElementById('edit-flight-modal').classList.remove('hidden');
         };
@@ -1997,9 +2143,16 @@
                 cloudMsg.className = "text-sm text-blue-400";
                 cloudMsg.classList.remove('hidden');
 
+                let formattedDate = '';
+                if (inputs.flightDate.value) {
+                    const fd = new Date(inputs.flightDate.value);
+                    if (!isNaN(fd)) formattedDate = fd.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+                }
+
                 const flightData = {
                     action: 'saveFlight',
                     timestamp: new Date().toLocaleString('en-GB'),
+                    flightDate: formattedDate,
                     routeFrom: inputs.routeFrom.value,
                     routeTo: inputs.routeTo.value,
                     picName: inputs.picName.value,
@@ -2144,6 +2297,11 @@
         
         // Inisialisasi PWA
         setupPWA();
+        
+        // Set otomatis input Flight Date ke hari ini saat aplikasi dimuat
+        if(inputs.flightDate) {
+            inputs.flightDate.valueAsDate = new Date();
+        }
 
     </script>
 </body>
