@@ -1870,6 +1870,7 @@
                             <!-- Action Buttons -->
                             <div class="flex justify-end gap-2 mb-2">
                                 <button onclick="loadFlightData(${item.row})" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-2 py-1 rounded shadow transition-colors">Buka Detail & PDF</button>
+                                <button onclick="duplicateFlightData(${item.row})" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-2 py-1 rounded shadow transition-colors">Duplikasi</button>
                                 <button onclick="deleteHistory(${item.row})" class="bg-red-600 hover:bg-red-500 text-white text-xs px-2 py-1 rounded shadow transition-colors">Hapus</button>
                             </div>
                             
@@ -1968,21 +1969,14 @@
             }
         };
 
-        window.loadFlightData = function(rowId) {
-            const item = currentHistoryData.find(i => i.row === rowId);
-            if(!item) return;
-
-            if(!confirm("Memuat data ini akan mengganti isian form di layar Anda saat ini. Lanjutkan?")) return;
-
-            const d = item.rowData;
-            
+        // Fungsi pembantu untuk mengisi form (digunakan oleh fungsi Load dan Duplicate)
+        function populateFormFields(d, isDuplicate) {
             // Konversi tanggal untuk input HTML type="date" dengan mengatasi bug timezone
             function parseToInputDate(dateStr) {
                 if(!dateStr || dateStr === '-') return '';
                 const dateObj = new Date(dateStr);
                 if(isNaN(dateObj.getTime())) return '';
                 
-                // Mencegah .toISOString() menurunkan tanggal karena konversi ke UTC
                 const yyyy = dateObj.getFullYear();
                 const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
                 const dd = String(dateObj.getDate()).padStart(2, '0');
@@ -1991,7 +1985,12 @@
             }
 
             // Map kolom yang sudah bergeser +1 kembali ke Inputs form utama
-            inputs.flightDate.value = parseToInputDate(d[1]);
+            if (isDuplicate) {
+                inputs.flightDate.valueAsDate = new Date(); // Jika duplikasi, gunakan tanggal hari ini
+            } else {
+                inputs.flightDate.value = parseToInputDate(d[1]);
+            }
+            
             inputs.routeFrom.value = d[2] || '';
             inputs.routeTo.value = d[3] || '';
             inputs.picName.value = d[4] || '';
@@ -2039,6 +2038,15 @@
 
             // Trigger kalkulasi untuk memuat Chart dan CG
             calculateAll();
+        }
+
+        window.loadFlightData = function(rowId) {
+            const item = currentHistoryData.find(i => i.row === rowId);
+            if(!item) return;
+
+            if(!confirm("Memuat data ini akan mengganti isian form di layar Anda saat ini. Lanjutkan?")) return;
+
+            populateFormFields(item.rowData, false);
             
             // Tampilkan tombol Download PDF karena memuat dari history
             document.getElementById('downloadPdfBtn').classList.remove('hidden');
@@ -2047,7 +2055,30 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
             
             const welcome = document.getElementById('welcome-message');
-            welcome.textContent = `Riwayat penerbangan dari ${d[1]} ke ${d[2]} berhasil dimuat! Anda dapat melihat Chart atau tekan Download as PDF di bawah.`;
+            welcome.textContent = `Riwayat penerbangan dari ${item.rowData[2]} ke ${item.rowData[3]} berhasil dimuat! Anda dapat melihat Chart atau tekan Download as PDF di bawah.`;
+            welcome.classList.replace('text-green-400', 'text-amber-400');
+            setTimeout(() => {
+                welcome.textContent = "";
+                welcome.classList.replace('text-amber-400', 'text-green-400');
+            }, 8000);
+        }
+
+        window.duplicateFlightData = function(rowId) {
+            const item = currentHistoryData.find(i => i.row === rowId);
+            if(!item) return;
+
+            if(!confirm("Duplikasi data ini? Isian form Anda saat ini akan diganti dengan salinan data ini.")) return;
+
+            populateFormFields(item.rowData, true);
+            
+            // Sembunyikan tombol PDF karena ini data baru yang belum disimpan
+            document.getElementById('downloadPdfBtn').classList.add('hidden');
+
+            document.getElementById('history-modal').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            const welcome = document.getElementById('welcome-message');
+            welcome.textContent = `Data berhasil diduplikasi. Tanggal otomatis diatur ke hari ini. Silakan sesuaikan form dan klik "Save to Database" untuk menyimpannya.`;
             welcome.classList.replace('text-green-400', 'text-amber-400');
             setTimeout(() => {
                 welcome.textContent = "";
